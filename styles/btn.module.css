@@ -1,0 +1,9 @@
+.nomral_btn {
+  width: 200px;
+  height: 30px;
+  border-radius: 30px;
+  color: white;
+  background-color: pink;
+  border: none;
+  cursor: pointer;
+}
