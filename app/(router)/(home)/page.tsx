@@ -1,16 +1,31 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
 import { RootState } from '@/src/store/store';
-import { decrement, increment, incrementByAmount } from '../../src/store/slice';
+import {
+  decrement,
+  increment,
+  incrementByAmount,
+} from '../../../src/store/slice';
 import styles from '@/styles/btn.module.css';
 
 export default function Home() {
   const count = useSelector((state: RootState) => state.counter.value);
   const [num, setNum] = useState(0);
   const dispatch = useDispatch();
+  const [msg, setMsg] = useState('');
+  useEffect(() => {
+    axios
+      .get(`/api/handlerTest`)
+      .then((res) => {
+        console.log(res.data.message);
+        setMsg(res.data.message);
+      })
+      .catch((err) => console.log(err));
+  });
   return (
     <div>
       <Link href='/about'>About</Link>
@@ -39,6 +54,7 @@ export default function Home() {
       >
         incrementByAmount
       </button>
+      <div>{msg}</div>
     </div>
   );
 }
