@@ -21,11 +21,18 @@ export default function Home() {
     axios
       .get(`/api/handlerTest`)
       .then((res) => {
-        console.log(res.data.message);
-        setMsg(res.data.message);
+        console.log(res.data.test);
+        setMsg(res.data.test[0].data);
       })
       .catch((err) => console.log(err));
-  });
+
+    // axios
+    //   .get(`/api/crawling`)
+    //   .then((res) => {
+    //     console.log(res.data);
+    //   })
+    //   .catch((err) => console.log(err));
+  }, []);
   return (
     <div>
       <Link href='/about'>About</Link>

@@ -1,12 +1,17 @@
 // import { NextApiRequest, NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from '@/src/lib/database';
 
 type ResponseData = {
   message: string;
 };
 
 export async function GET() {
-  return NextResponse.json({ message: 'get route' });
+  const client = await connectDB;
+  const collections = client.db('product').collection('test01');
+  const test = await collections.find().toArray();
+  console.log('api test : ', test);
+  return NextResponse.json({ test });
 }
 
 export async function POST() {

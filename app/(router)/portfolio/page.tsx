@@ -1,3 +1,3 @@
-export default function Protfolio() {
+export default function Portfolio() {
   return <div>포폴</div>;
 }
