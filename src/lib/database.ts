@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const url: string = process.env.MONGODB_URL!;
+const url: string = process.env.MONGODB_URI!;
 
 if (!url) {
   throw new Error('환경변수 x');
