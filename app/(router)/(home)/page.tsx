@@ -19,10 +19,10 @@ export default function Home() {
   const [msg, setMsg] = useState('');
   useEffect(() => {
     axios
-      .get(`/api/handlerTest`)
+      .get(`/api/getTodolist`)
       .then((res) => {
-        console.log(res.data.test);
-        setMsg(res.data.test[0].data);
+        // console.log(res.data.test);
+        // setMsg(res.data.test[0].data);
       })
       .catch((err) => console.log(err));
 
@@ -35,7 +35,15 @@ export default function Home() {
   }, []);
   return (
     <div>
-      <Link href='/about'>About</Link>
+      <div>
+        <Link href='/about'>About</Link>
+      </div>
+      <div>
+        <Link href='/portfolio'>Portfolio</Link>
+      </div>
+      <div>
+        <Link href='/todo'>Todo</Link>
+      </div>
       <div>
         <button
           aria-label='Decrement value'

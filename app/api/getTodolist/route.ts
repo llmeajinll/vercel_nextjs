@@ -8,7 +8,7 @@ type ResponseData = {
 
 export async function GET() {
   const client = await connectDB;
-  const collections = client.db('product').collection('test01');
+  const collections = client.db('todo').collection('list');
   const test = await collections.find().toArray();
   console.log('api test : ', test);
   return NextResponse.json({ test });
