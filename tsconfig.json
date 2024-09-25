@@ -28,7 +28,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "tailwind.config.js",
-    "postcss.config.js"
+    "postcss.config.js",
+    "src/widgets/todo/List/index.js",
+    "src/widgets/todo/Header/index.js"
   ],
   "exclude": ["node_modules"]
 }
