@@ -1,6 +1,6 @@
 // import { NextApiRequest, NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/src/lib/database';
+import { connectDB } from '@/src/shared/lib/database';
 
 type ResponseData = {
   message: string;
@@ -10,8 +10,12 @@ export async function GET() {
   const client = await connectDB;
   const collections = client.db('todo').collection('list');
   const test = await collections.find().toArray();
-  console.log('api test : ', test);
-  return NextResponse.json({ test });
+  // console.log('api test : ', test);
+  if (!test) {
+    return NextResponse.json({ test: 'no' });
+  } else {
+    return NextResponse.json({ test });
+  }
 }
 
 export async function POST() {

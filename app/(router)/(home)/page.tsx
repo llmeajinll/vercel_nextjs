@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { RootState } from '@/src/store/store';
+import { RootState } from '@/src/app/store/store';
 import {
   decrement,
   increment,
   incrementByAmount,
-} from '../../../src/store/slice';
+} from '../../../src/app/store/slice';
 import styles from '@/styles/btn.module.css';
 
 export default function Home() {

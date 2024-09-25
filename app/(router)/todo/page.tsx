@@ -1,8 +1,6 @@
-'use client';
-
 import { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
-import Todolist from '@/components/(todo)/Todolist';
+import Todolist from '@/src/widgets/todo/Todo';
 import Loading from '@/components/(todo)/Loading';
 
 interface Todo {
@@ -14,24 +12,11 @@ interface Todo {
 }
 
 export default function TodoPage() {
-  const [todos, setTodos] = useState([]);
-  useEffect(() => {
-    axios
-      .get(`/api/getTodolist`)
-      .then((res) => {
-        console.log(res.data.test);
-        setTodos(res.data.test);
-      })
-      .catch((err) => console.log(err));
-  }, []);
   return (
-    <div>
+    <div className='mx-auto w-[1080px]'>
       <div>TodoList</div>
-      {todos.map((todo: Todo) => (
-        <Suspense fallback={<Loading />} key={todo.id}>
-          <Todolist {...todo} />
-        </Suspense>
-      ))}
+
+      <Todolist />
     </div>
   );
 }
