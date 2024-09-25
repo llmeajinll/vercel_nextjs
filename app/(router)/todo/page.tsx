@@ -1,7 +1,6 @@
 import { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
 import Todolist from '@/src/widgets/todo/Todo';
-import Loading from '@/components/(todo)/Loading';
 
 interface Todo {
   _id: object;
