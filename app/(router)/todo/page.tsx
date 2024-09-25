@@ -1,1 +1,1 @@
-export { TodoPage as default } from '@/src/pages/todo';
+export { TodoPage as default } from '@/src/views/todo';
