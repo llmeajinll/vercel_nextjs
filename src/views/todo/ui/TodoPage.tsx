@@ -3,7 +3,7 @@ import { Todo } from '@/src/widgets/todo/List';
 
 export default function TodoPage() {
   return (
-    <div>
+    <div className=''>
       <Header />
       <Todo />
     </div>

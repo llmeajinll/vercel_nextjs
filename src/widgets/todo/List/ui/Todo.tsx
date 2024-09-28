@@ -1,18 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { TodoType } from '@/src/shared/types/Todo';
 import axios from 'axios';
 import TodoList from '@/src/widgets/todo/List/ui/TodoList';
-
-interface Todo {
-  _id: object;
-  id: number;
-  content: string;
-  created_at: Date;
-  updated_at: Date;
-  tag: string;
-  state: boolean;
-}
 
 export default function Todo() {
   const [todos, setTodos] = useState([]);
@@ -21,8 +12,8 @@ export default function Todo() {
     axios
       .get(`/api/getTodolist`)
       .then((res) => {
-        console.log('client test: ', res.data);
-        setTodos(res.data.test);
+        // console.log('client test: ', res.data);
+        setTodos(res.data.todo);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -30,7 +21,7 @@ export default function Todo() {
   const handleState = async (id: number, state: boolean) => {
     // console.log(todos, id, !state);
     setTodos((prev: any) => {
-      return prev.map((item: Todo) => {
+      return prev.map((item: TodoType) => {
         if (item.id === id) {
           return { ...item, state: state };
         }
@@ -41,13 +32,14 @@ export default function Todo() {
     await axios
       .post(`/api/updateState`, { id, state })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
       })
       .catch((err) => console.error(err));
   };
   return (
     <div>
-      {todos.map((todo: Todo, index) => {
+      {todos.map((todo: TodoType, index) => {
+        // console.log(todo);
         return <TodoList key={index} todo={todo} handleState={handleState} />;
       })}
     </div>

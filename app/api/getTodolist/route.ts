@@ -10,11 +10,26 @@ export async function GET() {
   const client = await connectDB;
   const collections = client.db('todo').collection('list');
   const test = await collections.find().toArray();
+
+  const todo = await collections
+    .aggregate([
+      {
+        $lookup: {
+          from: 'tag',
+          localField: 'tag',
+          foreignField: 'tag',
+          as: 'tag',
+        },
+      },
+    ])
+    .toArray();
+
+  console.log('test2: ', todo);
   // console.log('api test : ', test);
-  if (!test) {
-    return NextResponse.json({ test: 'no' });
+  if (!todo) {
+    return NextResponse.json({ todo: 'no' });
   } else {
-    return NextResponse.json({ test });
+    return NextResponse.json({ todo });
   }
 }
 
