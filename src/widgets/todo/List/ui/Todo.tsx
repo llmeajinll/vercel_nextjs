@@ -18,11 +18,11 @@ export default function Todo() {
       .catch((err) => console.log(err));
   }, []);
 
-  const handleState = async (id: number, state: boolean) => {
+  const handleState = async (id: string, state: boolean) => {
     // console.log(todos, id, !state);
     setTodos((prev: any) => {
       return prev.map((item: TodoType) => {
-        if (item.id === id) {
+        if (item._id === id) {
           return { ...item, state: state };
         }
         return item;

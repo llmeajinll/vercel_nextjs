@@ -8,12 +8,16 @@ type DataType = {
 };
 
 export const addTodoApi = async (content: string) => {
-  await axios
-    .post(`/api/putTodo`, { content, tag: '일상' })
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  if (content.trim() === '') {
+    alert('할 일을 입력해주세요.');
+  } else {
+    await axios
+      .post(`/api/putTodo`, { content, tag: '일상' })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };

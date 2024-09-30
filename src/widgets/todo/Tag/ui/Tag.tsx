@@ -5,7 +5,7 @@ interface TagProps {
 }
 
 export default function Tag({ tagInfo }: any) {
-  console.log(tagInfo.color);
+  // console.log(tagInfo.color);
   return (
     <div>
       <div
