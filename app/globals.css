@@ -24,11 +24,27 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb)); */
-  min-width: 1280px;
+  /* padding: 0 100px;
+  min-width: 1080px; */
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+@font-face {
+  font-family: flamenco;
+  src: url('/font/Flamenco-Regular.ttf') format('ttf');
+}
+
+@font-face {
+  font-family: noto_regular;
+  src: url('/font/NotoSansKR-Regular.ttf') format('ttf');
+}
+
+@font-face {
+  font-family: noto_medium;
+  src: url('/font/NotoSansKR-Medium.ttf') format('ttf');
 }

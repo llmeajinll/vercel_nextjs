@@ -4,10 +4,11 @@ export interface TodoType {
   content: string;
   created_at: Date;
   updated_at: Date;
-  tag: Array<Tag>;
+  tag: Array<TagType>;
   state: boolean;
 }
-export interface Tag {
+
+export interface TagType {
   color: string;
   tag: string;
   _id: string;
