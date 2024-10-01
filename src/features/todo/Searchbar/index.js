@@ -1,2 +1,2 @@
-export { default as AddTodo } from './ui/AddTodo';
+export { default as AddTodoButton } from './ui/AddTodoButton';
 export { addTodoApi } from './api/addTodoApi';

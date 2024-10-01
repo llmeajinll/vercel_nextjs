@@ -3,20 +3,25 @@
 import { useState } from 'react';
 import { TodoType } from '@/src/shared/types/Todo';
 import { Tag } from '@/src/widgets/todo/Tag';
-import { EditButton } from '@/src/features/todo/TodoList';
-import { DeleteButton } from '@/src/features/todo/TodoList';
-import { updateTodo } from '@/src/features/todo/TodoList';
+import {
+  EditButton,
+  DeleteButton,
+  updateTodo,
+} from '@/src/features/todo/TodoList';
+import { updateState } from '@/src/widgets/todo/List';
 
 interface TodoProps {
   todo: TodoType;
-  handleState: Function;
+  // handleState: Function;
 }
 
-export default function TodoList({ todo, handleState }: TodoProps) {
-  // console.log(typeof todo._id);
+export default function TodoList({ todo }: TodoProps) {
+  // console.log('todoList: ', todo);
   const [content, setContent] = useState(todo.content);
+  const [done, setDone] = useState(todo.state);
   const [read, setRead] = useState(true);
   const [visible, setVisible] = useState(true);
+
   return (
     <div>
       {visible && (
@@ -24,10 +29,10 @@ export default function TodoList({ todo, handleState }: TodoProps) {
           className={`
             relative flex border w-[810px] 
             mt-2.5 pl-3 pr-2.5 py-1.5 rounded-md text-sm text-stone-600
-            ${todo.state ? 'border-stone-200' : 'border-stone-300'}
+            
           `}
         >
-          <div className='flex items-center justify-center mr-2.5'>
+          <div className='flex items-center justify-center mr-2.5 z-10'>
             <input
               className='
                 w-4 h-4 border border-stone-300 
@@ -35,12 +40,15 @@ export default function TodoList({ todo, handleState }: TodoProps) {
                 hover: cursor-pointer
               '
               type='checkbox'
-              checked={todo.state}
-              onChange={() => handleState(todo._id, !todo.state)}
+              checked={done}
+              onChange={() => {
+                updateState(todo._id, !done);
+                setDone(!done);
+              }}
             />
           </div>
-          {todo.state ? (
-            <div className='w-[810px] h-10 bg-white'></div>
+          {done ? (
+            <div className='absolute w-[810px] h-10 top-[-1px] left-0 bg-white/50 rounded-md'></div>
           ) : (
             <div></div>
           )}
@@ -49,7 +57,7 @@ export default function TodoList({ todo, handleState }: TodoProps) {
             onChange={(e) => setContent(e.target.value)}
             className={`flex basis-[520px] mr-0 px-1 items-center border border-stone-300 rounded focus: outline-none
             ${read ? 'border-transparent' : 'border-stone-300'}
-            ${todo.state ? 'text-stone-200 line-through' : 'text-stone-600'}
+            ${done ? 'line-through' : 'text-stone-600'}
             `}
             readOnly={read}
           />
@@ -65,3 +73,5 @@ export default function TodoList({ todo, handleState }: TodoProps) {
     </div>
   );
 }
+
+// ${todo.state ? 'border-stone-200' : 'border-stone-300'}

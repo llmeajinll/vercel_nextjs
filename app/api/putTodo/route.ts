@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 
 export async function POST(req: NextRequest) {
   const { content, tag } = await req.json();
+  console.log(`content: ${content}, tag: ${tag}`);
 
   const date = dayjs().format('YYYY-MM-DD hh:mm:ss');
 

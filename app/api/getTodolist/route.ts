@@ -9,7 +9,7 @@ type ResponseData = {
 export async function GET() {
   const client = await connectDB;
   const collections = client.db('todo').collection('list');
-  const test = await collections.find().toArray();
+  // const test = await collections.find().toArray();
 
   const todo = await collections
     .aggregate([
@@ -36,18 +36,3 @@ export async function GET() {
 export async function POST() {
   return NextResponse.json({ message: 'post route' });
 }
-
-// export default function route(
-//   req: NextApiRequest,
-//   res: NextApiResponse<ResponseData>
-// ) {
-//   if (req.method === 'POST') {
-//     res.status(200).json({
-//       message: 'post handlerTest',
-//     });
-//   } else if (req.method === 'GET') {
-//     res.status(200).json({
-//       message: 'get  handlerTest',
-//     });
-//   }
-// }

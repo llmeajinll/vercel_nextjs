@@ -22,5 +22,11 @@ module.exports = {
       pc: '1240px',
     },
   },
+  safelist: [
+    {
+      pattern:
+        /(bg|text|border)-(stone|red|orange|amber|yellow|green|sky|blue|violet|pink|rose)-(100|200|300|400|500|600)/,
+    },
+  ],
   plugins: [],
 };

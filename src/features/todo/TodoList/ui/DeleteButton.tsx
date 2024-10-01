@@ -4,15 +4,12 @@ import { ObjectId } from 'mongodb';
 import { useState } from 'react';
 import { deleteTodo } from '@/src/features/todo/TodoList';
 
-export default function DeleteButton({
-  todoId,
-  setVisible,
-}: {
-  todoId: any;
-  setVisible: any;
-}) {
-  // { todoId }: { todoId: string },
-  // { setVisible }: { setVisible: any }
+interface PropsType {
+  todoId: string;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function DeleteButton({ todoId, setVisible }: PropsType) {
   return (
     <div className='ml-auto'>
       <button

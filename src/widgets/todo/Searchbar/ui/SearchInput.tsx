@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { AddTodo } from '@/src/features/todo/Searchbar';
+import { AddTodoButton } from '@/src/features/todo/Searchbar';
+import { addTodoApi } from '@/src/features/todo/Searchbar';
 
 export default function SearchInput() {
   const [content, setContent] = useState('');
@@ -10,7 +11,7 @@ export default function SearchInput() {
       <div className='mr-[18px]'>
         <input
           className='w-[627px] border-0
-        focus:outline-none'
+            focus:outline-none'
           placeholder='할 일을 작성해주세요!'
           onChange={(e) => {
             setContent(e.target.value);
@@ -18,7 +19,7 @@ export default function SearchInput() {
           maxLength={50}
         />
       </div>
-      <AddTodo content={content} />
+      <AddTodoButton onClick={() => addTodoApi(content)} />
     </div>
   );
 }
