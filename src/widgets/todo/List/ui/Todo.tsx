@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { TodoType } from '@/src/shared/types/Todo';
 import axios from 'axios';
-import TodoList from '@/src/widgets/todo/List/ui/TodoList';
+import { TodoList } from '@/src/widgets/todo/List';
 
 export default function Todo() {
   const [todos, setTodos] = useState([]);
