@@ -27,7 +27,7 @@ export default function TodoList({ todo }: TodoProps) {
       {visible && (
         <div
           className={`
-            relative flex border w-[810px] 
+            relative flex border border-stone-300 w-[810px] 
             mt-2.5 pl-3 pr-2.5 py-1.5 rounded-md text-sm text-stone-600
             
           `}
