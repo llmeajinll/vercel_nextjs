@@ -24,7 +24,7 @@ export async function GET() {
     ])
     .toArray();
 
-  // console.log('get todo: ', todo);
+  console.log('get todo: ', todo);
   // console.log('api test : ', test);
   if (!todo) {
     return NextResponse.json({ todo: 'no' });
