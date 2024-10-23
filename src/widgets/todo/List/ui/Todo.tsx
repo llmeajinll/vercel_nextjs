@@ -9,6 +9,7 @@ export default function Todo() {
 
   useEffect(() => {
     const getTodo = async () => {
+      console.log('왜 안돼');
       const result = await getTodoList();
       // console.log('getTodo : ', result);
       setTodos(result);
