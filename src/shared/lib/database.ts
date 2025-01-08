@@ -6,7 +6,7 @@ if (!url) {
   throw new Error('환경변수 x');
 }
 
-const options: any = { useNewUrlParser: true };
+const options: any = { useUnifiedTopology: true };
 let connectDB: Promise<MongoClient>;
 
 // if (process.env.NODE_ENV === 'development') {
