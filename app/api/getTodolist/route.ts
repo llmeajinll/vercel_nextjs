@@ -29,7 +29,9 @@ export async function GET() {
   if (!todo) {
     return NextResponse.json({ todo: 'no' });
   } else {
-    return NextResponse.json({ todo });
+    const response = NextResponse.json({todo});
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    return response;
   }
 }
 
