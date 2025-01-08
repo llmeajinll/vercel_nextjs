@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { TodoType } from '@/src/shared/types/Todo';
-import { TodoList, getTodoList } from '@/src/widgets/todo/List';
+import { TodoList, getTodoListApi } from '@/src/widgets/todo/List';
 
 export default function Todo() {
   const [todos, setTodos] = useState<TodoType[]>([]);
@@ -10,8 +10,8 @@ export default function Todo() {
   useEffect(() => {
     const getTodo = async () => {
       console.log('왜 안돼');
-      const result = await getTodoList();
-      // console.log('getTodo : ', result);
+      const result = await getTodoListApi();
+      console.log('getTodo : ', result);
       setTodos(result);
     };
     getTodo();
