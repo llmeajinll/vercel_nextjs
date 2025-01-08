@@ -5,7 +5,7 @@ interface TagProps {
 }
 
 export default function Tag({ tagInfo }: any) {
-  console.log(tagInfo);
+  // console.log(tagInfo);
 
   const borderClass = tagInfo.color
     ? `border-${tagInfo.color}-600`
