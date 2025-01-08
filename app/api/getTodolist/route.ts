@@ -1,4 +1,4 @@
-// import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/src/shared/lib/database';
 
