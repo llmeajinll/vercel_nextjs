@@ -8,10 +8,10 @@ type ResponseData = {
 
 export async function GET() {
   const client = await connectDB;
-  const collections = client.db('todo').collection('list');
+  const db = client.db('todo').collection('list');
   // const test = await collections.find().toArray();
 
-  const todo = await collections
+  const todo = await db
     .aggregate([
       {
         $lookup: {
