@@ -1,4 +1,3 @@
-'use client';
 
 import { useEffect, useState } from 'react';
 import { TodoType } from '@/src/shared/types/Todo';

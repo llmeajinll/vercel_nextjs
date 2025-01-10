@@ -1,3 +1,5 @@
+'use client';
+
 import { Header } from '@/src/widgets/todo/Header';
 import { Todo } from '@/src/widgets/todo/List';
 import { Searchbar } from '@/src/widgets/todo/Searchbar';

@@ -1,17 +1,3 @@
 {
-"routes": [
-  {
-    "src": "/",
-    "dest": "/"
-
-  },
-  {
-    "src": "/todo",
-    "dest": "/todo"
-  },
-  {
-    "src": "/api/getTodoList",
-    "dest": "/api/getTodoList"
-  }
-]
+"framework": "nextjs"
 }
