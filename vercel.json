@@ -8,6 +8,10 @@
   {
     "src": "/todo",
     "dest": "/todo"
+  },
+  {
+    "src": "/api/getTodoList",
+    "dest": "/api/getTodoList"
   }
 ]
 }
