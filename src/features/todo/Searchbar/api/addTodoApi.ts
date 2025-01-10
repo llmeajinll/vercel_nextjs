@@ -16,9 +16,11 @@ export const addTodoApi = async (content: string) => {
       .post(`/api/putTodo`, { content, tag: '일상' })
       .then((res) => {
         console.log(res);
+
       })
       .catch((err) => {
         console.log(err);
       });
+    window.location.reload();
   }
 };

@@ -23,13 +23,13 @@ export default function TodoList({ todo }: TodoProps) {
   const [visible, setVisible] = useState(true);
 
   return (
-    <div>
+    <div className='z-5'>
       {visible && (
         <div
           className={`
             relative flex border border-stone-300 w-[810px] 
             mt-2.5 pl-3 pr-2.5 py-1.5 rounded-md text-sm text-stone-600
-            
+            bg-white
           `}
         >
           <div className='flex items-center justify-center mr-2.5 z-10'>
@@ -48,7 +48,7 @@ export default function TodoList({ todo }: TodoProps) {
             />
           </div>
           {done ? (
-            <div className='absolute w-[810px] h-10 top-[-1px] left-0 bg-white/50 rounded-md'></div>
+            <div className='absolute w-[810px] h-10 top-[-1px] left-0 bg-white/50 rounded-md z-4'></div>
           ) : (
             <div></div>
           )}

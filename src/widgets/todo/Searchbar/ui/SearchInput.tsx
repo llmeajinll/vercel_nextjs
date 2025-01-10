@@ -6,6 +6,13 @@ import { addTodoApi } from '@/src/features/todo/Searchbar';
 
 export default function SearchInput() {
   const [content, setContent] = useState('');
+
+  const onHandleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key=== 'Enter'){
+        addTodoApi(content)
+    }
+  }
+
   return (
     <div className='flex items-center '>
       <div className='mr-0'>
@@ -16,6 +23,7 @@ export default function SearchInput() {
           onChange={(e) => {
             setContent(e.target.value);
           }}
+          onKeyDown={onHandleEnter}
           maxLength={50}
         />
       </div>

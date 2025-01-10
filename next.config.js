@@ -15,6 +15,11 @@ const nextConfig = {
     //     ];
     // },
 
+
+    experimental: {
+        appDir: true,
+        serverActions: true
+    }
 };
 
-export default nextConfig;
+module.exports = nextConfig;
