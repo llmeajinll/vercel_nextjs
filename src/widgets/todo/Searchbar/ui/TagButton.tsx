@@ -1,7 +1,5 @@
 import React, {useState} from 'react'
-import {TagModal} from "@/src/widgets/todo/TagModal";
 import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
 import { RootState } from '@/src/app/store/store';
 import {
     setTagModal
@@ -10,17 +8,27 @@ import styles from "@/styles/btn.module.css";
 
 export default function TagButton() {
     const status = useSelector((state: RootState) => state.counter.isShowTagModal);
+    const tag = useSelector((state: RootState) => state.counter.mainTag);
     const dispatch = useDispatch();
 
     const onClickTagBtn = () => {
         dispatch(setTagModal(!status));
     }
+
+    const borderClass = tag.color
+        ? `border-${tag.color}-600`
+        : 'border-stone-400';
+    const bgClass = tag.color ? `bg-${tag.color}-100` : 'bg-stone-100';
+    const textClass = tag.color
+        ? `text-${tag.color}-600`
+        : 'text-stone-400';
+
   return (
       <div>
 
           <button onClick={onClickTagBtn}
-                  className='w-[60px] h-[38px] ml-[20px] text-xl border border-stone-400 text-stone-400 bg-stone-100 rounded-md'>
-              태그
+                  className={`${borderClass} ${bgClass} ${textClass} w-max h-[40px] px-[12px] text-xl border rounded-md`}>
+              {tag.tag || '태그'}
           </button>
 
       </div>

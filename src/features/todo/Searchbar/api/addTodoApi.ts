@@ -7,13 +7,13 @@ type DataType = {
   tag: string;
 };
 
-export const addTodoApi = async (content: string) => {
-  if (content.trim() === '') {
+export const addTodoApi = async (data: {content: string; tag: string}) => {
+  if (data.content.trim() === '') {
     alert('할 일을 입력해주세요.');
   } else {
-    console.log(`addTodoApi content: ${content}`);
+    console.log(`addTodoApi content: ${data}`);
     await axios
-      .post(`/api/putTodo`, { content, tag: '일상' })
+      .post(`/api/todo/putTodo`, { content: data.content, tag: data.tag })
       .then((res) => {
         console.log(res);
 

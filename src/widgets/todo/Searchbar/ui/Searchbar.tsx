@@ -11,11 +11,13 @@ export default function Searchbar() {
   return (
      <div className='w-fit relative'>
       {status && <TagModal />}
-        <div className='flex items-center w-[730px] h-10 border border-stone-300 rounded-full '>
-          <div className='text-xl leading-8 w-fit mx-3 text-stone-600'>Do</div>
-          <SearchInput />
-          <TagButton />
-        </div>
+         <div className='w-[810px] flex gap-3'>
+            <div className='flex gap-[15px] items-center w-[100%] h-10 px-3 border border-stone-300 rounded-full'>
+                <div className='text-xl w-fit text-stone-600'>Do</div>
+                <SearchInput />
+            </div>
+            <TagButton />
+         </div>
       </div>
   );
 }

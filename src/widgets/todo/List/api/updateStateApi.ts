@@ -8,7 +8,7 @@ interface PropsType {
 export const updateState = async (id: string, state: boolean) => {
   //   console.log(`id: ${id}, state: ${state}`);s
   await axios
-    .post(`/api/updateState`, { id, state })
+    .post(`/api/todo/updateState`, { id, state })
     .then((res) => {
       // console.log(res);
       const { todo } = res.data;

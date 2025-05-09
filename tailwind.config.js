@@ -25,7 +25,7 @@ module.exports = {
   safelist: [
     {
       pattern:
-        /(bg|text|border)-(stone|red|orange|amber|yellow|green|sky|blue|violet|pink|rose)-(100|200|300|400|500|600)/,
+        /(bg|text|border)-(stone|red|orange|amber|yellow|green|sky|blue|violet|purple|pink|rose)-(100|200|300|400|500|600)/,
     },
   ],
   plugins: [],

@@ -5,7 +5,8 @@ interface PropsType {
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
-export default function AddTodoButton({ onClick }: PropsType) {
+export default function AddTodoButton( onClick : React.MouseEventHandler<HTMLButtonElement>) {
+    console.log(onClick)
   return (
     <button className='w-10 h-10 ml-3' onClick={onClick}>
       <Image

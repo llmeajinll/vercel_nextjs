@@ -1,5 +1,10 @@
-// import axios from 'axios'
+interface PropsType {
+    content: string;
+    read: boolean;
+    setRead: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-// export const updateTodo = async() => {
-//     const {data} = await axios
-// }
+export const updateTodo = async ({ content, read, setRead }: PropsType) => {
+    console.log(content);
+    setRead(!read);
+};

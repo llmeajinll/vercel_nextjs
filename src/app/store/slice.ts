@@ -1,10 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { TagType } from '@/src/shared/types/Todo';
 export const Slice = createSlice({
   name: 'redux',
   initialState: {
     value: 0,
     isShowTagModal: false,
+    tagList: [] as TagType[],
+    mainTag: {
+      tag: '',
+      color: ''
+    }
   },
   reducers: {
     increment: (state) => {
@@ -18,11 +24,16 @@ export const Slice = createSlice({
     },
     setTagModal: (state, action) => {
       state.isShowTagModal = action.payload;
-
+    },
+    setTagList: (state, action) => {
+      state.tagList = [...action.payload]
+    },
+    setMainTag: (state, action) => {
+      state.mainTag = {...action.payload}
     }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount, setTagModal } = Slice.actions;
+export const { increment, decrement, incrementByAmount, setTagModal, setTagList, setMainTag } = Slice.actions;
 export default Slice.reducer;

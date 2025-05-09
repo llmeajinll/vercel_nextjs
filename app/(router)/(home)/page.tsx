@@ -19,10 +19,10 @@ export default function Home() {
   const [msg, setMsg] = useState('');
   useEffect(() => {
     axios
-      .get(`/api/getTodolist`)
+      .get(`/api/todo/getTodolist`)
       .then((res) => {
-        // console.log(res.data.test);
-        // setMsg(res.data.test[0].data);
+        console.log(res.data);
+        setMsg(res.data.test[0].data);
       })
       .catch((err) => console.log(err));
 
@@ -44,32 +44,32 @@ export default function Home() {
       <div>
         <Link href='/todo'>Todo</Link>
       </div>
-      <div>
-        <button
-          aria-label='Decrement value'
-          onClick={() => dispatch(decrement())}
-          className={styles.nomral_btn}
-        >
-          Decrement
-        </button>
-        <span>{count}</span>
-        <button
-          aria-label='Increment value'
-          onClick={() => dispatch(increment())}
-          className={styles.nomral_btn}
-        >
-          Increment
-        </button>
-      </div>
-      <input type='number' onChange={(e) => setNum(Number(e.target.value))} />
-      <button
-        aria-label='Increment value'
-        onClick={() => dispatch(incrementByAmount(num))}
-        className={styles.nomral_btn}
-      >
-        incrementByAmount
-      </button>
-      <div>{msg}</div>
+      {/*<div>*/}
+      {/*  <button*/}
+      {/*    aria-label='Decrement value'*/}
+      {/*    onClick={() => dispatch(decrement())}*/}
+      {/*    className={styles.nomral_btn}*/}
+      {/*  >*/}
+      {/*    Decrement*/}
+      {/*  </button>*/}
+      {/*  <span>{count}</span>*/}
+      {/*  <button*/}
+      {/*    aria-label='Increment value'*/}
+      {/*    onClick={() => dispatch(increment())}*/}
+      {/*    className={styles.nomral_btn}*/}
+      {/*  >*/}
+      {/*    Increment*/}
+      {/*  </button>*/}
+      {/*</div>*/}
+      {/*<input type='number' onChange={(e) => setNum(Number(e.target.value))} />*/}
+      {/*<button*/}
+      {/*  aria-label='Increment value'*/}
+      {/*  onClick={() => dispatch(incrementByAmount(num))}*/}
+      {/*  className={styles.nomral_btn}*/}
+      {/*>*/}
+      {/*  incrementByAmount*/}
+      {/*</button>*/}
+      {/*<div>{msg}</div>*/}
     </div>
   );
 }
