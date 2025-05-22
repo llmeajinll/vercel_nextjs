@@ -1,3 +1,9 @@
+export interface TagType {
+  color: string;
+  tag: string;
+  _id: string;
+}
+
 export interface TodoType {
   _id: string;
   content: string;
@@ -7,8 +13,15 @@ export interface TodoType {
   state: boolean;
 }
 
-export interface TagType {
-  color: string;
-  tag: string;
-  _id: string;
+export interface WeatherObjectType {
+  baseDate: string
+  baseTime: string
+  category: string
+  nx: number
+  ny: number
+  obsrValue: string
+}
+
+export interface WeatherType {
+    item: Array<WeatherObjectType>
 }
