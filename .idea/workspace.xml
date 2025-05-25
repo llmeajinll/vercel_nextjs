@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="86c4f40b-35c3-4989-8652-3344ebfed43d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/shared/types/Todo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/shared/types/Todo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/todo/ui/TodoPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/todo/ui/TodoPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +61,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-WS-243.22562.112" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-WS-243.26053.12" />
       </set>
     </attachedChunks>
   </component>
@@ -75,7 +74,9 @@
       <option name="presentableId" value="Default" />
       <updated>1744175600361</updated>
       <workItem from="1744175601427" duration="139009000" />
-      <workItem from="1747194207827" duration="37048000" />
+      <workItem from="1747194207827" duration="39184000" />
+      <workItem from="1748058467987" duration="2406000" />
+      <workItem from="1748060931603" duration="972000" />
     </task>
     <servers />
   </component>

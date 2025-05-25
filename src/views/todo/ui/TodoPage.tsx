@@ -36,6 +36,8 @@ export default function TodoPage() {
     }
 
     useEffect(() => {
+
+        console.log(process.env.ACCUWEATHER_API_KEY);
         getTagList()
 
         if (!navigator.geolocation) {
