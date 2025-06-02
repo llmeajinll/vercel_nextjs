@@ -19,7 +19,7 @@ export default function Tag({ tagInfo }: any) {
     //   className={`${borderClass} ${bgClass} ${textClass} flex items-center justify-center basis-[40px] px-1.5 py-0.5 rounded border`}
     // >
     <div
-      className={`${borderClass} ${bgClass} ${textClass} flex items-center justify-center basis-[40px] px-1.5 py-0.5 rounded border`}
+      className={`${borderClass} ${bgClass} ${textClass} flex items-center justify-center px-1.5 py-0.5 rounded border`}
     >
       {tagInfo.tag || '없음'}
     </div>

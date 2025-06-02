@@ -8,6 +8,7 @@ export const Slice = createSlice({
     isShowTagModal: false,
     tagList: [] as TagType[],
     mainTag: {
+      _id: '',
       tag: '',
       color: ''
     }

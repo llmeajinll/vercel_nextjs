@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/src/shared/lib/database';
 import dayjs from 'dayjs';
+import {ObjectId} from "mongodb";
 
 export async function POST(req: NextRequest) {
   const { content, tag } = await req.json();
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest) {
     content,
     created_at: date,
     updated_at: date,
-    tag,
+    tag: new ObjectId(tag),
     state: false,
   });
 

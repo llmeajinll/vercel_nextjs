@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {ObjectId} from "mongodb";
 
 type DataType = {
   content: string;
@@ -12,8 +13,9 @@ export const addTodoApi = async (data: {content: string; tag: string}) => {
     alert('할 일을 입력해주세요.');
   } else {
     console.log(`addTodoApi content: ${data}`);
+    const {content, tag} = data;
     await axios
-      .post(`/api/todo/putTodo`, { content: data.content, tag: data.tag })
+      .post(`/api/todo/putTodo`, { content, tag })
       .then((res) => {
         console.log(res);
 

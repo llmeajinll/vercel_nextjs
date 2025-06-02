@@ -10,7 +10,7 @@ interface TagProps {
 }
 
 export default function TagInModal({ tagInfo }: any) {
-    // console.log(tagInfo);
+    console.log(tagInfo);
     const status = useSelector((state: RootState) => state.counter.isShowTagModal);
     const dispatch = useDispatch();
 
@@ -35,6 +35,7 @@ export default function TagInModal({ tagInfo }: any) {
     return (
 
         <div
+            id={tagInfo._id}
             className={`${borderClass} ${bgClass} ${textClass} flex items-center justify-center px-1.5 py-0.5 rounded border`}
         >
             <div className="cursor-pointer" onClick={onClickTag}>{tagInfo.tag || '없음'}</div>

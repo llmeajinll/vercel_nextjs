@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
         console.log('data : ', data)
         if(data.Key){
-            const tempURL = `http://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${data.Key}?apikey=${process.env.ACCUWEATHER_API_KEY}&language=ko-KR`;
+            const tempURL = `http://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${data.Key}?apikey=${process.env.ACCUWEATHER_API_KEY}`;
 
             const result = await fetch(tempURL)
             const tempData = await result.json();

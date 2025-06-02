@@ -5,6 +5,7 @@ import { AddTodoButton } from '@/src/features/todo/Searchbar';
 import { addTodoApi } from '@/src/features/todo/Searchbar';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/app/store/store";
+import {ObjectId} from "mongodb";
 
 export default function SearchInput() {
   const [content, setContent] = useState('');
@@ -17,7 +18,7 @@ export default function SearchInput() {
             alert('태그를 선택해주세요.')
         }
         else{
-            addTodoApi({content, tag: tag.tag.trim()})
+            addTodoApi({content, tag: tag._id})
         }
 
     }

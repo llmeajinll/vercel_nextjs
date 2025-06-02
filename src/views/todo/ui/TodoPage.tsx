@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import {dfs_xy_conv} from "@/src/shared/fun/dfs_xy_conv";
 import {postWeatherApi} from "@/src/views/todo/api/postWeatherApi";
 import {WeatherType} from "@/src/shared/types/Todo";
+import WeatherImg from "@/src/views/todo/ui/WeatherImg";
 
 export default function TodoPage() {
 
@@ -37,7 +38,7 @@ export default function TodoPage() {
 
     useEffect(() => {
 
-        console.log(process.env.ACCUWEATHER_API_KEY);
+        console.log('weather_api', process.env.ACCUWEATHER_API_KEY);
         getTagList()
 
         if (!navigator.geolocation) {
@@ -82,9 +83,10 @@ export default function TodoPage() {
               </div>
               <div>
                   <div className='text-center text-2xl text-stone-600 mb-3'>{today}</div>
-                  <div className='w-[220px] h-[180px] text-center border border-stone-300'>
+                  <div className='w-[220px] h-[180px] text-center border border-stone-300 flex flex-col items-center rounded'>
+                      <WeatherImg weath={temp.content}/>
                       {temp.temp || 0}℃
-                      <p>날씨: {temp.content}</p>
+                      <p>날씨: {temp.content || '수집중...'}</p>
 
                   </div>
 
