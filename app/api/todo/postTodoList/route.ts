@@ -6,13 +6,28 @@ type ResponseData = {
   message: string;
 };
 
-export async function GET() {
+export async function POST(req: Request) {
+
+  // const { date } = await req.json();
+
+  const {date}  = await req.json()
+  console.log('[postTodoList route.ts]',date, typeof date)
+
   const client = await connectDB;
   const db = client.db('todo').collection('list');
+
+  console.log(db)
   // const test = await collections.find().toArray();
+
+
 
   const todo = await db
     .aggregate([
+      {
+        $match: {
+          created_at: {$regex: date}
+        }
+      },
       {
         $lookup: {
           from: 'tag',
@@ -33,8 +48,6 @@ export async function GET() {
     response.headers.set('Access-Control-Allow-Origin', '*');
     return response;
   }
+
 }
 
-export async function POST() {
-  return NextResponse.json({ message: 'post route' });
-}

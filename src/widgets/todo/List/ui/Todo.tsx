@@ -1,17 +1,25 @@
 
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
+import dayjs from 'dayjs';
 import { TodoType } from '@/src/shared/types/Todo';
-import { TodoList, getTodoListApi } from '@/src/widgets/todo/List';
+import { postTodoListApi } from '@/src/widgets/todo/List';
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/app/store/store";
+
 
 export default function Todo() {
   const [todos, setTodos] = useState<TodoType[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const rawDate: string = useSelector((state: RootState) => state.counter.date);
+  const date = dayjs(rawDate)
 
   const getTodo = async () => {
-    const result = await getTodoListApi().then((res) => {
+    console.log('[getTodo] : ', typeof date.format('YYYY-MM-DD'))
+    return await postTodoListApi(date.format('YYYY-MM-DD')).then((res) => {
       return res
     });
-    return result;
   };
 
   useEffect(() => {
@@ -19,13 +27,19 @@ export default function Todo() {
     getTodo().then(res => setTodos(res));
   }, []);
 
+  const TodoList = lazy(() => import('../../List/ui/TodoList'))
+
+
   return (
     <div>
+
       <div className='mt-5 text-stone-600'>오늘 할 일 【{todos.length}개】</div>
-      {todos.map((todo: TodoType, index) => {
-        // console.log(todo);
-        return <TodoList key={index} todo={todo} />;
-      })}
+      <Suspense fallback={<div>Loading...</div>}>
+        {todos.map((todo: TodoType, index) => {
+          // console.log(todo);
+          return <TodoList key={index} todo={todo} />;
+        })}
+      </Suspense>
     </div>
   );
 }

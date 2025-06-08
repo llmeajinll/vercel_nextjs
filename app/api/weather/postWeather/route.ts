@@ -23,7 +23,7 @@ export async function POST(req: Request) {
             const result = await fetch(tempURL)
             const tempData = await result.json();
 
-            console.log('tempData :',tempData)
+            // console.log('tempData :',tempData)
 
             const response = NextResponse.json(tempData);
             response.headers.set('Access-Control-Allow-Origin', '*');

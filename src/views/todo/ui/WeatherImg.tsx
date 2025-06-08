@@ -1,6 +1,6 @@
 export default function WeatherImg({weath}: any) {
 
-    console.log(weath)
+    // console.log(weath)
 
     const weather = [
         {id: '01', content: 'Sunny'}, {id: '02', content: 'Mostly sunny'}, {id: '03', content: 'Partly sunny'},
@@ -21,7 +21,7 @@ export default function WeatherImg({weath}: any) {
         })
     }
 
-    console.log(findItem())
+    // console.log(findItem())
     const ItemId = findItem()?.id ?? '1'
 
     return(
