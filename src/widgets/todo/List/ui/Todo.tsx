@@ -12,12 +12,13 @@ export default function Todo() {
   const [todos, setTodos] = useState<TodoType[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const rawDate: string = useSelector((state: RootState) => state.counter.date);
+  const rawDate = useSelector((state: RootState) => state.counter.date);
   const date = dayjs(rawDate)
 
   const getTodo = async () => {
     console.log('[getTodo] : ', typeof date.format('YYYY-MM-DD'))
-    return await postTodoListApi(date.format('YYYY-MM-DD')).then((res) => {
+    const data = {date : date.format('YYYY-MM-DD')}
+    return await postTodoListApi(data).then((res) => {
       return res
     });
   };

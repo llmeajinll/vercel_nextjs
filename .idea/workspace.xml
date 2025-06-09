@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="86c4f40b-35c3-4989-8652-3344ebfed43d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/todo/getTodolist/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/todo/postTodoList/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/weather/postWeather/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/weather/postWeather/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/store/slice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/store/slice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/todo/ui/TodoPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/todo/ui/TodoPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/todo/ui/WeatherImg.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/todo/ui/WeatherImg.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/todo/List/api/getTodoListApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/List/api/postTodoListApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/todo/List/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/List/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/todo/List/ui/Todo.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/List/ui/Todo.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
-    </list>
+    <list default="true" id="86c4f40b-35c3-4989-8652-3344ebfed43d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,7 +79,7 @@
       <workItem from="1748060931603" duration="972000" />
       <workItem from="1748062429310" duration="83918000" />
       <workItem from="1749364742071" duration="3896000" />
-      <workItem from="1749370544315" duration="2978000" />
+      <workItem from="1749370544315" duration="4221000" />
     </task>
     <servers />
   </component>
