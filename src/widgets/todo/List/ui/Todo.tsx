@@ -12,11 +12,11 @@ export default function Todo() {
   const [todos, setTodos] = useState<TodoType[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const rawDate = useSelector((state: RootState) => state.counter.date);
-  const date = dayjs(rawDate)
+  const date = useSelector((state: RootState) => state.counter.date);
+
 
   const getTodo = async () => {
-    console.log('[getTodo] : ', typeof date.format('YYYY-MM-DD'))
+    console.log('[getTodo] : ', date.format('YYYY-MM-DD'))
     const data = {date : date.format('YYYY-MM-DD')}
     return await postTodoListApi(data).then((res) => {
       return res
@@ -24,9 +24,10 @@ export default function Todo() {
   };
 
   useEffect(() => {
-
+    console.log(date)
+    setTodos([]);
     getTodo().then(res => setTodos(res));
-  }, []);
+  }, [date]);
 
   const TodoList = lazy(() => import('../../List/ui/TodoList'))
 

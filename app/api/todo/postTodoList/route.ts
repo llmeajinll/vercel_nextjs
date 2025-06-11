@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   // const { date } = await req.json();
 
   const {date}  = await req.json()
-  console.log('[postTodoList route.ts]',date, typeof date)
+  console.log('[postTodoList route.ts]',date.date, typeof date)
 
   const client = await connectDB;
   const db = client.db('todo').collection('list');
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     .aggregate([
       {
         $match: {
-          created_at: {$regex: date}
+          created_at: {$regex: date.date}
         }
       },
       {

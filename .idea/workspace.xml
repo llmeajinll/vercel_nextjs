@@ -4,7 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="86c4f40b-35c3-4989-8652-3344ebfed43d" name="Changes" comment="" />
+    <list default="true" id="86c4f40b-35c3-4989-8652-3344ebfed43d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/todo/deleteTodoTag/[id]/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/todo/deleteTodoTag/[id]/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/todo/postTodoList/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/todo/postTodoList/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/todo/putTodoTag/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/todo/putTodoTag/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/store/slice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/store/slice.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/store/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/store/store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/todo/TodoList/api/updateTodoApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/todo/TodoList/api/updateTodoApi.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/todo/TodoList/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/todo/TodoList/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/todo/TodoList/ui/EditButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/todo/TodoList/ui/EditButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/todo/List/ui/Todo.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/List/ui/Todo.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/todo/List/ui/TodoList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/List/ui/TodoList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/todo/Searchbar/ui/SearchInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/Searchbar/ui/SearchInput.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/todo/Tag/api/deleteTagApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/Tag/api/deleteTagApi.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/todo/Tag/ui/TagInModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/Tag/ui/TagInModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/todo/TagModal/ui/TagModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/TagModal/ui/TagModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,7 +98,8 @@
       <workItem from="1748060931603" duration="972000" />
       <workItem from="1748062429310" duration="83918000" />
       <workItem from="1749364742071" duration="3896000" />
-      <workItem from="1749370544315" duration="4221000" />
+      <workItem from="1749370544315" duration="29849000" />
+      <workItem from="1749640799761" duration="16925000" />
     </task>
     <servers />
   </component>

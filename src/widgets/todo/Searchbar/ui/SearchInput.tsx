@@ -33,7 +33,7 @@ export default function SearchInput() {
             setContent(e.target.value);
           }}
           onKeyDown={onHandleEnter}
-          maxLength={50}
+          maxLength={40}
         />
 
       {/*<AddTodoButton onClick={() => {*/}

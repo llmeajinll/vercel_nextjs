@@ -23,8 +23,12 @@ export async function POST(req: NextRequest) {
     });
 
     if (addTag.acknowledged) {
+
         console.log(`server result : ${addTag.acknowledged}`);
-        return NextResponse.json({ message: 'success' }, { status: 200 });
+        console.log('server result :', addTag);
+        return NextResponse.json({ message: 'success', content: {
+            tag, color, _id: addTag.insertedId.toString()
+            } }, { status: 201 });
     } else {
         console.log(`server result : ${addTag.acknowledged}`);
         return NextResponse.json({ message: 'error' }, { status: 404 });

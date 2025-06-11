@@ -8,16 +8,17 @@ export async function DELETE(
     { params }: { params: { id: string } }
 ) {
     //   console.log(await req.json());
-    console.log('deletetag : ', params.id);
+    console.log('deletetag : ', new ObjectId(params.id));
 
     try {
         const client = await connectDB;
         const db = client.db('todo').collection('tag');
         const result = await db.deleteOne({ _id: new ObjectId(params.id) });
 
-        if (result.deletedCount === 1) {
+        if (result.acknowledged) {
+            console.log('[deleteTodoTag] : ', result)
             return NextResponse.json(
-                { message: 'Todo deleted successfully' },
+                { message: 'Todo deleted successfully', result: true, deleteTag: params.id },
                 { status: 200 }
             );
         } else {

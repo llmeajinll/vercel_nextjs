@@ -5,6 +5,7 @@ export const store = configureStore({
   reducer: {
     counter: Reducer,
   },
+
 });
 
 export type RootState = ReturnType<typeof store.getState>;

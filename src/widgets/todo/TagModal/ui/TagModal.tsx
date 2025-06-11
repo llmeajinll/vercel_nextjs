@@ -5,12 +5,14 @@ import {useEffect, useState} from "react";
 import {TagColorButton} from '@/src/features/todo/TagModal';
 import { TagType } from '@/src/shared/types/Todo';
 import {postTagApi} from "../api/postTagApi";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import { setTagList } from "@/src/app/store/slice";
 
 export default function TagModal() {
 
     const [tag, setTag] = useState({tag: '', color: 'pink'});
     const tagList = useSelector((state:any) => state.counter.tagList);
+    const dispatch = useDispatch();
 
     const colors = ['pink', 'red', 'orange',  'yellow', 'green', 'sky', 'blue', 'violet', 'purple', 'stone'];
 
@@ -22,7 +24,6 @@ export default function TagModal() {
     }
 
     const onChangeTagContent = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
         setTag((prev) => ({
             ...prev,
             tag: e.target.value,
@@ -30,16 +31,25 @@ export default function TagModal() {
     }
 
     const onPressEnter = async(e:React.KeyboardEvent<HTMLInputElement>) => {
-        console.log(e.key)
+
         if(e.key === 'Enter') {
             console.log(tag)
             const result = await postTagApi(tag);
             console.log(result)
+            if(result.message === 'success'){
+                console.log(result.content)
+                dispatch(setTagList([result.content]))
+                console.log(tagList)
+            }
+            else{
+                alert('태그 생성에 실패하였습니다.')
+            }
+
         }
     }
 
     useEffect(() => {
-        console.log("Modal tagList", tagList)
+        // console.log("Modal tagList", tagList)
     }, [])
 
     return (

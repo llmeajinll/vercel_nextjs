@@ -29,7 +29,14 @@ export const Slice = createSlice({
       state.isShowTagModal = action.payload;
     },
     setTagList: (state, action) => {
-      state.tagList = [...action.payload]
+      state.tagList = [...state.tagList, ...action.payload];
+    },
+    setDeleteTag: (state, action) => {
+      state.tagList.forEach((item, idx) => {
+        if(item._id === action.payload) {
+          state.tagList.splice(idx, 1);
+        }
+      })
     },
     setMainTag: (state, action) => {
       state.mainTag = {...action.payload}
@@ -40,7 +47,7 @@ export const Slice = createSlice({
     },
     setMinusDate: (state) => {
       console.log('setMinusDate', state.date);
-      state.date = state.date.add(-1, 'day')
+      state.date = state.date.add(-1, 'day');
     },
     setDate: (state, action) => {
       console.log('setDate', action.payload);
@@ -56,6 +63,7 @@ export const {
   incrementByAmount,
   setTagModal,
   setTagList,
+  setDeleteTag,
   setMainTag,
   setAddDate,
   setMinusDate,

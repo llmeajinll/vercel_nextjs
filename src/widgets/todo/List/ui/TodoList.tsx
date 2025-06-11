@@ -6,7 +6,7 @@ import { Tag } from '@/src/widgets/todo/Tag';
 import {
   EditButton,
   DeleteButton,
-  updateTodo,
+  updateTodoApi,
 } from '@/src/features/todo/TodoList';
 import { updateState } from '@/src/widgets/todo/List';
 
@@ -17,7 +17,8 @@ interface TodoProps {
 
 export default function TodoList({ todo }: TodoProps) {
   // console.log('todoList: ', todo);
-  const [content, setContent] = useState(todo.content);
+  const [originContent, setOriginContent] = useState(todo.content);
+  const [newContent, setNewContent] = useState(todo.content);
   const [done, setDone] = useState(todo.state);
   const [read, setRead] = useState(true);
   const [visible, setVisible] = useState(true);
@@ -53,8 +54,8 @@ export default function TodoList({ todo }: TodoProps) {
             <div></div>
           )}
           <input
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            value={read ? originContent : newContent}
+            onChange={(e) => setNewContent(e.target.value)}
             className={`flex basis-[520px] mr-0 px-1 items-center border border-stone-300 rounded focus: outline-none
             ${read ? 'border-transparent' : 'border-stone-300'}
             ${done ? 'line-through' : 'text-stone-600'}
@@ -63,8 +64,10 @@ export default function TodoList({ todo }: TodoProps) {
           />
 
           <EditButton
+              isSame={newContent === originContent}
             read={read}
-            onClick={() => updateTodo({ content, read, setRead })}
+            setRead={setRead}
+            onClick={() => updateTodoApi({ id: todo._id, content: newContent, read, setRead })}
           />
           <Tag tagInfo={todo.tag[0]} />
           <DeleteButton todoId={todo._id} setVisible={setVisible} />
