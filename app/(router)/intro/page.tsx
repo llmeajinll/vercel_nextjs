@@ -253,6 +253,19 @@ export default function Intro() {
                   transition={{ duration: 0.4 }}
                 >
                   <Image
+                    src='/image/landers4.jpeg'
+                    alt='landers1'
+                    width={300}
+                    height={200}
+                    className='object-cover w-[300px] h-[200px] bg-white'
+                  />
+                </motion.div>
+                <motion.div
+                  className='w-[300px] h-[200px] rounded-xl overflow-hidden border-2 border-red-300 bg-red-100 flex items-center justify-center shrink-0'
+                  whileHover={{ rotate: [0, -5, 5, 0], scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <Image
                     src='/image/landers1.jpeg'
                     alt='landers1'
                     width={300}
@@ -290,7 +303,7 @@ export default function Intro() {
                 </motion.div>
               </div>
               <p className='text-sm text-red-800 leading-relaxed text-center'>
-                야구 보는 걸 좋아해요! SSG팬입니다
+                야구 보는 걸 좋아해요! SSG 랜더스팬입니다
                 <br />
                 맛있는거 먹다가 시원하게 응원곡 부르는 맛이 있죠! 이기면 더
                 좋구..
