@@ -133,8 +133,8 @@ export default function Intro() {
               <motion.span
                 key={i}
                 className='text-xl'
-                animate={{ scale: [1, 1.4, 1], rotate: [0, 20, 0] }}
-                transition={{ duration: 1.5, delay: i * 0.3, repeat: Infinity }}
+                // animate={{ scale: [1, 1.4, 1], rotate: [0, 20, 0] }}
+                // transition={{ duration: 1.5, delay: i * 0.3, repeat: Infinity }}
               >
                 {s}
               </motion.span>
@@ -166,8 +166,8 @@ export default function Intro() {
             {[
               //   { icon: '📍', label: '사는 곳', value: '여기 적어줘!' },
               //   { icon: '🧬', label: '전공', value: '여기 적어줘!' },
-              { icon: '🧠', label: 'MBTI', value: 'INTP' },
-              { icon: '🍜', label: '최애 음식', value: '단거' },
+              { icon: '💡', label: 'MBTI', value: 'INTP' },
+              { icon: '🍫', label: '최애 음식', value: '초콜릿, 감자칩' },
               { icon: '✨', label: '취미', value: '게임, 야구, 애니 시청' },
               { icon: '💬', label: 'TMI', value: '키 174cm' },
             ].map(({ icon, label, value }) => (
@@ -211,6 +211,92 @@ export default function Intro() {
           >
             <span>💛</span> 제가 좋아하는 것들
           </motion.h2>
+
+          {/* 야구 카드 */}
+          <motion.div
+            style={{ marginTop: '16px' }}
+            className='bg-gradient-to-br from-red-50 to-rose-50 rounded-2xl p-5 shadow-sm border border-red-200 overflow-hidden relative mb-4'
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, type: 'spring', bounce: 0.3 }}
+            whileHover={{
+              scale: 1.02,
+              boxShadow: '0 12px 40px rgba(239,68,68,0.2)',
+            }}
+          >
+            {/* 배경 장식 */}
+            <motion.div
+              className='absolute -right-6 -top-6 text-8xl opacity-10 pointer-events-none select-none'
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              ⚾️
+            </motion.div>
+
+            <div className='flex items-center gap-2 mb-3'>
+              <motion.span
+                className='text-2xl'
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity }}
+              >
+                ⚾️
+              </motion.span>
+              <h3 className='text-lg font-bold text-red-700'>야구 시청</h3>
+            </div>
+
+            <div className='flex flex-col sm:flex-row gap-4 items-center'>
+              <div className='flex gap-3'>
+                <motion.div
+                  className='w-[300px] h-[200px] rounded-xl overflow-hidden border-2 border-red-300 bg-red-100 flex items-center justify-center shrink-0'
+                  whileHover={{ rotate: [0, -5, 5, 0], scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <Image
+                    src='/image/landers1.jpeg'
+                    alt='landers1'
+                    width={300}
+                    height={200}
+                    className='object-cover w-[300px] h-[200px] bg-white'
+                  />
+                </motion.div>
+
+                <motion.div
+                  className='w-[150px] h-[200px] rounded-xl overflow-hidden border-2 border-red-300 bg-red-100 flex items-center justify-center shrink-0 bg-white'
+                  whileHover={{ rotate: [0, -5, 5, 0], scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <Image
+                    src='/image/landers2.jpeg'
+                    alt='landers2'
+                    width={150}
+                    height={200}
+                    className='object-cover w-[150px] h-[200px] bg-white'
+                  />
+                </motion.div>
+
+                <motion.div
+                  className='w-[150px] h-[200px] rounded-xl overflow-hidden border-2 border-red-300 bg-red-100 flex items-center justify-center shrink-0'
+                  whileHover={{ rotate: [0, -5, 5, 0], scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <Image
+                    src='/image/landers3.jpeg'
+                    alt='landers3'
+                    width={150}
+                    height={200}
+                    className='object-cover w-[150px] h-[200px] bg-white'
+                  />{' '}
+                </motion.div>
+              </div>
+              <p className='text-sm text-red-800 leading-relaxed text-center'>
+                야구 보는 걸 좋아해요! SSG팬입니다
+                <br />
+                맛있는거 먹다가 시원하게 응원곡 부르는 맛이 있죠! 이기면 더
+                좋구..
+              </p>
+            </div>
+          </motion.div>
 
           {/* 포켓몬 카드 */}
           <motion.div
@@ -432,16 +518,16 @@ export default function Intro() {
                 </motion.div>
 
                 <motion.div
-                  className='w-[300px] h-[200px] rounded-xl overflow-hidden border-2 border-red-300 bg-red-100 flex items-center justify-center shrink-0 bg-white'
+                  className='w-[450px] h-[200px] rounded-xl overflow-hidden border-2 border-red-300 bg-red-100 flex items-center justify-center shrink-0 bg-white'
                   whileHover={{ rotate: [0, -5, 5, 0], scale: 1.05 }}
                   transition={{ duration: 0.4 }}
                 >
                   <Image
                     src='/image/kirby.png'
                     alt='kirby'
-                    width={300}
+                    width={450}
                     height={200}
-                    className='object-cover w-[300px] h-[200px] bg-white'
+                    className='object-cover w-[450px] h-[200px] bg-white'
                   />
                 </motion.div>
 
@@ -492,7 +578,7 @@ export default function Intro() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            {['여기에 목표를 적어줘!', '또 다른 목표!', '마지막 목표!'].map(
+            {['프론트 마스터하기!', '포트폴리오 잘 만들기!', '취업하기!'].map(
               (goal, i) => (
                 <motion.div
                   key={i}
@@ -547,7 +633,7 @@ export default function Intro() {
               animate={{ scale: [1, 1.03, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              올 한 학기도 잘 부탁드려요! 🌸
+              앞으로 잘 부탁드려요! 🌸
             </motion.p>
             <p className='text-pink-400 text-sm mt-1 relative z-10'>
               친하게 지내고 싶은 분은 언제든지 말 걸어주세요 😊
