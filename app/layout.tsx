@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 // import { Provider } from 'react-redux';
 // import { store } from '../src/store/store';
 import { StoreProvider } from '../src/app/store/StoreProvider';
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 
@@ -28,16 +29,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
+    const queryClient = new QueryClient();
 
+  return (
+    // <QueryClientProvider client={queryClient}>
         <StoreProvider>
           <html lang='ko'>
-            <body>
-
-                    {children}
-            </body>
+            <body>{children}</body>
           </html>
         </StoreProvider>
-
+    // </QueryClientProvider>
   );
 }

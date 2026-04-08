@@ -5,29 +5,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="86c4f40b-35c3-4989-8652-3344ebfed43d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/portfolio/pages/First.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/widgets/todo/Weather/ui/WeatherComponent.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/todo/deleteTodoTag/[id]/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/todo/deleteTodoTag/[id]/route.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/todo/postTodoList/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/todo/postTodoList/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/todo/putTodoTag/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/todo/putTodoTag/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/todo/updateTodo/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/todo/updateTodo/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/store/slice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/store/slice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/store/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/store/store.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/features/todo/TodoList/api/updateTodoApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/todo/TodoList/api/updateTodoApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/todo/TodoList/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/todo/TodoList/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/features/todo/TodoList/ui/EditButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/todo/TodoList/ui/EditButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/todo/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/todo/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/todo/ui/TodoPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/todo/ui/TodoPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/todo/ui/WeatherImg.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/Weather/ui/WeatherImg.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/widgets/todo/Header/ui/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/Header/ui/Header.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/widgets/todo/List/ui/Todo.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/List/ui/Todo.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/widgets/todo/List/ui/TodoList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/List/ui/TodoList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/todo/Searchbar/ui/SearchInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/Searchbar/ui/SearchInput.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/todo/Tag/api/deleteTagApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/Tag/api/deleteTagApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/todo/Tag/ui/TagInModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/Tag/ui/TagInModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/widgets/todo/TagModal/ui/TagModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/widgets/todo/TagModal/ui/TagModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -74,6 +81,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/widgets/todo/Weather/ui" />
       <recent name="$PROJECT_DIR$/app/api/(todo)" />
     </key>
   </component>
@@ -99,7 +107,17 @@
       <workItem from="1748062429310" duration="83918000" />
       <workItem from="1749364742071" duration="3896000" />
       <workItem from="1749370544315" duration="29849000" />
-      <workItem from="1749640799761" duration="16925000" />
+      <workItem from="1749640799761" duration="19398000" />
+      <workItem from="1749973130004" duration="23865000" />
+      <workItem from="1750681802585" duration="16621000" />
+      <workItem from="1751803063096" duration="4948000" />
+      <workItem from="1756562361719" duration="1517000" />
+      <workItem from="1756814928763" duration="7515000" />
+      <workItem from="1757571857801" duration="263000" />
+      <workItem from="1757572127341" duration="635000" />
+      <workItem from="1759417990121" duration="1227000" />
+      <workItem from="1760365011554" duration="14330000" />
+      <workItem from="1765901158518" duration="27000" />
     </task>
     <servers />
   </component>

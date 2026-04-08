@@ -8,10 +8,8 @@ type ResponseData = {
 
 export async function POST(req: Request) {
 
-  // const { date } = await req.json();
-
-  const {date}  = await req.json()
-  console.log('[postTodoList route.ts]',date.date, typeof date)
+  const { date }  = await req.json()
+  console.log('[postTodoList route.ts]',date.date)
 
   const client = await connectDB;
   const db = client.db('todo').collection('list');

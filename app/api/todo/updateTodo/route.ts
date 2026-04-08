@@ -17,9 +17,22 @@ export async function PATCH(req: Request) {
     // const { id, state } = await req.json();
     console.log(`id: ${id}, content ${content}`);
 
-    // const client = await connectDB;
-    // const db = client.db('todo').collection('list');
-    // db.updateOne({ _id: new ObjectId(id) }, { $set: { state } });
-    //
-    return NextResponse.json({ data: 'ok' });
+    const client = await connectDB;
+    const db = client.db('todo').collection('list');
+    const result = db.updateOne({ _id: new ObjectId(id) }, { $set: { content } });
+
+
+    console.log(result)
+
+    // @ts-ignore
+    const {matchedCount, modifiedCount} = result;
+
+    if(matchedCount === 1 && modifiedCount === 1){
+        return NextResponse.json({ content }, { status: 200 });
+    }
+    else{
+        NextResponse.json({ content: 'error' }, { status: 404 })
+    }
+
+
 }

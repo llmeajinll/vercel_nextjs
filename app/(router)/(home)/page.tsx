@@ -44,6 +44,9 @@ export default function Home() {
       <div>
         <Link href='/todo'>Todo</Link>
       </div>
+      <div>
+        <Link href='/intro'>Intro</Link>
+      </div>
       {/*<div>*/}
       {/*  <button*/}
       {/*    aria-label='Decrement value'*/}

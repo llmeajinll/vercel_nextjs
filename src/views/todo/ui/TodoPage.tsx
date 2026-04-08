@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import {useDispatch, useSelector} from 'react-redux';
-import { setTagList, setAddDate, setMinusDate, setDate } from "@/src/app/store/slice";
+import { setAddDate, setMinusDate, setDate } from "@/src/app/store/slice";
+
 
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -15,75 +16,30 @@ import { Todo } from '@/src/widgets/todo/List';
 import { Searchbar } from '@/src/widgets/todo/Searchbar';
 
 import { getTagApi } from "@/src/widgets/todo/TagModal/api/getTagApi";
-import { postWeatherApi } from "@/src/views/todo/api/postWeatherApi";
+import { useWeather } from "@/src/shared/hooks/useWeather";
+import { useTag } from "@/src/shared/hooks/useTag";
 
-import WeatherImg from "@/src/views/todo/ui/WeatherImg";
+import { WeatherComponent } from "@/src/widgets/todo/Weather";
 import { RootState } from "@/src/app/store/store";
+
 
 export default function TodoPage() {
 
     const dispatch = useDispatch();
-    const date = useSelector((state: RootState) => state.counter.date);
 
-    const [temp, setTemp] = useState<any>({});
-    const [error, setError] = useState<string | null>(null);
+    const { weather, weatherError } = useWeather()
+    const { tagList } = useTag()
     const [showCalendar, setShowCalendar] = useState(false);
-
-
-    const getTagList = async() => {
-        const {tag} = await getTagApi()
-        if (tag) {
-            dispatch(setTagList(tag))
-        }
-        else{
-            console.log('error')
-        }
-
-    }
-
-    useEffect(() => {
-
-        console.log('weather_api', process.env.ACCUWEATHER_API_KEY);
-        getTagList()
-
-        if (!navigator.geolocation) {
-            setError("Geolocation is not supported by your browser");
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                postWeatherApi({lat: position.coords.latitude, lon: position.coords.longitude,}).then((res:any) => {
-                    // console.log('useEffect',res)
-                    if(res){
-                        const data = {temp : Math.round((res.temp.Value - 32)*5/9), content: res.content}
-                        setTemp(data)
-                    }
-                    else{
-                        console.log('error')
-                    }
-                }).catch(err => {
-                    console.log(err)
-                })
-
-
-            },
-            (err) => {
-                setError(`Error: ${err.message}`);
-            }
-        );
-    }, []);
-
-
+    const date = useSelector((state: RootState) => state.counter.date);
 
 
   return (
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
-        <div className='w-[1080px] mx-auto px-16 box-content'>
+        <div className={`w-[100%] max-w-[1080px] mx-auto ${'px-16'} box-content`}>
 
           <Header/>
           <div className='w-full flex justify-between'>
-              <div className='w-fit'>
+              <div className='w-fit max-w-[810px] min-w-[500px]'>
                   <Searchbar/>
                   <Todo/>
               </div>
@@ -100,11 +56,8 @@ export default function TodoPage() {
                           setShowCalendar(false)
                       }}/>}
                   </div>
-                  <div className='w-[220px] h-[180px] text-center border border-stone-300 flex flex-col items-center rounded'>
-                      {temp && <WeatherImg weath={temp.content}/>}
-                      {temp.temp || 0}℃
-                      <p>날씨: {temp.content || '수집중...'}</p>
-                  </div>
+
+                  <WeatherComponent temp={weather}/>
 
               </div>
           </div>

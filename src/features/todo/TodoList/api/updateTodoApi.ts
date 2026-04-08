@@ -1,4 +1,5 @@
 import axios from "axios";
+import {TodoType} from "@/src/shared/types/Todo";
 
 interface PropsType {
     id: string;
@@ -14,6 +15,7 @@ export const updateTodoApi = async ({ id, content, read, setRead }: PropsType) =
     try{
         return await axios.patch(`/api/todo/updateTodo`, data).then(res => {
             console.log(res.data)
+
             setRead(!read);
         })
     }

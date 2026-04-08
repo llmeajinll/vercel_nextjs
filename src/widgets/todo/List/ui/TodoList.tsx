@@ -23,6 +23,8 @@ export default function TodoList({ todo }: TodoProps) {
   const [read, setRead] = useState(true);
   const [visible, setVisible] = useState(true);
 
+  console.log(originContent, newContent)
+
   return (
     <div className='z-5'>
       {visible && (
@@ -64,10 +66,11 @@ export default function TodoList({ todo }: TodoProps) {
           />
 
           <EditButton
-              isSame={newContent === originContent}
+            isSame={newContent === originContent}
             read={read}
             setRead={setRead}
-            onClick={() => updateTodoApi({ id: todo._id, content: newContent, read, setRead })}
+            setOriginContent={setOriginContent}
+            onClickCheck={() => updateTodoApi({ id: todo._id, content: newContent, read, setRead })}
           />
           <Tag tagInfo={todo.tag[0]} />
           <DeleteButton todoId={todo._id} setVisible={setVisible} />
