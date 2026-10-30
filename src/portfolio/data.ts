@@ -1,15 +1,21 @@
 // "포폴 md/Portfolio.dc.html" 데이터 이식본
-export type Item = string | { t: string; sub?: string[] };
+export type ItemImg = { src: string; alt: string; w: number; h: number; caption?: string };
+export type Item = string | { t: string; sub?: string[]; img?: ItemImg };
 export type Block = { label?: string; p?: string; items?: Item[]; table?: string[][]; note?: string };
-export type Case = { title: string; blocks: Block[] };
+export type Case = { title: string; blocks: Block[]; demo?: 'productCard' };
 export type FwKey = 'react' | 'vue' | 'next';
+export type Shot = { src: string; title: string; desc?: string; phone?: boolean; w?: number; h?: number };
+export type FlowStep ={ title: string; desc: string; shot: string };
+export type BgFigure = { after: number; caption: string; groups: { label: string; tone: 0 | 1 | 2; steps: { title: string; hot?: boolean }[] }[] };
+export type FlowBranch = { after: number; title: string; fast: string; slow: string };
+export type Flow = { steps: FlowStep[]; branch: FlowBranch; phonesLead: string; phones: { shot: string; cap: string }[] };
 export type Project = {
   slug: string; fw: FwKey; no: string; name: string; kr: string; ongoing?: boolean; kind: string;
   tagline: string; period: string; roleShort: string; stackShort: string[];
   meta: [string, string][]; links: [string, string][]; stack: string[];
-  background?: string[]; arch?: string;
+  background?: string[]; bgFigure?: BgFigure; arch?: string; archImg?: string; shots?: Shot[]; flow?: Flow;
   duties: { group: string; items: Item[] }[];
-  core: Case[]; trouble: Case[]; verifyTitle: string; verify: Item[];
+  core: Case[]; trouble: Case[]; verifyTitle: string; verify: Item[]; verifyExtra?: Block; verifyExtraAfter?: number;
 };
 export type Other = {
   id: string; fw: FwKey; name: string; kind: string; period: string; award?: string; tagline: string;
@@ -19,53 +25,142 @@ export type Other = {
 export type DnProject = { no: string; name: string; period: string; team: string; desc: string; blocks: { label: string; items: Item[] }[] };
 
 export const FW: Record<FwKey, { label: string; fill: string; on: string; ink: string; inkDark?: string }> = {
-  react: { label: 'React', fill: '#0369A1', on: '#F0FBFF', ink: '#0369A1' },
+  react: { label: 'React', fill: '#0071E3', on: '#F0FBFF', ink: '#0071E3' },
   vue: { label: 'Vue', fill: '#42B883', on: '#0B2A1E', ink: '#1F7A55', inkDark: '#42B883' },
   next: { label: 'Next.js', fill: '#17171A', on: '#F3F1EC', ink: '#17171A' },
 };
 
 export const PROJECTS: Project[] = [
   {
-    slug: 'nova', fw: 'react', no: '01', name: 'Nova', kr: '스마트폰 사전예약 플랫폼', ongoing: true, kind: '팀 프로젝트 · 진행 중',
+    slug: 'nova', fw: 'react', no: '01', name: 'Nova', kr: '스마트폰 사전예약 플랫폼', kind: 'LG유플러스 유레카 최종융합프로젝트',
     tagline: '오픈 직후 신청이 몰려도 사전예약을 유실 없이 접수하고, 외부 시스템 처리를 기다리지 않고 결과를 안내하는 스마트폰 사전예약 플랫폼',
-    period: '2026.09 ~ 진행 중', roleShort: 'Frontend',
+    period: '2026.09 ~ 2026.10', roleShort: 'Frontend',
     stackShort: ['React 19', 'TypeScript', 'TanStack Query', 'MSW', 'FSD'],
-    meta: [['기간', '2026.09.15 ~ 진행 중'], ['역할', 'Frontend (구매자 화면 전담)'], ['인원', 'FE 2'], ['기여 규모', 'FE 커밋 372개 중 214개 (merge 제외), 현재 src 코드 중 약 60% 작성 (git blame 기준)']],
-    links: [['배포', 'https://fe-iota-peach.vercel.app/'], ['GitHub', 'https://github.com/Grandis-2/fe']],
-    stack: ['React 19', 'TypeScript', 'Vite', 'TanStack Query v5', 'Zustand', 'Vanilla Extract', 'react-router v7', 'MSW 2', '토스페이먼츠 SDK', '카카오 OAuth', 'Storybook 10 + Vitest', 'ESLint', 'husky + commitlint', 'Vercel'],
+    meta: [['기간', '2026.09.15 ~ 2026.10.28'], ['역할', 'Frontend (구매자 화면 전담)'], ['인원', '7명 (백엔드 5, 프론트엔드 2)'], ['기여도', '60% (프론트엔드 커밋 기준)']],
+    links: [['배포', 'https://www.grandis-nova.link'], ['GitHub', 'https://github.com/Grandis-2/fe']],
+    stack: ['React 19', 'TypeScript', 'Vite', 'TanStack Query v5', 'Zustand', 'Axios', 'Vanilla Extract', 'react-router v7', 'MSW 2', '토스페이먼츠 SDK', '카카오 OAuth', 'Storybook 10 + Vitest', 'Playwright', 'Grafana Faro · Amplitude', 'ESLint', 'husky + commitlint', 'Vercel'],
+    background: [
+      '이 프로젝트의 조건은 까다로웠습니다. 스마트폰 사전예약이 열리면 **10초 안에 5,000건**이 몰립니다. 예약을 확정하려면 외부 예약 시스템에 등록해야 하는데, 이 시스템은 **응답에 평균 0.5초가 걸리고 5%는 실패**합니다. 그런데 요구사항은 **신청 유실 0건, 중복 예약 0건, 외부 시스템과 우리 서버의 기록이 100% 일치**하는 것이었습니다.',
+      '외부 시스템의 응답을 기다렸다가 답하면, 5,000명이 모두 0.5초씩 기다려야 하고 실패하는 5%는 신청 자체가 실패합니다. 그래서 일을 둘로 나눴습니다. **접수**는 "신청을 받았습니다. 3,215번입니다"처럼 순번만 바로 알려 주는 일이고, **확정**은 그 뒤에 서버가 외부 예약 시스템에 등록해서 진짜 예약으로 만드는 일입니다. 인기 맛집에서 번호표부터 뽑아 주고 자리 배정은 나중에 하는 것과 같습니다. 외부 시스템이 느리거나 멈춰도 접수는 막히지 않습니다.',
+      '외부 등록이 실패해도 신청은 사라지지 않습니다. 일시적인 실패는 서버가 자동으로 다시 시도하고, 그래도 안 되면 운영자가 확인해서 다시 보냅니다. 같은 신청이 두 번 들어와도 예약은 하나만 만들어지고, 서버가 매일 새벽 두 기록을 대조해 어긋난 건을 운영자가 바로 고칠 수 있습니다. 프론트엔드는 이 두 단계를 화면에서 **다른 상태로 보여주는 것**을 맡았습니다.',
+    ],
+    bgFigure: {
+      after: 2,
+      caption: '접수까지는 사용자에게 바로 응답하고, 외부 서버에 등록하는 일(확정)은 뒤에서 처리합니다. 결제는 등록이 끝난 뒤에 열립니다.',
+      groups: [
+        { label: '사용자에게 바로 응답', tone: 0, steps: [{ title: '접속' }, { title: '대기열' }, { title: '접수' }] },
+        { label: '외부 서버', tone: 1, steps: [{ title: '사전예약 등록', hot: true }] },
+        { label: '사용자의 다음 단계', tone: 2, steps: [{ title: '결제 가능' }, { title: '결제' }, { title: '배송' }] },
+      ],
+    },
+    flow: {
+      steps: [
+        { title: '메인', desc: '진행 중인 사전예약을 배너로 보여줍니다.', shot: '/image/nova/flow-1-main.png' },
+        { title: '사전예약 상세', desc: '일정과 모델을 확인하고 [사전예약 하러가기]로 시작합니다.', shot: '/image/nova/flow-2-preorder.png' },
+        { title: '모델 선택', desc: '모델을 고릅니다. 이미 예약한 모델은 [구매 확정]으로 바뀝니다.', shot: '/image/nova/flow-3-model.png' },
+        { title: '대기열', desc: '내 순서와 예상 대기 시간을 보여줍니다. 창을 닫아도 순번은 유지되고, 차례가 오면 예약 페이지로 이동합니다.', shot: '/image/nova/flow-4-queue.png' },
+        { title: '입장과 접수', desc: '입장권 유효 시간 안에 옵션을 골라 접수합니다. 남은 시간은 상단에 계속 보입니다.', shot: '/image/nova/flow-5-product.png' },
+        { title: '결제', desc: '결제 기한을 안내하고 토스 결제창을 엽니다.', shot: '/image/nova/flow-6-payment.png' },
+        { title: '사전예약 내역', desc: '예약 순번과 구매 확정 마감 카운트다운을 보여줍니다.', shot: '/image/nova/flow-7-mypage.png' },
+      ],
+      branch: {
+        after: 5,
+        title: '접수 뒤에는 외부 서버 등록을 최대 5초 기다립니다',
+        fast: '5초 안에 등록이 끝나면 바로 결제 페이지로 이동합니다.',
+        slow: '5초를 넘기면 예약 접수 확인 화면으로 이동해, 지금 처리 단계와 처리 기록을 보여줍니다.',
+      },
+      phonesLead: '대기열 창을 닫아도 순번은 유지되고, 내 번호가 담긴 pill이 상단에 남아 다른 페이지를 둘러볼 수 있습니다.',
+      phones: [
+        { shot: '/image/nova/m-1-queue.png', cap: '줄 서기 · 대기열 창' },
+        { shot: '/image/nova/m-2-pill.png', cap: '창을 닫고 둘러보기 · 내 번호 pill' },
+        { shot: '/image/nova/m-3-admission.png', cap: '차례가 오면 · 입장권 타이머' },
+        { shot: '/image/nova/m-4-submitting.png', cap: '접수 · 예약 처리 중' },
+        { shot: '/image/nova/m-5-unstable.png', cap: '연결 불안정 · 안내하고 다시 확인' },
+      ],
+    },
     duties: [
       { group: '구매자 화면', items: ['메인, 사전예약 목록·상세, 상품 상세·옵션 선택, 사전예약 대기열, 결제(토스페이먼츠), 주문 결과, 마이페이지(장바구니·배송지·사전예약 내역)', '카카오 로그인·회원가입 온보딩, 세션 관리'] },
       { group: '프론트엔드 기반', items: ['FSD(Feature-Sliced Design) 레이어 구조 설계, ESLint로 레이어 의존 방향 강제', 'API 클라이언트(타임아웃·요청 취소·에러 변환), TanStack Query 캐시·재시도 정책', 'MSW 목 서버와 실패 재현 도구, 디자인 토큰·공용 UI 컴포넌트'] },
     ],
     core: [
       { title: '페이지를 옮겨도 끊기지 않는 사전예약 대기열', blocks: [
-        { label: '문제', p: '대기열 모달을 사전예약 상세 페이지 안에 두면, 기다리는 동안 다른 상품을 둘러보러 나가는 순간 대기 상태가 사라집니다. 반대로 모달을 닫을 수 없게 막으면 사용자는 아무것도 못 하고 기다려야 합니다.' },
-        { label: '해결', items: [
-          '대기열 컴포넌트를 `RootLayout`에 하나만 두고, 줄을 서는 쪽은 `joinPreorderQueue()`만 호출하도록 분리했습니다. 토스트와 같은 구조라서, 페이지를 옮기면 모달은 작은 `QueuePill`로 바뀌어 화면에 남습니다.',
-          { t: '내 차례가 왔을 때 사용자가 무엇을 보고 있었는지에 따라 이동 방식을 다르게 했습니다.', sub: ['모달이 열려 있을 때: 진행률 100%를 0.8초 보여준 뒤 이동합니다.', '모달을 닫아 두었을 때: `QueuePill`이 5초를 센 뒤 이동합니다. 보고 있던 화면이 갑자기 바뀌지 않게 하기 위해서입니다.'] },
-          "내 앞이 10명 이하가 되면 '곧 내 차례'로 미리 알리고, 바뀐 문구는 `aria-live`로 스크린리더가 읽어 줍니다.",
-          "예상 대기 시간은 초 단위가 아니라 구간으로 보여줍니다('곧 입장 / 약 1분 / 약 5분 / 오래 걸림'). \"0초\"가 보이면 사용자가 곧 입장하는 것으로 오해할 수 있기 때문입니다.",
-          '호출하는 쪽이 매 렌더마다 새 콜백을 넘겨도 타이머가 리셋되지 않도록 React 19의 `useEffectEvent`로 감쌌습니다.',
-        ], note: '[진행 중] 서버 대기열 API 연동: `Retry-After` 간격 폴링, 줄이 가득 찼을 때(`QUEUE_FULL`) 10초 뒤 다시 진입, 일시 장애 시 2초 뒤 재진입' },
+        { label: '구현 조건', items: [
+          '대기열 창을 꺼도 상단 pill에 내 대기 순번이 보여야 합니다.',
+          'pill이 떠 있는 상태로 다른 페이지로 이동하며 다른 상품들을 구경할 수 있어야 합니다.',
+          '대기열 창에서는 현재 서버 상태에 따라 보여지는 안내 문구가 달라야 합니다.',
+        ] },
+        { label: '구현: pill', p: '대기열 창을 페이지 안이 아니라 **앱 맨 위(`RootLayout`)에 한 곳만** 두었습니다. 줄을 서는 쪽은 `joinPreorderQueue()`만 부르면 되는, 토스트와 같은 구조입니다. 그래서 창을 닫아도 줄은 유지되고, 다른 페이지로 가도 내 번호가 담긴 작은 pill(`QueuePill`)이 화면에 따라옵니다. 새로고침하거나 창을 닫아도 같은 자리, 같은 키로 이어집니다.', items: [
+          '**pill 문구**: 확인 전 "내 번호 확인 중", 대기 중 "내 번호 23번", 거의 다 되면 "곧 내 차례예요 · 내 번호 23번", 차례가 오면 "내 차례예요 · 곧 예약 페이지로 이동해요"와 남은 초.',
+          '**차례가 오면 이동 방식이 다릅니다.** 창이 열려 있으면 진행률 100%를 0.8초 보여준 뒤, 닫아 두었으면 pill이 5초를 센 뒤 이동합니다. 보던 화면이 갑자기 바뀌지 않게 하기 위해서입니다.',
+        ] },
+        { label: '구현: 서버 상태별 안내 문구', table: [
+          ['서버 상태', '대기열 창의 안내'],
+          ['순번이 줄어드는 중', '"조금만 기다려주세요, 차례가 오면 예약 페이지로 이동합니다."'],
+          ['내 차례가 옴', '"내 차례예요, 곧 예약 페이지로 이동합니다."'],
+          ['순번 조회가 잠깐 실패', '"연결이 불안정해 다시 확인하고 있어요." (순번은 마지막 값 유지)'],
+          ['인터넷이 끊김', '"인터넷 연결이 끊겼어요. 연결되면 자동으로 이어서 확인해요."'],
+          ['오래 끊겨 줄에서 빠졌을 수 있음', '"연결이 오래 끊겨 줄에서 빠졌을 수 있어요. 연결되면 바로 다시 확인할게요."'],
+          ['끊긴 사이 줄에서 빠져 다시 섬', '"연결이 끊긴 사이 줄에서 빠져 다시 줄을 섰어요 (40번 → 52번)."'],
+          ['새로고침 뒤 같은 자리로 돌아옴', '"전에 서 있던 자리 그대로예요. 순번을 잃지 않았어요."'],
+        ] },
+        { items: [
+          '**줄에 들어가지 못하면 다시 시도합니다.** 줄이 가득 차면(`QUEUE_FULL`) 10초 뒤, 일시 장애면 2초 뒤 다시 진입합니다.',
+          '**예상 대기 시간은 초가 아니라 구간으로 보여줍니다.** "곧 입장 / 약 1분 / 약 5분 / 오래 걸림"입니다. "0초"가 보이면 사용자가 곧 입장하는 것으로 오해하기 때문입니다.',
+          '**타이머가 리셋되지 않게 했습니다.** 호출하는 쪽이 렌더링마다 새 함수를 넘겨도 카운트가 처음부터 다시 시작되지 않도록 React 19의 `useEffectEvent`를 썼습니다.',
+        ] },
       ] },
-      { title: '실패 유형별로 나눈 네트워크 정책', blocks: [
-        { label: '문제', p: '재시도 규칙이 없으면 로그인이 안 된 사용자의 401이나 잘못된 입력의 400 같은 "다시 보내도 결과가 같은 실패"까지 재시도합니다. 응답이 오지 않으면 로딩도 끝나지 않습니다.' },
+      { title: '"접수됐다"와 "확정됐다"를 화면에서 다르게 보여주기', blocks: [
+        { label: '문제', p: '서버는 접수(순번 확보)를 바로 응답하고, 외부 예약 시스템에 등록하는 일은 뒤에서 처리합니다. 화면이 접수를 곧바로 "예약 완료"처럼 보여주면 등록이 끝나지 않은 예약을 결제로 보내게 되고, 등록이 늦을 때는 사용자가 아무 안내 없이 기다리게 됩니다.' },
+        { label: '해결', p: '서버의 예약 단계(`displayStatus`)를 그대로 따라 문구와 버튼을 정했습니다. 결제가 필요한 단계만 노란색으로 눈에 띄게 하고, 그 전 단계에서는 결제를 열지 않습니다.', table: [
+          ['단계', '화면에서 보이는 말', '의미'],
+          ['`RECEIVED` · `PROCESSING`', '접수 완료 · 예약 처리 중 (회색)', '접수만 끝났고 아직 결제할 수 없음. "잠시 뒤 구매 확정 가능"'],
+          ['`PAYABLE`', '구매 확정 대기 (노란색)', '외부 등록이 끝나 결제 가능. 24시간 카운트다운'],
+          ['`PAYMENT_IN_PROGRESS`', '결제 진행 중 (노란색)', '결제창을 열었다 닫아도 다시 결제해야 함'],
+          ['`PAYMENT_EXPIRED`', '결제 기한 지남 (회색)', '기한이 지나 취소 처리를 시작함'],
+          ['`RESERVED`', '예약 확정 (파란색)', '결제까지 끝남'],
+          ['`CANCELING` · `CANCELED`', '취소 처리 중 · 취소 완료 (회색)', '결제한 예약이면 환불이 끝나야 취소 완료'],
+        ] },
+        { items: [
+          '**접수 직후 5초만 기다려 길을 가릅니다.** 1초마다 외부 등록이 끝났는지 묻고, 5초 안에 끝나면 바로 결제로 보냅니다. 늦어지면 예약 접수 화면으로 보내 이어서 기다립니다. 5초가 되면 진행 중인 조회도 끊어서, 늦게 도착한 응답이 사용자를 결제로 끌고 가지 않게 했습니다.',
+          '**등록이 끝내 안 끝나는 경우를 안내합니다.** 처리 중에는 3초마다 다시 묻고, 접수 후 60초가 지나면 "등록이 평소보다 오래 걸리고 있어요. 계속 안 되면 운영자가 확인해 처리해요"를 띄우고 30초 간격으로 늦춥니다. 조회를 끄지는 않아서, 그 뒤에 등록이 끝나면 화면이 스스로 바뀝니다. 60초는 관리자 대조가 "등록 지연"으로 잡는 시간과 같아서, 사용자와 운영자가 같은 시점에 지연을 봅니다.',
+          '**서버가 하지 않은 약속은 화면도 하지 않습니다.** 서버에는 "등록 실패" 상태가 없고, 끝내 안 되면 운영자가 처리합니다. 그래서 지연 안내에 "순서는 그대로"처럼 보장하는 말을 쓰지 않았습니다.',
+          '**다른 탭에 가 있어도 상태를 따라갑니다.** 제한 시간은 탭을 떠나 있어도 흐르므로 조회도 함께 돌려서, 돌아왔을 때 이미 끝난 등록이 "처리 중"으로 남지 않게 했습니다.',
+          '**결제 기한이 되는 순간 한 번 더 묻습니다.** 서버 시계보다 1초 늦게 물어, 만료 취소가 시작된 상태를 화면에 바로 반영합니다.',
+        ] },
+      ] },
+      { title: '실패 유형별로 나눈 재시도와 백오프 정책', blocks: [
+        { label: '문제', p: '재시도 규칙이 없으면 로그인이 안 된 사용자의 401이나 잘못된 입력의 400 같은 "다시 보내도 결과가 같은 실패"까지 재시도합니다. 반대로 서버가 힘든 순간에 모든 사용자가 곧바로 다시 보내면 상황이 더 나빠집니다.' },
         { label: '해결', items: [
-          '**재시도 기준을 하나로 정했습니다.** 4xx는 재시도하지 않고, 5xx·타임아웃·네트워크 오류만 재시도합니다. 응답 자체를 못 받은 경우는 `status 0`인 `ApiRequestError`로 바꿔, 재시도 여부를 한 함수(`isRetryableError`)에서 판단합니다.',
+          '**재시도 기준을 하나로 정했습니다.** 4xx는 재시도하지 않고, 5xx·타임아웃·네트워크 오류만 재시도합니다. 재시도 여부는 한 함수(`isRetryableError`)에서 판단합니다.',
           '**데이터 성격별로 캐시 정책 3가지를 만들었습니다.** 각 `useQuery`에 값을 직접 쓰지 않고 이 정책 중 하나를 골라 펼쳐 씁니다.',
         ], table: [['정책', '대상', 'staleTime', '재시도'], ['`catalog`', '상품 목록·검색·상세', '5분', '2회'], ['`account`', '프로필·배송지', '5분', '1회'], ['`live`', '장바구니·알림 개수', '0', '1회']] },
         { items: [
           '**변경 요청(mutation)은 자동 재시도하지 않습니다.** 같은 요청이 두 번 반영될 수 있기 때문입니다.',
-          '**10초 타임아웃**을 두었고, 끝나지 않는 로딩 대신 "서버 응답이 늦어지고 있습니다"를 보여줍니다.',
           '**이전 요청을 취소합니다.** 모든 조회 훅이 `queryFn`의 `signal`을 넘겨서, 검색 조건이 바뀌면 이전 요청이 취소됩니다. 늦게 도착한 이전 응답이 새 화면을 덮어쓰지 않습니다.',
         ] },
+        { label: '백오프', items: [
+          '**실패가 이어지면 점점 길게 쉬었다가 다시 묻습니다.** 실패한 요청을 바로 다시 보내면 이미 힘든 서버에 요청이 더 쏟아집니다. 그래서 평소 간격에서 시작해 실패할 때마다 2배로 늘립니다(예: 평소 3초 간격이면 3초 → 6초 → 12초 → 24초 → 30초). 30초에서 멈춥니다.',
+          '**서버가 간격을 알려 주면 그보다 일찍 보내지 않습니다.** 응답 헤더의 `Retry-After`("몇 초 뒤에 다시 보내라")는 API 클라이언트가 읽어서 넘기고(실패는 에러의 `retryAfter`, 순번 조회는 `requestWithHeaders`), 쓰는 쪽이 그 값을 씁니다. 대기열 순번은 서버가 알려 준 `Retry-After`마다 다시 묻고(그보다 자주 묻지 않습니다), 요청이 실패한 뒤에는 그 값을 대기 시간의 최솟값으로 삼습니다. 서버가 아무 말이 없을 때(타임아웃, 연결 끊김)는 위의 백오프로 스스로 간격을 늘립니다. 사용자들이 같은 순간에 한꺼번에 다시 묻지 않도록 대기 시간에 최대 1.5배까지 무작위로 더하는데, 위쪽으로만 흩어서 서버가 정한 값보다 짧아지는 일은 없습니다.',
+          '**상한을 30초로 둔 이유가 있습니다.** 타임아웃 10초를 더해도 한 번에 약 55초라서, 대기열이 250초 안에 적어도 4번은 다시 묻습니다. 너무 길게 쉬면 내 차례를 놓칩니다.',
+          '**폴링은 한 번의 조회 안에서 재시도합니다.** 주기마다 실패 횟수가 0으로 돌아가면 연속 실패를 셀 수 없어서, 실패하면 그 조회 안에서 계속 다시 묻고 간격을 늘립니다. 그동안 화면에는 에러 대신 "다시 확인하고 있어요" 안내만 보여줍니다.',
+        ] },
       ] },
-      { title: '`?mock=<상태코드>`로 모든 실패를 재현하는 목 서버', blocks: [
-        { label: '문제', p: '백엔드 API가 준비되기 전에 화면을 개발해야 했습니다. 그런데 에러 화면은 서버가 실제로 실패해야 볼 수 있어서 검증되지 않은 채 남기 쉽습니다.' },
-        { label: '해결', items: [
-          'MSW 목 서버를 실제 서버와 같은 응답 형태(`success / data / error / traceId`)로 만들었습니다.',
-          'URL에 `?mock=500`이나 `?mock=401`을 붙이면 모든 목 API가 그 상태 코드로 실패합니다. 브라우저에서 바로 에러·재시도·로그인 만료 화면을 확인할 수 있습니다.',
-          '배포 환경에서도 `VITE_USE_MSW=true`이면 목 서버가 켜지게 해서, 백엔드 없이도 배포본으로 시연할 수 있게 했습니다.',
+      { title: '모든 API 호출을 한 곳에서, 같은 모양으로: API 클라이언트', blocks: [
+        { label: '문제', p: '화면마다 `axios`를 직접 부르면 실패의 모양이 제각각입니다. 서버가 내려준 실패 JSON, 프록시가 돌려준 HTML 에러 페이지, 타임아웃, 네트워크 끊김, 요청 취소가 모두 다른 형태로 올라옵니다. 인증 헤더와 401 처리도 흩어지고, 사용자가 문의해도 서버 로그의 어느 요청인지 찾을 방법이 없습니다.' },
+        { label: '해결', p: '서버에서 어떤 일이 생겨도 화면이 받는 것은 **데이터 아니면 에러 하나**입니다. 상황별로 이렇게 처리합니다.', table: [
+          ['response 값', 'client.ts 처리', '화면에서 보임'],
+          ['`success: true` (정상 응답)', '봉투를 벗겨 필요한 데이터만 꺼냅니다', '데이터'],
+          ['`401` + `retryable: true` (일시 장애 표시)', '재발급 없이 2초 뒤 같은 요청을 한 번 더 보냅니다', '데이터 또는 에러'],
+          ['`401` (로그인이 풀림)', '토큰을 다시 받고 같은 요청을 딱 한 번만 다시 보냅니다', '성공하면 데이터, 또 401이면 에러'],
+          ['`success: false` + 에러 코드·메시지 (예: 잘못된 입력, 이미 접수됨)', '실패 내용을 에러 하나로 바꿉니다', '에러 (서버의 코드·메시지 그대로)'],
+          ['JSON이 아닌 본문 (프록시 에러 페이지 등)', '"서버 응답을 처리할 수 없음"으로 바꿉니다', '에러 (`INVALID_RESPONSE`)'],
+          ['응답 없음 (10초 초과, 연결 끊김)', '"응답이 늦음" 또는 "네트워크 확인"으로 바꿉니다', '에러 (`TIMEOUT` / `NETWORK_ERROR`)'],
+          ['요청 취소 (화면을 떠남)', '실패가 아니라서 바꾸지 않고 그대로 둡니다', '취소 (에러 화면이 뜨지 않음)'],
+        ], note: '화면은 `ApiRequestError` 하나만 알면 됩니다. 실패 종류를 가려야 할 때만 에러 안의 `code`를 보면 됩니다.' },
+        { items: [
+          '**한 곳에서 처리합니다.** 서버가 실패도 JSON 봉투(`success / data / error / traceId`)로 주기 때문에 `validateStatus`를 열어 두고 `unwrap` 한 곳에서 벗깁니다. 호출하는 쪽은 `instanceof ApiRequestError` 하나로 분기합니다. 재발급 요청 자체는 `skipAuthRefresh`로 재발급을 다시 부르지 않게 했습니다.',
+          '**문의 코드로 서버 로그를 찾게 했습니다.** 모든 요청에 `X-Request-Id`를 실어 보내고 서버가 이를 `traceId`로 이어 씁니다. 응답이 없어도 보낸 ID가 에러에 남아, 에러 화면에서 "문의 코드"로 보여줄 수 있습니다.',
+          '**기본 규칙에 예외를 열어 두었습니다.** 타임아웃은 기본 10초이고, 사진 업로드와 결제 승인처럼 오래 걸리는 요청만 `timeout`을 늘립니다. 실시간 알림(SSE)은 `axios`가 스트림을 못 읽어 `fetch`로 열되, 연결 전 실패는 같은 `ApiRequestError`로 던집니다.',
         ] },
       ] },
       { title: '규칙을 문서가 아니라 lint로 강제', blocks: [
@@ -78,43 +173,73 @@ export const PROJECTS: Project[] = [
       ] },
     ],
     trouble: [
-      { title: '"카카오 인증만 마친 사용자"를 회원으로 볼 것인가', blocks: [
-        { label: '상황', p: '카카오 로그인 후 추가 정보를 입력해야 가입이 끝납니다. 처음에는 세션이 있으면 로그인 상태로 보고, 추가 정보를 입력하지 않았으면 `/signup`으로 강제로 되돌리는 방식이었습니다.' },
-        { label: '문제', p: '가입 화면을 벗어나려는 사용자가 계속 `/signup`으로 튕겨 나갔습니다. 회원이 아닌데도 헤더에는 회원 메뉴가 보였습니다.' },
-        { label: '변경', items: [
-          '회원의 기준을 **"카카오 인증 + 추가 정보 입력 완료"**로 다시 정했습니다.',
-          '카카오 인증만 마친 상태는 `isSignupPending`으로 따로 나눴습니다.',
-          '이 상태에서 `/signup` 밖으로 나가면 가입 취소로 보고 세션을 지웁니다. 되돌리는 대신 놓아주는 쪽을 택했습니다.',
-          '링크 이동, 주소창 이동, 새로고침(토큰 재발급으로 세션이 되살아나는 경우)을 `RootLayout` 한 곳에서 처리합니다.',
-          '카카오 콜백 페이지가 세션을 넣고 이동하는 그 순간에 세션이 지워지지 않도록, 실행 시점의 `window.location`을 다시 읽고 콜백 경로는 예외로 두었습니다.',
+      { title: '응답을 못 받았을 때, 접수가 두 번 되지 않게', blocks: [
+        { label: '문제', p: '네트워크가 끊겨 접수 응답을 못 받으면 접수가 됐는지 알 수 없습니다. 다시 누르면 예약이 두 번 생기거나, 이미 쓴 입장권으로 보내다 거절당할 수 있습니다.' },
+        { label: '해결', items: [
+          '입장권을 SHA-256으로 바꾼 **멱등키**(`Idempotency-Key`)를 `sessionStorage`에 두고, 같은 키로만 접수합니다. 같은 키로 다시 보내면 서버가 기존 예약을 돌려줍니다.',
+          '그래서 응답 자체를 못 받은 경우(`status 0`)에만 자동으로 **한 번** 다시 보냅니다. "변경 요청은 자동 재시도하지 않는다"는 원칙의 유일한 예외입니다.',
+          '그래도 못 받으면 진행 중 예약을 다시 조회해, 접수됐다면 버튼을 그 예약으로 바꾸고 "다시 눌러도 예약은 하나만 접수돼요"라고 알립니다. 입장권과 키는 지우지 않습니다.',
         ] },
       ] },
-      { title: '결제창을 닫았을 뿐인데 "결제 오류"가 뜨는 문제', blocks: [
-        { label: '원인', p: '토스페이먼츠 `requestPayment`는 사용자가 결제창을 닫아도 `USER_CANCEL` 코드로 reject합니다. 이걸 일반 오류처럼 처리해서 "결제 요청 중 문제가 발생했습니다"가 표시됐습니다.' },
-        { label: '해결', p: '결제 요청 함수에서 `USER_CANCEL`만 정상 흐름으로 처리하고, 나머지 오류는 그대로 던지도록 했습니다. 사용자의 의도적인 취소와 실제 오류를 구분했습니다.' },
+      { title: '색을 고를 때마다 슬라이더를 새로 만들던 상품 카드', demo: 'productCard', blocks: [
+        { label: '경위', p: '상품 카드에서 색을 고르면 그 색의 사진이 첫 장부터 보여야 합니다. 처음에는 `Slider`가 현재 사진 번호를 안에서만 관리해서, 사진 목록만 바꾸면 보던 위치가 그대로 남았습니다. 그래서 가장 간단하게 첫 장으로 되돌리는 방법으로, 슬라이더에 `key`를 사진 목록으로 걸어 색이 바뀔 때마다 다시 만들었습니다. 이후 `Slider`에 바깥에서 번호를 지정하는 `activeIndex`가 생긴 뒤에도 이 방식이 그대로 남아 있었습니다.' },
+        { label: '문제', p: '사진만 바꾸면 되는데 색을 누를 때마다 슬라이더를 지우고 처음부터 다시 만들고 있었습니다. 그 결과 일부 클릭에서는 화면 반영이 한 프레임(60Hz 기준 약 17ms)가량 늦어졌습니다.' },
+        { label: '원인', p: '`key`가 바뀌면 React는 슬라이더를 지우고 새로 만듭니다. Swiper 인스턴스를 만들고, 이벤트를 연결하고, 레이아웃을 계산하고, 사진 요소를 다시 그리는 작업이 색을 누를 때마다 반복됩니다. 같은 주소의 사진은 브라우저 캐시에서 다시 쓰이므로, 낭비된 것은 사진을 내려받는 일이 아니라 슬라이더를 만드는 작업이었습니다.' },
+        { label: '해결', items: [
+          '슬라이더는 그대로 두고 사진만 바꾸도록, 현재 슬라이드 번호를 카드가 `activeIndex`로 들고 있다가 색을 고르면 `0`으로만 돌립니다. 이를 위해 공용 `Slider`가 바깥에서 현재 슬라이드를 맞출 수 있게 `activeIndex`와 `onActiveIndexChange`를 받도록 했습니다.',
+          '색을 고르면 첫 장이 보이는 동작은 그대로 두고, 슬라이더를 다시 만드는 일만 없앴습니다.',
+        ] },
+        { label: '측정', items: [
+          '수정 전 커밋과 지금 버전을 같은 조건(프로덕션 빌드, 목 서버, 상품 카드 1개)으로 띄우고, 색 버튼을 80번 눌러 비교했습니다. 클릭 뒤 화면이 갱신될 때까지의 시간은 `requestAnimationFrame` 두 번으로, 슬라이더를 다시 만든 횟수는 `MutationObserver`로 셌습니다.',
+          '**슬라이더를 다시 만든 횟수는 80번 중 80번에서 0번**이 됐습니다. 일부 클릭에서 한 프레임가량 늦던 경우도 줄었습니다. 클릭 뒤 화면 갱신까지의 시간은 가장 느린 5%(p95)가 39~44ms에서 30ms로, 최댓값이 48~50ms에서 31ms로 내려갔고, 수정 전에는 58ms짜리 Long Task가 1건 잡혔습니다.',
+          '중앙값(약 29ms)은 두 버전이 같았습니다. 한 프레임 안에 끝나는 환경이라 평균적인 반응 속도는 거의 그대로이고, 가끔 늦던 경우가 사라진 것입니다. 카드가 많은 목록이나 성능이 낮은 기기에서의 차이는 측정하지 않았습니다.',
+        ] },
+        { label: '이미지 로딩도 함께', items: [
+          '목록·랭킹 카드 사진에 `loading="lazy"`를 달고, 처음 마운트 때 모든 사진을 미리 받지 않고 바뀐 목록만 미리 받게 했습니다. 홈 첫 방문 사진 요청이 **186개에서 19~93개**로 줄었습니다.',
+          '홈 배너는 첫 화면에서 가장 큰 요소(LCP)라 `fetchPriority="high"`로 아래 상품 사진보다 먼저 받습니다.',
+        ] },
       ] },
-      { title: '화면 밖에 숨긴 주문 바가 헤더 클릭을 가로채는 문제', blocks: [
-        { label: '원인', p: '데스크톱에서 하단 주문 바를 `translateY`로 화면 밖으로 밀어 숨겼습니다. 그런데 바를 감싸는 컨테이너의 레이아웃 박스는 원래 자리에 남아 있었고, 그 자리가 헤더와 겹쳐서 헤더 클릭을 막았습니다.' },
-        { label: '해결', p: '컨테이너는 평소 `pointer-events: none`으로 두고, 주문 바가 실제로 보일 때만 `auto`로 되살렸습니다.' },
+      { title: '로그아웃해도 이전 사용자의 대기열 정보가 남는 문제', blocks: [
+        { label: '문제', p: '한 브라우저에서 A가 대기열에 선 채로 로그아웃하고 B가 로그인하면, B의 화면에 A의 대기열 pill이 그대로 떠 있었습니다. B가 그 입장권으로 접수하려 해도 "입장권이 유효하지 않다"는 안내만 받았습니다.' },
+        { label: '원인', p: '로그아웃할 때 서버에서 받아 둔 데이터(쿼리 캐시)만 지우고, 대기열 정보(메모리와 `sessionStorage`에 저장)는 지우지 않았습니다. 그래서 로그아웃한 뒤에도 줄 상태를 확인하는 요청이 계속 나갔습니다.' },
+        { label: '해결', items: [
+          '로그아웃되는 순간(`onSessionCleared`) 쿼리 캐시와 대기열 정보(순번, 입장권)를 한곳에서 함께 지웁니다. 줄에 서 있었다면 "로그아웃되어 대기열을 닫았어요"라고 알립니다.',
+          '쿼리 캐시 키에는 사용자 구분이 없어서, 로그아웃 없이 같은 브라우저에서 다른 계정으로 로그인할 때도 이전 사용자의 캐시를 지웁니다.',
+        ] },
       ] },
     ],
     verifyTitle: '검증과 협업',
     verify: [
-      '**Storybook + Vitest**: 컴포넌트 스토리의 `play` 함수를 실제 브라우저(Chromium)에서 실행하는 인터랙션 테스트 (팀 전체 54개)',
-      '**CodeRabbit AI 코드 리뷰**: PR마다 리뷰를 받고, 지적 사항을 반영한 커밋 12건 (접근성, 위젯 경계, 세션 보안 등)',
       '**커밋 규칙**: commitlint + husky로 커밋 메시지 형식 강제. 커밋 본문에 변경 이유를 남김',
+      '**Storybook · Vitest**: 컴포넌트 상태별 화면(로딩·빈·에러·장애)을 스토리의 `play` 함수로 실제 브라우저(Chromium)에서 확인하고(스토리 190개), 돈·재시도가 걸린 순수 로직(결제 승인, 대기열 백오프, 페이지 이어 받기 등)은 단위 테스트로 검증합니다(37개 파일). 모두 팀 전체 기준입니다.',
+      { t: '**요청 모니터 (직접 만든 개발 도구)**: 백오프와 `Retry-After`가 의도대로 동작하는지 개발자 도구 없이 화면 옆에서 보려고 만들었습니다. 대기열·사전예약·결제·알림 요청과 실패 뒤 기다린 시간을 60초 타임라인에 쌓고, 기다린 시간이 어디서 나왔는지 풀어서 보여줍니다. 목 서버에서는 [장애 내기]로 모든 요청·대기열 조회·결제 승인을 503으로 실패시킬 수 있습니다. API 클라이언트는 요청 흐름에 끼어들지 않고 기록만 남깁니다.', img: { src: '/image/nova/request-monitor.png', alt: '요청 모니터 화면. 대기열 조회가 503으로 실패하며 기다리는 시간이 3.3초, 8.4초, 12.3초로 늘어난다.', w: 840, h: 1120, caption: '대기열 조회를 503으로 실패시킨 모습. 연속 실패가 이어질수록 기다리는 시간이 늘어납니다(3.3초 → 8.4초 → 12.3초). 기본 3초에 2배씩 늘리고, 무작위로 최대 1.5배를 더합니다.' } },
+      '**Playwright E2E**: 대기열·접수·결제·여러 창·서버 오류를 브라우저로 끝까지 따라가는 시나리오 65개(12개 파일, 운영자 시나리오 포함). 목 서버로 돌려서 `.env.local`과 무관하고, 토스 결제창은 가짜로 바꿔 실행. 확인한 내용은 아래 표에 정리했습니다.',
+      '**CodeRabbit AI 코드 리뷰**: PR마다 리뷰를 받고, 지적 사항을 반영한 커밋 12건 (접근성, 위젯 경계, 세션 보안 등)',
       '**AI 활용 · 규칙으로 남기기**: Claude Code가 프로젝트 규칙을 어긴 코드를 제안하면 고치는 데서 끝내지 않고, `CLAUDE.md`와 경로별 `.claude/rules/`(styling · data-layer · routing · jsx)에 "겪은 사례"로 남겨 같은 코드가 다시 나오지 않게 함',
       '**역할별 서브에이전트 7종**: 읽기 전용 리뷰어(`fsd-reviewer`, `auth-payment-guard`), 검증(`test-runner`, `ui-verifier`), 작업 보조(`api-spec-aligner`, `review-responder`, `pr-writer`). 어떤 에이전트도 커밋·푸시·PR 답글은 하지 않고 제안까지만 함',
       '**브라우저 검증 (Chrome MCP)**: AI의 "됐다"는 답변만 믿지 않고 실제 브라우저로 화면, 콘솔 에러, 네트워크 요청을 확인하고 모바일·데스크톱 폭을 바꿔 반응형까지 점검',
       '**OpenWiki · Figma MCP**: 기능별 흐름과 코드 위치를 정리한 위키를 자동 생성하고, Figma 디자인과 구현 화면을 서로 대조',
     ],
+    verifyExtraAfter: 4,
+    verifyExtra: { label: 'Playwright E2E로 확인한 시나리오 (고객 화면 11개 파일, 60개)', table: [
+      ['파일', '테스트', '확인하는 것'],
+      ['`queue-scenarios`', '24', '줄 서기(새로고침해도 자리 유지, 진입이 503이어도 대기열 유지), 기다리는 중(pill이 따라옴, 순번 조회 실패 안내), 입장권(시간 만료 시 그 자리에서 다시 줄 서기), 접수, 여러 창, 접수 뒤(외부 등록이 5초를 넘기면 처리 중 화면)'],
+      ['`cart-payment`', '11', '장바구니 합계, 약관 미동의·빈 칸 검증, 결제창에 화면 금액 그대로 전달, 승인 성공, 승인된 주소를 다시 열어도 두 번 결제되지 않음, 금액 위조 차단, 승인 서버 장애, 결제창을 닫은 경우'],
+      ['`preorder-retry`', '5', '같은 순간에 두 번 눌러도 예약 1개, 일시 장애 뒤 같은 키로 한 번만 접수, 응답을 못 받고 다시 보내도 처음 예약번호 반환'],
+      ['`preorder`', '5', '비회원은 로그인 모달, 대기열을 거쳐 접수하고 결제로 이동, 이미 예약한 모델은 "구매 확정하기"로 표시, 입장권이 있으면 대기열 없이 바로 입장'],
+      ['`preorder-payment`', '3', '결제가 실패해도 예약 순번 유지, 결제 뒤 뒤로 가기, 구매 확정 기한이 지나면 취소 처리'],
+      ['`preorder-windows`', '3', '탭을 복제해도 같은 예약으로 이어짐, 다른 창에서 로그아웃하면 대기열이 닫힘, 로그아웃하면 줄·입장권 저장소를 비움'],
+      ['`server-error`', '3', '서버가 실패해도 홈 화면은 남고, 상품 상세는 결제·장바구니 버튼을 그리지 않음'],
+      ['`login`, `review-write`', '2 + 2', '새로고침해도 로그인 유지, 배송 완료 주문에만 리뷰 쓰기 표시'],
+      ['`preorder-open`, `preorder-mobile`', '1 + 1', '오픈 시각에 새로고침 없이 버튼이 열림, 휴대폰 화면에서 하단 탭부터 결제 페이지까지'],
+    ], note: '운영자 화면 시나리오 5개(`admin.spec.ts`)는 팀원과 함께 작성했고 위 표에 넣지 않았습니다.' },
   },
   {
     slug: 'ephyra', fw: 'react', no: '02', name: 'Ephyra', kr: '에피라 · AI 통신 요금제 상담 · 가입 플랫폼', kind: 'LG유플러스 유레카 프론트엔드 개발자 과정 종합프로젝트',
     tagline: '데이터·통화·예산·OTT 이용 성향을 채팅으로 입력하면 AI가 요금제를 추천하고, 비교·가입·리워드까지 하나의 채팅 흐름으로 연결하는 서비스',
     period: '2026.08 ~ 2026.09 · 3주', roleShort: '조장 · PL · Frontend',
     stackShort: ['React 19', 'Supabase', 'OpenAI API', 'Playwright', 'Storybook'],
-    meta: [['기간', '2026.08.14 ~ 2026.09.04 (3주)'], ['역할', '조장 · PL · Frontend · Design'], ['인원', 'FE 4인 (전원 FE, 일부 BE·LLM 겸임)'], ['기여 규모', '커밋 164개 (팀 전체 496개 중 2위), src 코드 중 약 28% 작성, PR 13건']],
+    meta: [['기간', '2026.08.14 ~ 2026.09.04 (3주)'], ['역할', '조장 · PL · Frontend · Design'], ['인원', 'FE 4인 (전원 FE, 일부 BE·LLM 겸임)'], ['기여도', '커밋 164개 (팀 전체 496개 중 2위) · 현재 코드의 약 28% · PR 13건']],
     links: [['배포', 'https://comp-project-seven.vercel.app'], ['GitHub', 'https://github.com/UrecaCompProject/compProject']],
     stack: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS 4', 'TanStack Query', 'Zustand', 'Supabase (Auth · PostgreSQL · Edge Functions)', 'OpenAI API', 'Storybook', 'Playwright', 'MSW', 'Vercel'],
     duties: [
@@ -197,8 +322,19 @@ export const PROJECTS: Project[] = [
     stackShort: ['Next.js 16', 'TypeScript', 'TanStack Query', 'MongoDB', 'NextAuth'],
     meta: [['기간', '2025.09 ~ 2026.02 (약 6개월) + 2026.09 구조 리팩토링 · 2026.10 성능 개선'], ['역할', '기획 · Frontend · Backend · Design'], ['인원', '1인 개발'], ['규모', '커밋 129개, API Route 20여 개, 사용자 화면과 관리자 백오피스 포함']],
     links: [['배포', 'https://nextgacha.vercel.app'], ['GitHub', 'https://github.com/llmeajinll/Nextgacha']],
+    shots: [
+      { src: '/image/nextgacha/1-home.jpg', w: 1440, h: 788, title: '홈', desc: '사용 안내 배너 아래에 인기·신규·예약 상품을 보여줍니다. 서버 컴포넌트로 세 섹션을 동시에 조회합니다.' },
+      { src: '/image/nextgacha/6-reservation.jpg', w: 1440, h: 732, title: '예약 판매', desc: '홈 아래쪽의 예약 판매 목록입니다. 상품마다 예약 월을 태그로 보여줍니다.' },
+      { src: '/image/nextgacha/2-product.jpg', w: 1440, h: 788, title: '상품 상세', desc: '가격·택배비·적립금과 옵션 선택, 구매·장바구니·찜. 아래 탭에서 정보·Q&A·리뷰를 봅니다.' },
+      { src: '/image/nextgacha/3-options.jpg', w: 1440, h: 788, title: '옵션 선택', desc: '옵션별 남은 재고를 함께 보여줍니다. 고른 옵션은 수량 카드로 담깁니다.' },
+      { src: '/image/nextgacha/7-limit.jpg', w: 1440, h: 732, title: '5개 제한 안내', desc: '수량을 5개 넘게 올리면 안내가 뜹니다. 장바구니·배송 중 수량과 재고를 함께 계산해, 같은 상품을 1인당 5개까지만 담게 합니다.' },
+      { src: '/image/nextgacha/8-qna.jpg', w: 1440, h: 732, title: '상품 Q&A', desc: '비밀 문의는 내용을 가리고, 작성자 이메일은 일부만 보이게 가립니다.' },
+      { src: '/image/nextgacha/4-notice.jpg', w: 1440, h: 788, title: '공지', desc: '월별 신상·예약 판매·이벤트 공지 목록입니다.' },
+      { src: '/image/nextgacha/10-delivery.jpg', w: 1440, h: 732, title: '관리자 · 배송 상태 변경', desc: '관리자가 주문을 확인한 뒤 택배사와 송장번호를 넣어 배송중으로 바꾸거나, 사유를 적어 배송을 거절합니다. 여러 건을 선택해 한 번에 바꿀 수도 있습니다.' },
+    ],
     stack: ['Next.js 16 (App Router)', 'TypeScript', 'TanStack Query', 'Jotai', 'Vanilla Extract', 'NextAuth (카카오 OAuth)', 'MongoDB Atlas', 'TossPayments', 'Vercel Blob', 'MUI X Charts', 'Jest + React Testing Library', 'Vercel'],
     background: ['정가 상품을 대량으로 사서 웃돈을 붙여 되파는 사람들 때문에, 정작 그 상품을 원하는 사람이 더 비싸게 사야 하는 문제가 있습니다.', '그래서 **같은 상품을 1인당 최대 5개**까지만 살 수 있게 했습니다. 기준은 전시용, 보관용, 예비용 2개, 선물용입니다. 배송이 끝나기 전까지는 주문한 수량도 이 한도에 포함되고, 배송이 완료되면 다시 5개까지 살 수 있습니다.'],
+    archImg: '/image/nextgacha-architecture.svg',
     arch: '브라우저 ─▶ proxy.ts (로그인·관리자 권한 검사, 방문 기록)\n              │\n              ▼\n         API Routes (BFF) ─▶ MongoDB Atlas\n              │        └──▶ TossPayments (결제 승인)\n              │        └──▶ Vercel Blob (상품 이미지 업로드 토큰)\n              ▼\n         NextAuth ◀──▶ Kakao OAuth',
     duties: [
       { group: 'Frontend', items: ['페이지별 렌더링 방식(Server/Client) 결정, 데이터 조회·캐싱 구조, 장바구니·결제·마이페이지'] },
