@@ -9,6 +9,7 @@ import {
 const ACCENT = '#0071E3';
 // SF Pro는 애플 전용이라 웹에서 못 쓴다 — 가장 비슷한 Pretendard 하나로 통일
 const FONT = '"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,sans-serif';
+const BLUE = '#0071E3';
 const CODE_FONT = 'ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace';
 const ui: CSSProperties = { fontFamily: FONT };
 const wrap: CSSProperties = { maxWidth: 1160, margin: '0 auto' };
@@ -43,6 +44,25 @@ function Rich({ text, strong, codeBg = '#E8E8ED', codeSize = '0.86em' }: { text:
 
 const itemText = (it: Item) => (typeof it === 'string' ? it : it.t);
 const itemSubs = (it: Item) => (typeof it === 'string' ? [] : it.sub || []);
+
+// 웹 화면과 모바일 화면을 나란히 — 모바일은 웹과 같은 높이가 되도록 아래쪽을 잘라 보여준다.
+function ImgDuo({ wide, tall }: { wide: ItemImg; tall: ItemImg }) {
+  const frame: CSSProperties = { border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' };
+  const cap: CSSProperties = { fontSize: 13, lineHeight: 1.6, color: '#6E6E73', textWrap: 'pretty' };
+  return (
+    <figure style={{ margin: 0, display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) clamp(110px, 28%, 200px)', gridTemplateRows: 'auto auto', columnGap: 20, rowGap: 8, alignItems: 'stretch' }}>
+      <div style={frame}>
+        <Image src={wide.src} alt={wide.alt} width={wide.w} height={wide.h} sizes="(max-width: 640px) 70vw, 480px" style={{ width: '100%', height: 'auto', display: 'block' }} />
+      </div>
+      <div style={{ ...frame, position: 'relative', minHeight: 0 }}>
+        <Image src={tall.src} alt={tall.alt} fill sizes="200px" style={{ objectFit: 'cover', objectPosition: 'top' }} />
+      </div>
+      {(wide.caption || tall.caption) && (
+        <figcaption style={{ ...cap, gridColumn: '1 / -1' }}>{[wide.caption, tall.caption].filter(Boolean).join(' ')}</figcaption>
+      )}
+    </figure>
+  );
+}
 
 // 목록 항목 아래에 붙는 화면 캡처 + 설명
 function ItemFigure({ img }: { img: ItemImg }) {
@@ -83,6 +103,21 @@ function CaseBlock({ b }: { b: Block }) {
       {b.label && <span style={{ ...ui, fontSize: 12, fontWeight: 600, letterSpacing: '0.04em' }}>{b.label}</span>}
       {b.p && <p style={{ margin: 0, fontSize: 16, lineHeight: 1.75, color: '#1D1D1F', textWrap: 'pretty' }}><Rich text={b.p} strong={HL} /></p>}
       {b.items && b.items.length > 0 && <Dashes items={b.items} strong={{ fontWeight: 600, color: '#1D1D1F' }} size={16} color="#1D1D1F" gap={10} />}
+      {b.imgs && b.imgs.length === 2 && (
+        <ImgDuo wide={b.imgs[0]} tall={b.imgs[1]} />
+      )}
+      {b.imgs && b.imgs.length > 0 && b.imgs.length !== 2 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-start' }}>
+          {b.imgs.map((img) => (
+            <figure key={img.src} style={{ margin: 0, flex: img.h > img.w ? '0 0 200px' : '1 1 360px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' }}>
+                <Image src={img.src} alt={img.alt} width={img.w} height={img.h} sizes={img.h > img.w ? '200px' : '(max-width: 640px) 100vw, 480px'} style={{ width: '100%', height: 'auto', display: 'block' }} />
+              </div>
+              {img.caption && <figcaption style={{ fontSize: 13, lineHeight: 1.6, color: '#6E6E73', textWrap: 'pretty' }}>{img.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      )}
       {b.table && (
         <div style={{ overflowX: 'auto', borderTop: '1px solid #1D1D1F' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14, lineHeight: 1.6 }}>
@@ -91,7 +126,7 @@ function CaseBlock({ b }: { b: Block }) {
             </thead>
             <tbody>
               {b.table.slice(1).map((r, i) => (
-                <tr key={i}>{r.map((c, j) => <td key={j} style={{ padding: '12px 16px 12px 0', borderBottom: '1px solid #D2D2D7', verticalAlign: 'top' }}><Rich text={c} codeSize="0.9em" /></td>)}</tr>
+                <tr key={i}>{r.map((c, j) => <td key={j} style={{ padding: '12px 16px 12px 0', borderBottom: '1px solid #D2D2D7', verticalAlign: 'top', whiteSpace: 'pre-line' }}><Rich text={c} codeSize="0.9em" /></td>)}</tr>
               ))}
             </tbody>
           </table>
@@ -424,7 +459,7 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
       <a href="#/" onClick={goHome} className="pf-link" style={{ display: 'inline-flex', gap: 8, fontSize: 17, padding: '6px 0' }}>‹ 전체 프로젝트</a>
       <div style={{ padding: '40px 0 56px', borderBottom: '1px solid #D2D2D7' }}>
         <div style={{ ...ui, display: 'flex', gap: 12, alignItems: 'center', fontSize: 13, flexWrap: 'wrap' }}>
-          <span style={{ color: fw.ink }}>{p.no}</span>
+          <span style={{ color: BLUE }}>{p.no}</span>
           <span style={fwBadge(p.fw)}>{fw.label}</span>
           <span style={{ color: '#6E6E73' }}>{p.kind}</span>
         </div>
@@ -466,7 +501,7 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
         </div>
       )}
 
-      {p.flow && <FlowDetail flow={p.flow} ink={fw.ink} />}
+      {p.flow && <FlowDetail flow={p.flow} ink={BLUE} />}
 
       <div style={row}>
         <div style={sideLabel}>기술 스택</div>
@@ -513,7 +548,7 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
           {cases.map((c, i) => (
             <div key={c.title} style={{ ...row, padding: '36px 0' }}>
               <div style={{ flex: '0 0 200px' }}>
-                <span style={{ ...ui, fontSize: 28, fontWeight: 500, color: fw.ink }}>{pad(i + 1)}</span>
+                <span style={{ ...ui, fontSize: 28, fontWeight: 500, color: BLUE }}>{pad(i + 1)}</span>
               </div>
               <div style={{ flex: '1 1 480px', display: 'flex', flexDirection: 'column', gap: 22, minWidth: 0, maxWidth: 760 }}>
                 <h3 style={{ margin: 0, fontSize: 22, lineHeight: 1.4, letterSpacing: '-0.02em', fontWeight: 600, textWrap: 'balance' }}><Rich text={c.title} codeSize="0.82em" /></h3>
