@@ -36,7 +36,7 @@ export const PROJECTS: Project[] = [
     tagline: '오픈 직후 신청이 몰려도 사전예약을 유실 없이 접수하고, 외부 시스템 처리를 기다리지 않고 결과를 안내하는 스마트폰 사전예약 플랫폼',
     period: '2026.09 ~ 2026.10', roleShort: 'Frontend',
     stackShort: ['React 19', 'TypeScript', 'TanStack Query', 'MSW', 'FSD'],
-    meta: [['기간', '2026.09.15 ~ 2026.10.28'], ['역할', 'Frontend (구매자 화면 전담)'], ['인원', '7명 (백엔드 5, 프론트엔드 2)'], ['기여도', '60% (프론트엔드 커밋 기준)']],
+    meta: [['기간', '2026.09.15 ~ 2026.10.28'], ['역할', 'Frontend (구매자 화면 전담)'], ['인원', '7명 (Backend 5, Frontend 2)'], ['기여도', 'Frontend 60%']],
     links: [['배포', 'https://www.grandis-nova.link'], ['GitHub', 'https://github.com/Grandis-2/fe']],
     stack: ['React 19', 'TypeScript', 'Vite', 'TanStack Query v5', 'Zustand', 'Axios', 'Vanilla Extract', 'react-router v7', 'MSW 2', '토스페이먼츠 SDK', '카카오 OAuth', 'Storybook 10 + Vitest', 'Playwright', 'Grafana Faro · Amplitude', 'ESLint', 'husky + commitlint', 'Vercel'],
     background: [
@@ -80,7 +80,7 @@ export const PROJECTS: Project[] = [
     },
     duties: [
       { group: '구매자 화면', items: ['메인, 사전예약 목록·상세, 상품 상세·옵션 선택, 사전예약 대기열, 결제(토스페이먼츠), 주문 결과, 마이페이지(장바구니·배송지·사전예약 내역)', '카카오 로그인·회원가입 온보딩, 세션 관리'] },
-      { group: '프론트엔드 기반', items: ['FSD(Feature-Sliced Design) 레이어 구조 설계, ESLint로 레이어 의존 방향 강제', 'API 클라이언트(타임아웃·요청 취소·에러 변환), TanStack Query 캐시·재시도 정책', 'MSW 목 서버와 실패 재현 도구, 디자인 토큰·공용 UI 컴포넌트'] },
+      { group: 'Frontend 기반', items: ['FSD 레이어 구조 설계, ESLint로 의존 방향 강제', 'API 클라이언트, TanStack Query 캐시·재시도 정책', 'MSW 목 서버와 실패 재현 도구, 디자인 토큰·공용 UI 컴포넌트', 'Storybook 상태별 스토리 87개 작성', 'Playwright E2E 테스트 12개 작성', 'Vitest 단위 테스트 11개 작성'] },
     ],
     core: [
       { title: '페이지를 옮겨도 끊기지 않는 사전예약 대기열', blocks: [
@@ -164,7 +164,7 @@ export const PROJECTS: Project[] = [
         ] },
       ] },
       { title: '규칙을 문서가 아니라 lint로 강제', blocks: [
-        { label: '문제', p: '2인 FE 팀에서 FSD 레이어 규칙(`app → pages → widgets → features → entities → shared`)을 말로만 정하면, 급할 때 역방향 import가 생깁니다.' },
+        { label: '문제', p: '프론트엔드 2인 팀에서 FSD 레이어 규칙(`app → pages → widgets → features → entities → shared`)을 말로만 정하면, 급할 때 역방향 import가 생깁니다.' },
         { label: '해결', items: [
           '`eslint-plugin-import-x`의 `no-restricted-paths`로 레이어별 import 금지 구역을 설정했습니다. 규칙을 어기면 커밋 단계(husky + lint-staged)에서 막힙니다.',
           '**서버 응답 형태(DTO)가 UI까지 새지 않게 했습니다.** DTO 타입은 `entities/*/api`와 `entities/*/model`에서만 import할 수 있도록 lint로 막았습니다. API 응답이 바뀌어도 고칠 곳은 `entities/*/api` 한 곳입니다.',
@@ -211,7 +211,7 @@ export const PROJECTS: Project[] = [
     verifyTitle: '검증과 협업',
     verify: [
       '**커밋 규칙**: commitlint + husky로 커밋 메시지 형식 강제. 커밋 본문에 변경 이유를 남김',
-      '**Storybook · Vitest**: 컴포넌트 상태별 화면(로딩·빈·에러·장애)을 스토리의 `play` 함수로 실제 브라우저(Chromium)에서 확인하고(스토리 190개), 돈·재시도가 걸린 순수 로직(결제 승인, 대기열 백오프, 페이지 이어 받기 등)은 단위 테스트로 검증합니다(37개 파일). 모두 팀 전체 기준입니다.',
+      '**Storybook · Vitest**: 컴포넌트 상태별 화면(로딩·빈·에러·장애)을 스토리의 `play` 함수로 실제 브라우저(Chromium)에서 확인하고(스토리 파일 190개), 돈·재시도가 걸린 순수 로직(결제 승인, 대기열 백오프, 페이지 이어 받기 등)은 단위 테스트로 검증합니다(37개 파일). 모두 팀 전체 기준입니다.',
       { t: '**요청 모니터 (직접 만든 개발 도구)**: 백오프와 `Retry-After`가 의도대로 동작하는지 개발자 도구 없이 화면 옆에서 보려고 만들었습니다. 대기열·사전예약·결제·알림 요청과 실패 뒤 기다린 시간을 60초 타임라인에 쌓고, 기다린 시간이 어디서 나왔는지 풀어서 보여줍니다. 목 서버에서는 [장애 내기]로 모든 요청·대기열 조회·결제 승인을 503으로 실패시킬 수 있습니다. API 클라이언트는 요청 흐름에 끼어들지 않고 기록만 남깁니다.', img: { src: '/image/nova/request-monitor.png', alt: '요청 모니터 화면. 대기열 조회가 503으로 실패하며 기다리는 시간이 3.3초, 8.4초, 12.3초로 늘어난다.', w: 840, h: 1120, caption: '대기열 조회를 503으로 실패시킨 모습. 연속 실패가 이어질수록 기다리는 시간이 늘어납니다(3.3초 → 8.4초 → 12.3초). 기본 3초에 2배씩 늘리고, 무작위로 최대 1.5배를 더합니다.' } },
       '**Playwright E2E**: 대기열·접수·결제·여러 창·서버 오류를 브라우저로 끝까지 따라가는 시나리오 65개(12개 파일, 운영자 시나리오 포함). 목 서버로 돌려서 `.env.local`과 무관하고, 토스 결제창은 가짜로 바꿔 실행. 확인한 내용은 아래 표에 정리했습니다.',
       '**CodeRabbit AI 코드 리뷰**: PR마다 리뷰를 받고, 지적 사항을 반영한 커밋 12건 (접근성, 위젯 경계, 세션 보안 등)',
@@ -239,7 +239,7 @@ export const PROJECTS: Project[] = [
     tagline: '데이터·통화·예산·OTT 이용 성향을 채팅으로 입력하면 AI가 요금제를 추천하고, 비교·가입·리워드까지 하나의 채팅 흐름으로 연결하는 서비스',
     period: '2026.08 ~ 2026.09 · 3주', roleShort: '조장 · PL · Frontend',
     stackShort: ['React 19', 'Supabase', 'OpenAI API', 'Playwright', 'Storybook'],
-    meta: [['기간', '2026.08.14 ~ 2026.09.04 (3주)'], ['역할', '조장 · PL · Frontend · Design'], ['인원', 'FE 4인 (전원 FE, 일부 BE·LLM 겸임)'], ['기여도', '커밋 164개 (팀 전체 496개 중 2위) · 현재 코드의 약 28% · PR 13건']],
+    meta: [['기간', '2026.08.14 ~ 2026.09.04 (3주)'], ['역할', '조장 · PL · Frontend · Design'], ['인원', 'Frontend 4인 (일부 Backend·LLM 겸임)'], ['기여도', '커밋 164개 (팀 전체 496개 중 2위) · 현재 코드의 약 28% · PR 13건']],
     links: [['배포', 'https://comp-project-seven.vercel.app'], ['GitHub', 'https://github.com/UrecaCompProject/compProject']],
     stack: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS 4', 'TanStack Query', 'Zustand', 'Supabase (Auth · PostgreSQL · Edge Functions)', 'OpenAI API', 'Storybook', 'Playwright', 'MSW', 'Vercel'],
     duties: [
@@ -318,7 +318,7 @@ export const PROJECTS: Project[] = [
   {
     slug: 'nextgacha', fw: 'next', no: '03', name: 'NEXT GACHA', kr: '1인 5개 구매 제한 가챠 쇼핑몰', kind: '개인 프로젝트 · 1인 개발',
     tagline: '되팔이의 대량 구매를 막기 위해 같은 상품을 1인당 최대 5개까지만 살 수 있게 만든 온라인 가챠 쇼핑몰',
-    period: '2025.09 ~ 2026.02 · 6개월', roleShort: '기획 · FE · BE · Design',
+    period: '2025.09 ~ 2026.02 · 6개월', roleShort: '기획 · Frontend · Backend · Design',
     stackShort: ['Next.js 16', 'TypeScript', 'TanStack Query', 'MongoDB', 'NextAuth'],
     meta: [['기간', '2025.09 ~ 2026.02 (약 6개월) + 2026.09 구조 리팩토링 · 2026.10 성능 개선'], ['역할', '기획 · Frontend · Backend · Design'], ['인원', '1인 개발'], ['규모', '커밋 129개, API Route 20여 개, 사용자 화면과 관리자 백오피스 포함']],
     links: [['배포', 'https://nextgacha.vercel.app'], ['GitHub', 'https://github.com/llmeajinll/Nextgacha']],
@@ -408,7 +408,7 @@ export const PROJECTS: Project[] = [
 ];
 
 export const OTHERS: Other[] = [
-  { id: 'nolmong', fw: 'next', name: '놀몽 NolMong', kind: '팀 프로젝트', period: '2026.07 ~ 2026.08', tagline: '일행이 같은 여행 계획을 동시에 편집하고, 동선을 지도로 확인하는 공동 여행 플랫폼', role: 'UI/UX 디자인 · Frontend · Backend', team: '3인 (전원 FE·BE 겸임)', scale: '2026.07.13 ~ 2026.08.06 (약 3.5주) · 현재 코드 중 약 45% 작성 (3인 중 1위, git blame 기준)',
+  { id: 'nolmong', fw: 'next', name: '놀몽 NolMong', kind: '팀 프로젝트', period: '2026.07 ~ 2026.08', tagline: '일행이 같은 여행 계획을 동시에 편집하고, 동선을 지도로 확인하는 공동 여행 플랫폼', role: 'UI/UX 디자인 · Frontend · Backend', team: '3인 (전원 Frontend·Backend 겸임)', scale: '2026.07.13 ~ 2026.08.06 (약 3.5주) · 현재 코드 중 약 45% 작성 (3인 중 1위, git blame 기준)',
     stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Zustand', 'Supabase', 'Ably', 'Kakao Maps API'],
     links: [['배포', 'https://nolmong.vercel.app/landing'], ['GitHub', 'https://github.com/NolMong/nolmong']],
     blocks: [
@@ -419,13 +419,13 @@ export const OTHERS: Other[] = [
         '**배포 빌드 실패**: `useSearchParams`를 쓰는 페이지를 `Suspense`로 감싸지 않으면 Next.js 정적 렌더링 단계에서 빌드가 실패해서, 해당 부분을 `Suspense`로 분리했습니다.',
       ] },
     ] },
-  { id: 'owl', fw: 'react', name: 'owl-forest', kind: '교내 동아리 프로젝트', period: '2022.09 ~ 2023.04', tagline: '동아리 회원들이 책을 서로 빌리고, 독후감과 별점 리뷰를 남길 수 있는 웹 서비스', role: 'Frontend 파트 PM · Frontend · Design', team: '프론트엔드 7인', scale: '프론트엔드 커밋 1위 (JS 파일 기준 138건) · 결과: 팀원 이탈 없이 프로젝트 완주',
+  { id: 'owl', fw: 'react', name: 'owl-forest', kind: '교내 동아리 프로젝트', period: '2022.09 ~ 2023.04', tagline: '동아리 회원들이 책을 서로 빌리고, 독후감과 별점 리뷰를 남길 수 있는 웹 서비스', role: 'Frontend 파트 PM · Frontend · Design', team: 'Frontend 7인', scale: 'Frontend 커밋 1위 (JS 파일 기준 138건) · 결과: 팀원 이탈 없이 프로젝트 완주',
     stack: ['React', 'JavaScript', 'Styled-Components', 'Figma', 'Notion', 'Slack'],
     links: [['GitHub', 'https://github.com/C-B-U/owl-forest']],
     blocks: [
       { label: '담당', items: ['**일정·업무 관리**: 프론트엔드 팀원 7명의 시험·과제 일정을 매주 받아 태스크를 조정. 입문자는 2인 1조, 경험자는 1인 1페이지로 숙련도에 따라 배분', '**스프린트 운영**: Notion으로 1주 스프린트를 운영하고, 작업 전·진행 중·완료·오류 상태를 보드로 관리. 다른 파트 팀장들과 주간 단위로 일정과 연동 이슈 조율', '**설계와 기술 리딩**: Atomic Design 도입. Atom은 팀원들이 나눠 개발하고, Molecules·Template·Page 구조는 직접 설계해 일관성 유지. 커밋 메시지·색상·함수 이름 규칙 수립', '**코드 리뷰와 멘토링**: GitHub PR 리뷰와 Zoom 세션을 병행해 팀원들의 막힌 부분 해결', '**개발**: 도서 검색 페이지, REST API 연동, 공통 base 컴포넌트 초기 세팅'] },
     ] },
-  { id: 'adiary', fw: 'react', name: 'A-Diary', kind: '졸업 작품', period: '2022.09 ~ 2023.06', award: '졸업 작품 전시회 우수팀 선정 (관람객 투표 + 교수진 심사)', tagline: '일기를 쓰면 AI가 감정을 분석하고, 일기 내용을 바탕으로 그림을 생성해 주는 그림일기 서비스', role: 'Frontend 단독 · UI/UX 디자인', team: '4인 (FE 1 · BE 3)', scale: '약 10개월 · 커밋 146건 (팀 내 1위)',
+  { id: 'adiary', fw: 'react', name: 'A-Diary', kind: '졸업 작품', period: '2022.09 ~ 2023.06', award: '졸업 작품 전시회 우수팀 선정 (관람객 투표 + 교수진 심사)', tagline: '일기를 쓰면 AI가 감정을 분석하고, 일기 내용을 바탕으로 그림을 생성해 주는 그림일기 서비스', role: 'Frontend 단독 · UI/UX 디자인', team: '4인 (Frontend 1 · Backend 3)', scale: '약 10개월 · 커밋 146건 (팀 내 1위)',
     stack: ['React', 'JavaScript', 'Styled-Components', 'Chart.js', 'AWS S3'],
     links: [['GitHub', 'https://github.com/AI-Diary/A-Diary']],
     blocks: [
@@ -435,17 +435,17 @@ export const OTHERS: Other[] = [
 ];
 
 export const DN_PROJECTS: DnProject[] = [
-  { no: '01', name: '교사용 LMS 리뉴얼', period: '2024.01 ~ 2024.03', team: 'BE 1 · FE 2 · Designer 1', desc: '학교 선생님이 학생의 학습 진행도, 문제 풀이 데이터, AI 학습 대화를 한 화면에서 확인하는 관리 사이트입니다. 반별 학생 조회, 단원별 진행 상황, AI 발음 평가 결과, AI 대화 재현 페이지, 레이아웃 초기 디자인을 담당했습니다.',
+  { no: '01', name: '교사용 LMS 리뉴얼', period: '2024.01 ~ 2024.03', team: 'Backend 1 · Frontend 2 · Designer 1', desc: '학교 선생님이 학생의 학습 진행도, 문제 풀이 데이터, AI 학습 대화를 한 화면에서 확인하는 관리 사이트입니다. 반별 학생 조회, 단원별 진행 상황, AI 발음 평가 결과, AI 대화 재현 페이지, 레이아웃 초기 디자인을 담당했습니다.',
     blocks: [
       { label: '다른 파트를 기다리지 않는 개발', items: ['**디자인 지연 대응**: 디자이너가 다른 프로젝트를 병행하느라 바로 투입되기 어려웠습니다. 그래서 초기 UI를 직접 구성해 개발을 먼저 시작했습니다. 여백·색상·타이포그래피는 SCSS 유틸리티 클래스로 설계해서, 디자인이 확정된 뒤에는 클래스 조합만 바꿔 반영할 수 있게 했습니다.', '**백엔드 지연 대응**: 백엔드 API는 프로젝트 막바지에 완성될 예정이었습니다. Swagger로 공유받은 명세를 기반으로 MSW Mock API를 먼저 만들어, 실제 서버 없이도 기능 개발과 테스트를 진행했습니다.', '**결과**: 디자인과 백엔드 일정이 모두 지연됐지만 계획된 기간 안에 완료했습니다.'] },
       { label: 'Vue 2 → Vue 3 마이그레이션', items: ['Options API에 흩어져 있던 로직을 Composition API로 옮기고, Vuex의 `this.$store`는 `useStore()`로 바꿨습니다.', '재사용 가능한 컴포넌트를 구분하고, 추가 기능에 맞춰 파일 구조를 다시 설계했습니다.'] },
     ] },
-  { no: '02', name: '사내 관리자 페이지', period: '2024.01 ~ 2024.03 (LMS와 병행)', team: 'BE 1 · FE 1', desc: '운영자가 학교, 계정, 정산, 안내 발송을 한 곳에서 처리하는 관리자 시스템입니다. 개발 시점 기준 100개 이상의 초등학교에서 사용되었습니다.',
+  { no: '02', name: '사내 관리자 페이지', period: '2024.01 ~ 2024.03 (LMS와 병행)', team: 'Backend 1 · Frontend 1', desc: '운영자가 학교, 계정, 정산, 안내 발송을 한 곳에서 처리하는 관리자 시스템입니다. 개발 시점 기준 100개 이상의 초등학교에서 사용되었습니다.',
     blocks: [
       { label: '담당', items: ['학생 계정 Excel 대량 등록', '학교·반 검색과 학교·담당 교사 정보 수정', '정산서 PDF 다운로드', 'Email·SMS 단체 발송과 미리보기'] },
       { label: '일정 관리', items: ['새 학기 수업이 시작되기 전인 3월 말까지 반드시 오픈해야 했습니다. 기획 변경과 API 수정 사항을 기획자·백엔드와 수시로 공유하며 우선순위가 높은 기능부터 개발했고, 완성된 기능은 바로 공유해 다른 파트가 이어서 작업할 수 있게 했습니다. **LMS 리뉴얼과 함께 두 프로젝트 모두 일정 안에 오픈했습니다.**'] },
     ] },
-  { no: '03', name: '전시회 응원·퀴즈 이벤트 페이지', period: '2023.09 ~ 2023.10', team: 'BE 1 · FE 1 · Designer 1', desc: 'KSGE / SIEF 2023 박람회 부스 방문객이 휴대폰 본인 인증 후 참여하는 모바일 이벤트 페이지입니다. 응원 메시지 이벤트 프론트엔드를 단독으로 신규 구축하고, 퀴즈 이벤트 기존 코드 리팩토링과 초기 레이아웃 디자인을 담당했습니다.',
+  { no: '03', name: '전시회 응원·퀴즈 이벤트 페이지', period: '2023.09 ~ 2023.10', team: 'Backend 1 · Frontend 1 · Designer 1', desc: 'KSGE / SIEF 2023 박람회 부스 방문객이 휴대폰 본인 인증 후 참여하는 모바일 이벤트 페이지입니다. 응원 메시지 이벤트 프론트엔드를 단독으로 신규 구축하고, 퀴즈 이벤트 기존 코드 리팩토링과 초기 레이아웃 디자인을 담당했습니다.',
     blocks: [
       { label: '현장 장애 대응', items: ['박람회 3일 동안 장애 대응 담당자로 현장에 참여했습니다. 총 **754명**(1일차 193명 · 2일차 328명 · 3일차 233명)이 참여했습니다.', '1일차 초반에 인증번호 발송이 지연되자 서버 리소스 증설을 요청했습니다. 지연이 해소된 뒤에는 원래 사양으로 되돌려 불필요한 비용을 줄였습니다.', '그 결과 참여자가 가장 많았던 2일차에도 지연 없이 운영했습니다.'] },
       { label: '성능 개선', items: ['**스타일 구조 개선**: 반복되는 inline style을 SCSS로 옮기고, 컴포넌트 하나의 폴더에 섞여 있던 파일들을 Atomic Design 구조로 재구성했습니다.', '**폰트 경량화**: 회사 요구로 Noto Sans CJK(Regular·Medium·Bold)를 써야 했는데, 한중일 글자를 모두 담고 있어 용량이 커서 초기 렌더링이 느렸습니다. 온라인 변환기로 WOFF2 변환을 시도했지만 글자가 깨졌고, Python `fonttools`로 직접 변환해 용량을 줄였습니다. 그래도 용량이 커서, 글자는 기본 글꼴로 먼저 보이고 폰트는 나중에 적용되도록 설정했습니다.', '**이미지 경량화**: 이미지를 WebP로 바꿔 리소스 용량을 줄였습니다.'] },
