@@ -526,7 +526,7 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
         <div style={{ ...row, flexDirection: 'column', flexWrap: 'nowrap', gap: 16 }}>
           <span style={label}>시스템 구성</span>
           <a href={p.archImg} target="_blank" style={{ display: 'block', border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#fff' }}>
-            <Image src={p.archImg} alt={`${p.name} 시스템 구성도`} width={1640} height={1020} unoptimized style={{ width: '100%', height: 'auto', display: 'block' }} />
+            <Image src={p.archImg} alt={`${p.name} 시스템 구성도`} width={1100} height={800} unoptimized style={{ width: '100%', height: 'auto', display: 'block' }} />
           </a>
           <span style={{ ...ui, fontSize: 12, color: '#6E6E73' }}>클릭하면 원본 크기로 열립니다.</span>
         </div>
@@ -661,7 +661,7 @@ function Home({ go }: { go: (r: string) => void }) {
                 <span style={{ fontSize: 'clamp(32px,4vw,52px)', fontWeight: 600, letterSpacing: '-0.035em', lineHeight: 1.1 }}>디엔소프트</span>
                 <span style={fwBadge('vue')}>{vue.label}</span>
               </div>
-              <div style={{ marginTop: 10, fontSize: 16, color: '#86868B' }}>프론트엔드 개발자 (계약직) · 프론트엔드 개발 · 초기 레이아웃 디자인</div>
+              <div style={{ marginTop: 10, fontSize: 16, color: '#86868B' }}>Frontend 개발자 (계약직) · Frontend 개발 · 초기 레이아웃 디자인</div>
               <p style={{ margin: '24px 0 0', fontSize: 17, lineHeight: 1.7, maxWidth: '52ch', textWrap: 'pretty' }}>실서비스 4건을 개발했습니다. 전시회 현장 이벤트에서는 3일간 754명이 참여했고, 관리자 시스템은 100개 이상의 초등학교에서 사용되었습니다.</p>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 24 }}>
                 {dnStack.map((s) => <span key={s} style={{ ...ui, fontSize: 13, padding: '5px 12px', border: '1px solid #424245', borderRadius: 980, color: '#D2D2D7' }}>{s}</span>)}
