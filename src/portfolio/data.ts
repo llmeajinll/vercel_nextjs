@@ -2,9 +2,9 @@
 export type ItemImg = { src: string; alt: string; w: number; h: number; caption?: string };
 export type Item = string | { t: string; sub?: string[]; img?: ItemImg };
 export type Block = { label?: string; p?: string; items?: Item[]; imgs?: ItemImg[]; table?: string[][]; note?: string };
-export type Case = { title: string; blocks: Block[]; demo?: 'productCard' };
+export type Case = { title: string; tags?: string[]; blocks: Block[]; demo?: 'productCard' };
 export type FwKey = 'react' | 'vue' | 'next';
-export type Shot = { src: string; title: string; desc?: string; phone?: boolean; w?: number; h?: number };
+export type Shot = { src: string; title: string; desc?: string; phone?: boolean; w?: number; h?: number; group?: string };
 export type FlowStep ={ title: string; desc: string; shot: string };
 export type BgFigure = { after: number; caption: string; groups: { label: string; tone: 0 | 1 | 2; steps: { title: string; hot?: boolean }[] }[] };
 export type FlowBranch = { after: number; title: string; fast: string; slow: string };
@@ -13,7 +13,10 @@ export type Project = {
   slug: string; fw: FwKey; no: string; name: string; kr: string; ongoing?: boolean; kind: string;
   tagline: string; period: string; roleShort: string; stackShort: string[];
   meta: [string, string][]; links: [string, string][]; stack: string[];
-  background?: string[]; bgFigure?: BgFigure; arch?: string; archImg?: string; shots?: Shot[]; flow?: Flow;
+  background?: string[]; bgFigure?: BgFigure;
+  // 기획 배경 아래: 진행 과정 → 기획 → 디자인 / 트러블슈팅 아래: 배포와 운영
+  timeline?: { when: string; title: string; desc: string }[]; planning?: Block[]; design?: Block[]; ops?: Block[];
+  arch?: string; archImg?: string; erdImg?: string; shots?: Shot[]; flow?: Flow;
   duties: { group: string; items: Item[] }[];
   core: Case[]; trouble: Case[]; verifyTitle: string; verify: Item[]; verifyExtra?: Block; verifyExtraAfter?: number;
 };
@@ -329,90 +332,183 @@ export const PROJECTS: Project[] = [
     tagline: '되팔이의 대량 구매를 막기 위해 같은 상품을 1인당 최대 5개까지만 살 수 있게 만든 온라인 가챠 쇼핑몰',
     period: '2025.09 ~ 2026.02 · 6개월', roleShort: '기획 · Frontend · Backend · Design',
     stackShort: ['Next.js 16', 'TypeScript', 'TanStack Query', 'MongoDB', 'NextAuth'],
-    meta: [['기간', '2025.09 ~ 2026.02 (약 6개월) + 2026.09 구조 리팩토링 · 2026.10 성능 개선'], ['역할', '기획 · Frontend · Backend · Design'], ['인원', '1인 개발'], ['규모', '커밋 129개, API Route 20여 개, 사용자 화면과 관리자 백오피스 포함']],
+    meta: [['기간', '2025.09 ~ 2026.02 (약 6개월) + 2026.09 구조 리팩토링 · 2026.10 성능 개선 · 2026.11 결제·운영 보강'], ['역할', '기획 · Frontend · Backend · Design'], ['인원', '1인 개발'], ['규모', 'API Route 56개, 사용자 화면과 관리자 백오피스 포함']],
     links: [['배포', 'https://nextgacha.vercel.app'], ['GitHub', 'https://github.com/llmeajinll/Nextgacha']],
     shots: [
-      { src: '/image/nextgacha/1-home.jpg', w: 1440, h: 788, title: '홈', desc: '사용 안내 배너 아래에 인기·신규·예약 상품을 보여줍니다. 서버 컴포넌트로 세 섹션을 동시에 조회합니다.' },
-      { src: '/image/nextgacha/6-reservation.jpg', w: 1440, h: 732, title: '예약 판매', desc: '홈 아래쪽의 예약 판매 목록입니다. 상품마다 예약 월을 태그로 보여줍니다.' },
-      { src: '/image/nextgacha/2-product.jpg', w: 1440, h: 788, title: '상품 상세', desc: '가격·택배비·적립금과 옵션 선택, 구매·장바구니·찜. 아래 탭에서 정보·Q&A·리뷰를 봅니다.' },
-      { src: '/image/nextgacha/3-options.jpg', w: 1440, h: 788, title: '옵션 선택', desc: '옵션별 남은 재고를 함께 보여줍니다. 고른 옵션은 수량 카드로 담깁니다.' },
-      { src: '/image/nextgacha/7-limit.jpg', w: 1440, h: 732, title: '5개 제한 안내', desc: '수량을 5개 넘게 올리면 안내가 뜹니다. 장바구니·배송 중 수량과 재고를 함께 계산해, 같은 상품을 1인당 5개까지만 담게 합니다.' },
-      { src: '/image/nextgacha/8-qna.jpg', w: 1440, h: 732, title: '상품 Q&A', desc: '비밀 문의는 내용을 가리고, 작성자 이메일은 일부만 보이게 가립니다.' },
-      { src: '/image/nextgacha/4-notice.jpg', w: 1440, h: 788, title: '공지', desc: '월별 신상·예약 판매·이벤트 공지 목록입니다.' },
-      { src: '/image/nextgacha/10-delivery.jpg', w: 1440, h: 732, title: '관리자 · 배송 상태 변경', desc: '관리자가 주문을 확인한 뒤 택배사와 송장번호를 넣어 배송중으로 바꾸거나, 사유를 적어 배송을 거절합니다. 여러 건을 선택해 한 번에 바꿀 수도 있습니다.' },
+      { group: '쇼핑몰', src: '/image/nextgacha/1-home.jpg', w: 1440, h: 732, title: '홈', desc: '사용 안내 배너 아래에 인기·신규·예약 상품을 보여줍니다. 서버 컴포넌트로 배너와 세 섹션을 동시에 조회합니다.' },
+      { group: '쇼핑몰', src: '/image/nextgacha/6-reservation.jpg', w: 1440, h: 732, title: '예약 판매', desc: '홈 아래쪽의 예약 판매 목록입니다. 상품마다 예약 월을 태그로 보여줍니다.' },
+      { group: '쇼핑몰', src: '/image/nextgacha/2-product.jpg', w: 1440, h: 732, title: '상품 상세', desc: '가격·택배비·적립금과 옵션 선택, 구매·장바구니·찜. 아래 탭에서 정보·Q&A·리뷰를 봅니다.' },
+      { group: '쇼핑몰', src: '/image/nextgacha/3-options.jpg', w: 1440, h: 732, title: '옵션 선택', desc: '옵션별 남은 재고를 함께 보여줍니다. 고른 옵션은 수량 카드로 담깁니다.' },
+      { group: '쇼핑몰', src: '/image/nextgacha/7-limit.jpg', w: 1440, h: 732, title: '5개 제한 안내', desc: '수량을 5개 넘게 올리면 안내가 뜹니다. 장바구니·배송 중 수량과 재고를 함께 계산해, 같은 상품을 1인당 5개까지만 담게 합니다.' },
+      { group: '쇼핑몰', src: '/image/nextgacha/8-qna.jpg', w: 1440, h: 732, title: '상품 Q&A', desc: '비밀 문의는 내용을 가리고, 작성자 이메일은 일부만 보이게 가립니다.' },
+      { group: '쇼핑몰', src: '/image/nextgacha/4-notice.jpg', w: 1440, h: 732, title: '공지', desc: '상단 고정 공지와 공지·배송·예약·이벤트 분류별 목록입니다.' },
+      { group: '관리자', src: '/image/nextgacha/16-admin-dashboard.jpg', w: 1440, h: 732, title: '관리자 홈', desc: '오늘 들어온 주문, 배송 처리 대기, 오류 신고, 배송 기한을 넘긴 주문, 답변 기한을 넘긴 문의를 한눈에 보고 각 관리 메뉴로 이동합니다.' },
+      { group: '관리자', src: '/image/nextgacha/17-admin-product-add.jpg', w: 1440, h: 732, title: '상품 추가', desc: '기본 정보·가격·옵션을 입력하면 오른쪽에서 쇼핑몰 상품 카드로 어떻게 보일지 미리 보여줍니다. 할인율을 넣으면 판매가를 자동으로 계산합니다.' },
+      { group: '관리자', src: '/image/nextgacha/12-admin-products.jpg', w: 1440, h: 732, title: '상품 관리', desc: '등록된 상품의 가격, 할인율, 옵션 재고를 한 목록에서 봅니다. 수정을 누르면 그 자리에서 바로 고칩니다.' },
+      { group: '관리자', src: '/image/nextgacha/15-admin-category.jpg', w: 1440, h: 732, title: '카테고리 관리', desc: '쇼핑몰 헤더의 카테고리 메뉴를 관리합니다. 대분류별로 항목을 추가·삭제하고, 끌어서 순서를 바꿉니다.' },
+      { group: '관리자', src: '/image/nextgacha/10-delivery.jpg', w: 1440, h: 732, title: '주문 관리', desc: '상품 확인중·배송중·배송 완료·환불·교환 탭으로 주문을 나눠 봅니다. 택배사와 송장번호를 넣어 배송중으로 바꾸거나 사유를 적어 배송을 거절(환불)하고, 여러 건을 한 번에 처리할 수도 있습니다.' },
+      { group: '관리자', src: '/image/nextgacha/13-admin-event.jpg', w: 1440, h: 732, title: '이벤트 관리', desc: '여러 상품에 할인율을 한 번에 걸거나 내립니다. 카테고리를 바꿔 가며 골라도 선택한 상품은 유지됩니다.' },
+      { group: '관리자', src: '/image/nextgacha/14-admin-banner.jpg', w: 1440, h: 732, title: '배너 관리', desc: '쇼핑몰 메인 상단에 돌아가는 배너를 관리합니다. 위·아래 버튼으로 노출 순서를, 오른쪽 패널에서 이미지·링크·게시 기간을 바꿉니다.' },
+      { group: '관리자', src: '/image/nextgacha/18-admin-notice.jpg', w: 1440, h: 732, title: '공지 관리', desc: '공지를 쓰고 게시 중·예약·임시 저장 상태로 나눠 관리합니다. 중요한 공지는 상단에 고정하고, 미리 써 둔 공지는 정해진 시각에 올라가게 합니다.' },
+      { group: '관리자', src: '/image/nextgacha/19-admin-user.jpg', w: 1440, h: 732, title: '사용자 관리', desc: '전체 회원, 이번 달 가입, 주문한 회원, 지급된 포인트 잔액을 보고 회원별 주문 수·누적 결제·포인트를 확인합니다.' },
+      { group: '관리자', src: '/image/nextgacha/20-admin-qna.jpg', w: 1440, h: 732, title: '문의 답변', desc: '답변을 기다리는 문의를 대기 일수와 함께 보여줍니다. 문의를 고르면 오른쪽에서 바로 답변하고, 답변은 상품 상세의 Q&A에 바로 보입니다.' },
+      { group: '관리자', src: '/image/nextgacha/21-admin-review.jpg', w: 1440, h: 732, title: '리뷰 모아보기', desc: '전체 평균 별점과 별점 분포를 보고, 상품별로 리뷰를 모아 낮은 별점 순으로 확인합니다.' },
+      { group: '관리자', src: '/image/nextgacha/22-admin-error.jpg', w: 1440, h: 732, title: '오류 신고 수집', desc: '사용자가 보낸 오류 제보와 결제 취소 실패 같은 시스템 에러를 한곳에 모아, 접수·처리 완료·무시 상태로 관리합니다.' },
     ],
-    stack: ['Next.js 16 (App Router)', 'TypeScript', 'TanStack Query', 'Jotai', 'Vanilla Extract', 'NextAuth (카카오 OAuth)', 'MongoDB Atlas', 'TossPayments', 'Vercel Blob', 'MUI X Charts', 'Jest + React Testing Library', 'Vercel'],
+    stack: ['Next.js 16 (App Router)', 'TypeScript', 'TanStack Query', 'Jotai', 'Vanilla Extract', 'NextAuth (카카오 OAuth)', 'MongoDB Atlas', 'TossPayments', 'Vercel Blob', 'Node test runner', 'Storybook 10', 'GitHub Actions', 'Google Analytics 4', 'Vercel'],
     background: ['정가 상품을 대량으로 사서 웃돈을 붙여 되파는 사람들 때문에, 정작 그 상품을 원하는 사람이 더 비싸게 사야 하는 문제가 있습니다.', '그래서 **같은 상품을 1인당 최대 5개**까지만 살 수 있게 했습니다. 기준은 전시용, 보관용, 예비용 2개, 선물용입니다. 배송이 끝나기 전까지는 주문한 수량도 이 한도에 포함되고, 배송이 완료되면 다시 5개까지 살 수 있습니다.'],
+    timeline: [
+      { when: '2025.08 ~ 10', title: '기획 · 디자인 · 첫 배포', desc: '1인 5개 한도를 정하고 Figma로 화면을 디자인한 뒤 Vercel에 처음 배포했습니다.' },
+      { when: '2025.11 ~ 2026.02', title: '기능 개발', desc: '장바구니, 토스페이먼츠 결제, 리뷰, 관리자 상품·주문 관리를 차례로 붙였습니다.' },
+      { when: '2026.09 ~ 10', title: '구조 개편 · 성능 개선', desc: 'FSD 구조로 옮기고, 보안 점검과 홈 서버 렌더링 전환을 진행했습니다.' },
+      { when: '2026.11', title: '결제 · 운영 보강', desc: '결제 실패 처리와 자동 환불을 넣고, 정책 문서와 장애 대응 절차를 정리했습니다.' },
+    ],
+    planning: [
+      { p: '기능을 만들기 전에 규칙부터 정했습니다. 구매 한도, 결제, 환불, 배포, 장애 대응까지 **19개 영역의 정책 90여 개**를 문서로 두고, 정책마다 이유와 변경 이력을 적습니다.' },
+      { label: '정책 문서 예시 · 1인 5개 한도의 기준', table: [
+        ['항목', '내용'],
+        ['정책', '같은 상품은 장바구니와 배송 중 수량을 합쳐 5개까지 가질 수 있다. 배송이 끝나면 다시 살 수 있다.'],
+        ['이유', '목적은 되팔이 방지다. 인기 상품은 배송이 끝나기 전에 품절되므로, 동시 보유 기준만으로도 사실상 "한 번 입고될 때 1인 5개"가 된다.'],
+      ] },
+      { label: '하지 않기로 한 것', items: [
+        '**다른 계정의 중복 구매를 자동으로 막지 않았습니다.** 가족이 기기나 배송지를 같이 쓰면 정상 사용자가 걸립니다. 기기 ID·IP·배송지가 겹치는 주문을 관리자 화면에 표시하고 사람이 판단합니다.',
+        '**Sentry를 붙이지 않았습니다.** Next.js의 `onRequestError` 훅으로 에러를 직접 모아 관리자 화면에서 봅니다.',
+      ] },
+    ],
+    design: [
+      { p: 'Figma로 화면을 먼저 그리고 구현했습니다. 가챠 기계에서 콘셉트를 가져와 픽셀 폰트를 쓰고 아이콘을 직접 그렸습니다. 아래는 초기 시안입니다.', imgs: [
+        { src: '/image/nextgacha/figma-main.jpg', alt: 'Figma로 그린 메인 화면 초기 시안. 캡슐 모양 버튼이 달린 배너 아래에 예약 판매 상품 카드가 놓여 있다.', w: 1314, h: 1000, caption: '메인 화면. 배너를 넘기는 버튼을 가챠 캡슐과 레버 모양으로 그렸습니다.' },
+        { src: '/image/nextgacha/figma-detail.jpg', alt: 'Figma로 그린 상품 상세 화면 초기 시안. 상품 사진 옆에 가격 정보와 옵션 선택, 구매 버튼이 있다.', w: 1314, h: 831, caption: '상품 상세. 고른 옵션이 아래에 수량 카드로 쌓입니다.' },
+        { src: '/image/nextgacha/figma-icons.png', alt: '직접 그린 픽셀 아이콘 모음. 하트, 공유, 휴지통, 포인트, 티켓, 편지, 물음표, 자물쇠, 알림 종 등.', w: 2250, h: 197, caption: '직접 그린 픽셀 아이콘.' },
+      ] },
+    ],
+    ops: [
+      { items: [
+        '**환경 분리**: 운영과 개발은 DB를 따로 씁니다. 개인정보가 없는 컬렉션만 매일 운영에서 개발 DB로 복사합니다.',
+        '**장애 알림**: 결제 취소 실패처럼 돈이 어긋나는 실패는 관리자 카카오톡으로 바로 알립니다.',
+        '**결제 차단 스위치**: 결제 장애가 나면 환경변수 하나로 결제 버튼과 승인 API를 함께 막습니다.',
+      ] },
+      { label: '배포 실패에서 만든 규칙', p: '2026년 10월 운영 배포가 연동 오류로 실패했는데 알아채지 못해, 운영이 26일 전 배포에 머물러 있었습니다. 이후 배포가 끝났는지 매번 확인하고, 문제가 생기면 원인을 찾기 전에 직전 배포로 먼저 되돌리는 것을 규칙으로 정했습니다.' },
+    ],
     archImg: '/image/nextgacha-architecture.svg',
-    arch: '브라우저 ─▶ proxy.ts (로그인·관리자 권한 검사, 방문 기록)\n              │\n              ▼\n         API Routes (BFF) ─▶ MongoDB Atlas\n              │        └──▶ TossPayments (결제 승인)\n              │        └──▶ Vercel Blob (상품 이미지 업로드 토큰)\n              ▼\n         NextAuth ◀──▶ Kakao OAuth',
+    erdImg: '/image/nextgacha-erd.svg',
+    arch: '브라우저 ─▶ proxy.ts (로그인·관리자 권한 검사, 기기 ID 쿠키)\n              │\n              ▼\n         API Routes (BFF) ─▶ MongoDB Atlas\n              │        └──▶ TossPayments (결제 승인)\n              │        └──▶ Vercel Blob (상품 이미지 업로드 토큰)\n              ▼\n         NextAuth ◀──▶ Kakao OAuth',
     duties: [
-      { group: 'Frontend', items: ['페이지별 렌더링 방식(Server/Client) 결정, 데이터 조회·캐싱 구조, 장바구니·결제·마이페이지'] },
-      { group: 'Backend', items: ['Next.js API Route로 BFF 구성, MongoDB Atlas CRUD, 카카오 로그인(NextAuth), 토스페이먼츠 결제 승인'] },
-      { group: '관리자', items: ['상품·재고 관리, 주문 상태 일괄 변경, 이벤트 할인, 통계, 오류 수집 페이지'] },
-      { group: 'Design', items: ['UI/UX 디자인 (Figma)'] },
+      { group: '기획 · Design', items: ['구매·환불·예약 판매 정책 수립', 'Figma로 쇼핑몰과 관리자 화면 디자인'] },
+      { group: 'Frontend', items: ['홈, 검색, 상품 상세, 장바구니, 결제, 마이페이지', '페이지별 Server/Client 렌더링 결정, TanStack Query 조회 구조, FSD 레이어 구성'] },
+      { group: 'Backend', items: ['API Route 56개와 MongoDB 데이터 모델, 카카오 로그인과 권한 검사', '토스 결제 검증, 트랜잭션, 환불'] },
+      { group: '관리자 · 운영', items: ['주문, 상품, 이벤트, 배너, 공지, 회원, 문의, 리뷰, 오류 관리 화면', 'Vercel 배포, 운영·개발 DB 분리, GitHub Actions CI'] },
     ],
     core: [
-      { title: '장바구니 수량 변경: 서버 캐시 재검증에서 클라이언트 캐시로', blocks: [
-        { label: '처음 설계', p: '상태 관리 라이브러리 없이 App Router 캐싱만 쓰려고, 수량을 바꿀 때마다 서버 API를 호출하고 `revalidateTag`로 캐시를 무효화한 뒤 다시 조회했습니다.' },
-        { label: '문제', items: ['수량 버튼을 누를 때마다 캐시 무효화 → 재조회가 반복되어, 서버 응답이 올 때까지 화면 숫자가 바뀌지 않았습니다.', '연속으로 클릭하면 각 요청이 이전 응답(stale state) 기준으로 나가서, 5개 한도를 넘는 요청이 생길 수 있었습니다.'] },
-        { label: '판단', p: '장바구니처럼 자주 누르는 기능은 즉각적인 반응이 더 중요하다고 보고, 번들 크기가 늘어나는 것을 감수하고 TanStack Query로 바꿨습니다.' },
-        { label: '구현 · features/cart/model/useCart.ts', items: [
-          '**요청 전 검증**: 증가 버튼을 누르면 서버로 보내기 전에 `장바구니 수량 + 배송 중 수량 < min(5, 재고 + 배송 중 수량)`을 확인합니다. 한도를 넘으면 요청을 보내지 않고 이유(재고, 배송 중 수량, 최대 수량)를 안내합니다.',
-          '**연속 클릭 방지**: 요청이 처리되는 동안(`isPending`)에는 추가 클릭을 무시합니다.',
-          '**낙관적 업데이트**: `onMutate`에서 화면 숫자를 먼저 바꾸고, 실패하면 `onError`에서 이전 값으로 되돌립니다. `onSettled`에서 서버와 다시 맞춥니다.',
-          '**삭제 확인**: 수량이 1일 때 감소 버튼을 누르면 삭제 여부를 먼저 묻습니다.',
+      { title: '1인 5개 한도: 누적 구매가 아니라 "지금 보유 중인 수량"으로', blocks: [
+        { p: '되팔이를 막되, 배송이 끝난 사람은 다시 살 수 있어야 합니다. 그래서 한도를 "지금까지 산 개수"가 아니라 **장바구니 수량 + 배송 중 수량**으로 정의했습니다. 결제하면 배송 중 수량(`keep`)에 더하고, 배송 완료나 환불이 되면 뺍니다. 세 곳 모두 같은 순수 함수로 계산합니다.' },
+        { label: '한도를 네 번 검사하는 이유', table: [
+          ['검사 위치', '역할', '동시 요청'],
+          ['화면', '한도를 넘으면 요청을 보내지 않고 바로 안내', '막지 못함'],
+          ['장바구니 API', '화면을 거치지 않은 요청을 일찍 거절', '막지 못함'],
+          ['결제 승인 전', '돈이 나가기 전에 거절', '막지 못함'],
+          ['결제 트랜잭션', '최종 방어', '막음'],
+        ], note: '마지막 검사는 트랜잭션 안에서 사용자 문서를 읽고 쓰기 때문에, 탭 두 개에서 동시에 결제해도 한도를 넘지 못합니다.' },
+      ] },
+      { title: '결제: 돈이 나가기 전에 거르고, 나간 뒤에는 되돌린다', blocks: [
+        { p: '토스 승인은 외부 호출이라 DB 트랜잭션에 묶을 수 없습니다. 승인 뒤에 주문 저장이 실패하면 돈은 나갔는데 주문이 없는 상태가 됩니다. 그래서 거절할 수 있는 것은 모두 승인 앞에 두고, 승인 뒤의 실패는 결제 취소로 되돌립니다.' },
+        { label: '처리 순서', items: [
+          '**1. 승인 전 검증**: 재고를 확인하고, 금액·포인트·5개 한도를 DB 기준으로 다시 계산합니다. 클라이언트가 보낸 금액은 믿지 않습니다.',
+          '**2. 토스 승인**: 여기서 실제로 돈이 나갑니다.',
+          '**3. 한 트랜잭션으로 반영**: 포인트 차감, 재고 차감, 주문 생성, 장바구니 비우기. 하나라도 실패하면 전부 되돌립니다. 재고는 남은 수량이 충분할 때만 차감해서, 동시에 결제해도 음수가 되지 않습니다.',
+          '**4. 실패하면 결제 취소**: 취소마저 실패하면 기록을 남기고 관리자에게 알립니다.',
         ] },
       ] },
-      { title: 'FSD 구조로 리팩토링', blocks: [
-        { p: '6개월 동안 기능을 붙이면서 `components/atoms·molecules·templates`와 `app/hooks`에 코드가 섞여 있었습니다. 기능 하나를 고치려면 여러 폴더를 오가야 했습니다.', items: [
-          '**FSD 레이어로 이전**: `shared → entities → features → widgets → views` 순서로 5단계에 걸쳐 옮기고, 레이어 규칙을 어긴 import(BuyBtn, HeartBtn, like)를 정리했습니다.',
-          '**스타일 전환**: 파일 곳곳의 inline style을 Vanilla Extract `css.ts`로 8단계에 걸쳐 모두 옮겼습니다.',
-          '**단계별 커밋**: 각 단계를 별도 커밋으로 나눠서, 문제가 생기면 그 단계만 되돌릴 수 있게 했습니다.',
-        ] },
-      ] },
-      { title: 'proxy 기반 접근 제어', blocks: [
+      { title: '주문 상태 전환: 두 번 눌러도 한 번만, 환불은 돈부터', blocks: [
         { items: [
-          '**`/api/protected/*`**: 로그인하지 않으면 401',
-          '**관리자 API** (상품 등록·수정, 주문 상태 변경, 오류 조회 등): `ADMIN_EMAILS`에 등록된 계정이 아니면 403',
-          '**관리자 페이지**: 메인 메뉴와 통계는 포트폴리오 시연용으로 공개하고, 나머지는 관리자만 접근하도록 리다이렉트',
-          '**Q&A**: 수정·삭제 시 작성자 본인인지 소유권을 검증',
+          '**현재 상태를 조건으로 바꿉니다.** `배송중`인 주문만 `배송 완료`로 바꾸는 식이라, 버튼을 두 번 눌러도 두 번째 요청은 아무것도 바꾸지 못합니다. 적립금이 두 번 지급되지 않습니다.',
+          '**환불은 돈부터 돌려줍니다.** 토스 결제 취소가 성공한 뒤에 재고·포인트·보유 수량을 되돌립니다. 순서를 반대로 하면 주문은 환불로 바뀌었는데 돈이 돌아가지 않은 상태가 생깁니다.',
+          '관리자 거절, 구매자 취소, 3영업일 안에 발송하지 못한 주문의 자동 환불이 같은 함수를 씁니다.',
         ] },
       ] },
-      { title: '운영을 고려한 관리자 백오피스', blocks: [
+      { title: '렌더링과 데이터 구조: 조회는 서버에서, 사용자 조작은 클라이언트 캐시로', blocks: [
         { items: [
-          '**주문 관리**: 주문 확인 → 배송 중 → 배송 완료 상태를 여러 건 한 번에 변경. 배송 완료 시 해당 상품을 다시 구매할 수 있도록 배송 중 수량(`keep`)을 줄임',
-          '**통계**: 검색어, 카테고리, 상품 단위의 방문 기록을 proxy에서 수집해 MUI X Charts로 시각화',
-          '**오류 수집**: 사용자가 보낸 오류 내용을 발생 URL과 함께 확인',
-          '**이벤트**: 카테고리별 상품 할인율 적용·수정. 매월 이벤트 상태는 MongoDB Atlas Trigger로 초기화',
-        ] },
-      ] },
-      { title: '홈 서버 렌더링 전환으로 Lighthouse 성능 개선', blocks: [
-        { label: '측정', p: 'Lighthouse 13.5.0(headless Chrome) 모바일·데스크톱 프리셋, 각 3회 측정의 중앙값. 수정 전후를 같은 설정으로 비교하고, 운영 배포 후 다시 쟀습니다.' },
-        { label: '병목 진단', p: '운영 홈의 모바일 LCP 4.1s 중 3.17s는 이미지를 받는 시간이 아니라 **요청하기 전 대기 시간**(resource load delay)이었습니다. 다운로드 자체는 16ms였습니다.', items: [
-          "홈이 `'use client'` 컴포넌트라, JS 로드·하이드레이션 후 `useEffect`에서 `/api/getProduct`를 인기 → 신규 → 예약 순서로 **직렬 3회** 호출했습니다(응답당 약 700ms). 상품 이미지는 그 뒤에야 요청됐습니다.",
-          '상품 카드가 늦게 들어오면서 "더보기" 버튼이 밀려 CLS 0.13이 생겼습니다.',
-        ] },
-        { label: '수정', items: [
-          '**홈을 서버 컴포넌트로 전환**: `HomePage`를 `async` 서버 컴포넌트로 바꾸고 세 섹션을 `Promise.all`로 동시에 조회했습니다. 서버 컴포넌트가 자기 `/api`를 fetch하면 세션 쿠키가 실리지 않아서, 조회 로직을 공용 서버 함수(`findProducts`)로 빼 API 라우트와 함께 쓰도록 했습니다.',
-          '**배너 첫 장 우선 로딩**: 첫 슬라이드만 `priority`로 바꿔 HTML에 preload가 들어가게 하고, 나머지는 lazy로 뒀습니다.',
-          '**폰트를 variable font 한 벌로**: Noto Sans KR을 400/500/700 세 벌 대신 굵기 조절형 한 벌로 바꿔 `@font-face` 376개 → 128개, 해당 CSS 73KB → 24KB로 줄였습니다.',
-          '측정 중 `pnpm start` 스크립트에 존재하지 않는 옵션(`--webpack`)이 있어 로컬 서버가 뜨지 않던 버그도 찾아 고쳤습니다.',
-        ] },
-        { label: '결과 (운영 기준)', table: [['지표', '모바일 전 → 후', '데스크톱 전 → 후'], ['성능 점수', '73 → 80 (회차별 78~91)', '90 → 99'], ['LCP (실측)', '3.28s → 1.78s', '0.89s → 0.98s'], ['CLS', '0.13 → 0.001', '0.152 → 0.007']] },
-        { label: '측정으로 되돌린 것', p: 'Lighthouse 제안을 따랐다가 오히려 나빠진 두 가지를 되돌렸습니다.', items: [
-          '`experimental.inlineCss`: 폰트 CSS 231KB가 HTML에 들어가 HTML이 583KB가 되고, 모바일 LCP가 8s대로 나빠졌습니다.',
-          'AVIF 이미지 포맷: 로컬 이미지 최적화기에서 인코딩이 끝나지 않아 Lighthouse가 타임아웃을 냈습니다.',
-        ], note: '개선책을 하나씩 넣고 매번 재야, 어느 수정이 효과를 냈는지 가릴 수 있다는 것을 확인했습니다.' },
-        { label: '배포 후 문제', p: '첫 배포 직후 hydration 에러(React #418)가 났습니다. 예약 태그의 월을 서버(UTC)는 "2025년 12월", 브라우저(KST)는 "2026년 01월"로 다르게 그렸기 때문입니다. `toKoreaTime`으로 양쪽을 KST 기준으로 맞춰 해결했습니다.' },
-        { label: '남은 한계', items: [
-          '페이지 폭이 1312px로 고정돼 있어 모바일에서 상품 이미지와 배너가 모두 첫 화면으로 계산됩니다. 모바일 점수를 올리는 가장 큰 레버는 반응형 레이아웃입니다.',
-          '데스크톱 실측 LCP는 그대로입니다. 서버가 DB 조회를 마친 뒤 HTML을 보내므로, 늘어난 TTFB가 줄어든 대기 시간을 상쇄했습니다.',
+          '홈과 상품 상세는 서버 컴포넌트에서 DB를 바로 조회합니다. 홈은 배너와 세 섹션을 `Promise.all`로 동시에 조회합니다.',
+          '조회 로직은 공용 서버 함수로 두고 API Route와 서버 컴포넌트가 함께 씁니다. 서버 컴포넌트가 자기 API를 fetch하면 세션 쿠키가 실리지 않아 401이 나기 때문입니다.',
+          '장바구니처럼 자주 바뀌는 데이터는 TanStack Query로 조회하고, 수량을 바꾼 뒤 해당 쿼리만 무효화합니다.',
+          '상품 상세의 탭은 Parallel Routes로, 리뷰 작성 모달은 Intercepting Routes로 만들어 탭과 모달이 각자 URL을 가집니다.',
         ] },
       ] },
     ],
-    trouble: [],
+    trouble: [
+      { title: '클라이언트 상태 관리와 요청 제어: 연속 클릭 시 5개 한도를 넘는 요청', tags: ['TanStack Query', '중복 요청 제어', '캐시 기준 사전 검증', '서버 재검증'], blocks: [
+        { label: '원인', p: '수량 버튼을 누르면 Server Action이 서버 API를 호출하고 `revalidateTag`로 장바구니 캐시를 무효화해 다시 조회하는 구조였습니다. 화면이 가진 수량은 마지막 재조회 결과라서, 응답이 오기 전에 다시 누르면 두 요청이 같은 이전 수량을 기준으로 한도 검사를 통과했습니다. 요청이 진행 중인지 화면이 알 방법도 없었습니다.' },
+        { label: '트레이드오프', table: [
+          ['비교', 'revalidateTag 유지', 'TanStack Query'],
+          ['진행 중인 요청 확인', '`useTransition` 등으로 상태를 직접 만들어야 함', 'mutation의 `isPending` 제공'],
+          ['사전 검증에 쓸 수량', '서버가 다시 그려 준 값. 응답 전에는 이전 값', '쿼리 캐시의 수량'],
+          ['비용', '추가 라이브러리 없음', '번들 크기 증가'],
+        ], note: '장바구니는 자주 누르는 기능이라, 번들 크기가 늘어나는 것을 감수하고 TanStack Query로 바꿨습니다.' },
+        { label: '검증 계층', p: '클라이언트의 차단은 사용성을 위한 것이고, 정합성은 서버가 책임지도록 계층을 나눴습니다.', table: [
+          ['계층', '역할', '동시 요청'],
+          ['버튼', '처리 중인 요청이 있으면(`isPending`) 클릭을 무시', '상태가 다음 렌더에 반영되므로 같은 렌더 안의 연속 클릭은 막지 못함'],
+          ['화면 사전 검증', '쿼리 캐시의 수량으로 `장바구니 + 배송 중 < min(5, 재고 + 배송 중)`을 확인하고, 넘으면 요청하지 않고 사유를 안내', '막지 못함'],
+          ['장바구니 API', 'DB의 재고·장바구니·배송 중 수량으로 다시 검사해 400으로 거절', '검사와 쓰기 사이의 경쟁은 막지 못함'],
+          ['결제 트랜잭션', '트랜잭션 안에서 사용자 문서를 읽고 써서 한도를 다시 검사', '막음. 쓰기 충돌이 나면 다시 실행됨'],
+        ] },
+        { label: '검증', p: '한도 계산은 순수 함수 단위 테스트로 확인했습니다. 결제 트랜잭션은 테스트 전용 MongoDB에서 실제로 돌려, 재고가 모자라면 앞 단계(포인트 차감, 보유 수량 추가)까지 롤백되는지 확인했습니다. 동시 요청을 실제로 발생시키는 테스트는 아직 없습니다.' },
+        { label: '한계', items: [
+          '`isPending`은 잠금이 아니라 상태 값입니다. 같은 렌더 안에서 두 번 눌린 클릭은 둘 다 통과할 수 있고, 이 경우는 서버 검사에 맡깁니다. `useRef`로 동기 잠금을 두는 방법은 적용하지 않았습니다.',
+          '장바구니 API의 검사는 원자적이지 않습니다. 동시에 도착한 두 요청이 모두 통과하면 장바구니에 한도를 넘게 담길 수 있고, 그 주문은 결제 단계에서 거절됩니다.',
+          '화면의 수량은 응답 뒤 재조회로 바뀝니다. 낙관적 업데이트는 넣지 않았습니다.',
+        ] },
+      ] },
+      { title: '렌더링 전략과 성능 최적화: 홈 LCP 병목과 재디자인 후 CLS 회귀', tags: ['Server Components', 'LCP 병목 분석', '데이터 페칭 병렬화', 'CLS 회귀 분석'], blocks: [
+        { label: '원인', p: '운영 홈의 모바일 LCP 4.1s를 단계별로 나눠 보니, 3.17s가 이미지 다운로드(16ms)가 아니라 **요청이 시작되기 전의 대기 시간**(resource load delay)이었습니다.', items: [
+          '홈이 클라이언트 컴포넌트라, 상품 데이터 요청이 JS 로드와 하이드레이션이 끝난 뒤에야 시작됐습니다.',
+          '`useEffect`에서 인기 → 신규 → 예약 순서로 API를 **직렬로 3회** 호출했습니다(응답당 약 700ms). 세 요청은 서로의 결과에 의존하지 않습니다.',
+          '브라우저는 응답을 받아 렌더링한 뒤에야 상품 이미지의 주소를 알 수 있었습니다.',
+        ] },
+        { label: '수정', items: [
+          '**데이터 요청을 서버 렌더링 단계로 옮겼습니다.** 홈을 `async` 서버 컴포넌트로 바꿔, 하이드레이션을 기다리지 않고 상품 목록과 이미지 주소가 HTML에 담겨 내려갑니다.',
+          '**독립적인 조회를 `Promise.all`로 병렬화했습니다.** 대기 시간이 세 조회의 합에서 가장 느린 조회 하나로 줄어듭니다.',
+          '서버 컴포넌트가 자기 API Route를 fetch하면 세션 쿠키가 실리지 않습니다. 조회 로직을 서버 함수(`findProducts`)로 분리해 API Route와 함께 쓰게 했습니다.',
+          '배너 첫 장에 `priority`를 주고, 폰트를 variable font 한 벌로 바꿔 `@font-face`를 376개에서 128개로 줄였습니다.',
+        ] },
+        { label: '검증 (2026.10, 운영, Lighthouse 13.5.0 3회 중앙값)', p: '수정을 하나씩 넣고 매번 다시 측정했습니다. Lighthouse가 제안한 CSS 인라인은 HTML이 583KB로 커져 모바일 LCP가 8s대로 나빠졌고, AVIF는 로컬 이미지 최적화에서 인코딩이 끝나지 않아 둘 다 되돌렸습니다.', table: [['지표', '모바일 전 → 후', '데스크톱 전 → 후'], ['성능 점수', '73 → 80', '90 → 99'], ['LCP (실측)', '3.28s → 1.78s', '0.89s → 0.98s'], ['CLS', '0.13 → 0.001', '0.152 → 0.007']], note: '데스크톱 실측 LCP는 줄지 않았습니다. 서버가 DB 조회를 마친 뒤 HTML을 보내므로, 늘어난 TTFB가 줄어든 대기 시간을 상쇄했습니다.' },
+        { label: '재디자인 후 회귀 (2026.11, 미해결)', p: '11월에 홈을 다시 디자인한 뒤 같은 방법으로 재 보니 모바일 80 → 54점, 데스크톱 99 → 71점으로 내려갔습니다. 실측 LCP는 1.78s → 1.87s로 거의 같고, CLS가 모바일 0.001 → 0.261, 데스크톱 0.007 → 1.012로 커졌습니다.', items: [
+          '**원인**: 재디자인에서 레이아웃에 푸터를 추가했는데, 본문은 fallback이 없는 `Suspense` 경계 안에 있습니다. 푸터가 포함된 셸이 먼저 그려지고, 본문이 스트리밍으로 들어오면서 푸터를 아래로 밀어냅니다.',
+          '**확인**: Lighthouse의 layout-shifts 감사에서 모바일에서 밀리는 요소가 푸터임을 확인했고, 운영 HTML에서 푸터가 본문보다 먼저 내려오는 것을 확인했습니다. 10월에는 본문 아래에 요소가 없어서 드러나지 않았습니다.',
+          '**상태**: 아직 고치지 못했습니다. 본문 영역의 높이를 미리 확보하는 fallback을 두거나, 푸터를 본문과 같은 경계 안으로 옮기면 해결될 것으로 봅니다. 데스크톱에서 컨테이너 전체가 밀리는 원인은 아직 확정하지 못했습니다.',
+        ] },
+      ] },
+      { title: '인증·인가와 접근 제어: 실행된 적 없던 로그인 검사', tags: ['proxy.ts', 'matcher', '인증·인가 분리', '요청 기반 검증'], blocks: [
+        { label: '문제', p: '`/api/protected/*`에 로그인 검사가 있는데도 로그인하지 않은 요청이 통과했고, 관리자 페이지(`/manager`)는 인증 없이 열려 있었습니다. 구조를 개편하면서 접근 제어를 점검하다가 발견했습니다.' },
+        { label: '원인', p: 'proxy의 **실행 대상**(`matcher`)과 함수 안의 **경로 분기 순서**가 서로 맞지 않았습니다.', items: [
+          '**분기 순서**: `/api`로 시작하는 경로를 통과시키는 early return이 `/api/protected` 검사보다 위에 있었습니다. `/api/protected`는 `/api`의 하위 경로라서, 검사에 도달하기 전에 항상 반환됐습니다.',
+          '**실행 대상**: `matcher`에 `/manager`가 없었습니다. `matcher`에 없는 경로에서는 proxy 함수가 호출되지 않으므로, 함수 안에 어떤 검사를 넣어도 적용되지 않습니다.',
+          '`/mypage`는 `matcher`에는 있었지만, 로그인하지 않은 경우를 처리하는 분기가 없었습니다.',
+        ] },
+        { label: '수정', items: [
+          '구체적인 경로(`/api/protected`, 관리자 API 목록)를 먼저 검사하고, 포괄적인 `/api` 통과는 그 뒤에 두었습니다.',
+          '**인증과 인가를 나눴습니다.** 로그인하지 않았으면 401, 로그인했지만 관리자(`ADMIN_EMAILS`)가 아니면 403으로 구분하고, 페이지 요청은 리다이렉트합니다.',
+          '`/manager`와 관리자 API를 `matcher`에 추가했습니다.',
+        ] },
+        { label: '검증', p: '코드를 다시 읽는 대신, 로그인하지 않은 상태로 개발 서버에 curl 요청을 보내 응답 코드를 확인했습니다.', table: [
+          ['요청', '응답'],
+          ['`/api/protected/postCart`', '401'],
+          ['`/api/postEditProduct` (관리자 API)', '403'],
+          ['`/manager`', '307 리다이렉트'],
+          ['`/` (공개 페이지)', '200'],
+        ] },
+        { label: '방어 계층과 한계', items: [
+          '`/api/protected/*`의 라우트 18개는 모두 라우트 안에서도 세션을 다시 확인합니다. proxy에서 빠져도 라우트가 막는 두 겹 구조입니다.',
+          '관리자 API 20개는 대부분 proxy의 경로 목록과 `matcher`에만 의존합니다. 둘 중 한 곳에서 빠지면 보호되지 않으므로, 새 관리자 API는 양쪽에 등록하는 것을 프로젝트 규칙으로 두었습니다. 라우트 안의 관리자 검증은 아직 넣지 못했습니다.',
+        ] },
+      ] },
+    ],
     verifyTitle: '검증',
-    verify: ['**Jest + React Testing Library**: 공통 버튼(클릭, disabled, 링크 렌더링)과 금액 포맷 유틸 테스트'],
+    verify: [
+      '**단위 테스트**: 금액·포인트·한도 계산 같은 순수 함수를 Node 내장 테스트 러너로 검사',
+      '**DB 테스트**: 테스트 전용 MongoDB에서 결제 트랜잭션 롤백과 환불 중복 호출 거절을 확인',
+      '**보안 점검**: 문의 수정·삭제에 작성자 본인 확인을 추가하고, 요청 값이 Mongo 연산자로 해석되지 않도록 타입을 검증',
+      '**CI**: push와 PR마다 lint, 타입 검사, 테스트 실행',
+    ],
   },
 ];
 
