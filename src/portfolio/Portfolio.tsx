@@ -1,11 +1,11 @@
 'use client';
 
-import React, { CSSProperties, useEffect, useId, useRef, useState } from 'react';
+import React, { CSSProperties, createContext, useContext, useEffect, useId, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  FW, PROJECTS, OTHERS, DN_PROJECTS, dnStack, dnMetrics, dnLearned, TECH_USAGE, Item, Block, Case, Flow, Shot, BgFigure, ItemImg,
+  FW, PROJECTS, OTHERS, DN_PROJECTS, dnStack, dnMetrics, dnLearned, TECH_USAGE, Item, Block, Case, Flow, Shot, BgFigure, ItemImg, Project,
 } from '@/src/portfolio/data';
 
 const ACCENT = '#0071E3';
@@ -44,6 +44,41 @@ function Rich({ text, strong, codeBg = '#E8E8ED', codeSize = '0.86em' }: { text:
   );
 }
 
+// 이미지 확대: Detail이 ZoomCtx를 넘긴 페이지(목차가 있는 상세)에서만 그림을 버튼으로 감싼다.
+// fit: 화면 안에 맞춰 보여줌(캡처 화면) / 없으면 원본 폭 이상으로 키우고 스크롤(다이어그램)
+type Zoom = { src: string; alt: string; title: string; w: number; h: number; fit?: boolean };
+const ZoomCtx = createContext<((z: Zoom, opener: HTMLElement) => void) | null>(null);
+function Zoomable({ z, children, fallback, style }: { z: Zoom; children: React.ReactNode; fallback?: React.ReactNode; style?: CSSProperties }) {
+  const open = useContext(ZoomCtx);
+  if (!open) return <>{fallback ?? children}</>;
+  return (
+    <button type="button" aria-haspopup="dialog" aria-label={`${z.title} 크게 보기`} onClick={(e) => open(z, e.currentTarget)} style={{ display: 'block', width: '100%', padding: 0, border: 'none', background: 'none', font: 'inherit', textAlign: 'inherit', cursor: 'zoom-in', ...style }}>
+      {children}
+    </button>
+  );
+}
+const zoomOf = (img: ItemImg): Zoom => ({ src: img.src, alt: img.alt, title: img.caption || img.alt, w: img.w, h: img.h, fit: true });
+
+// 첫 화면의 구간(projects·experience·other)으로 이동한다. 주소에는 #을 남기지 않고 /portfolio만 보인다.
+// 상세 페이지에서 누르면 /portfolio로 이동한 뒤, 첫 화면이 그려지면 그 구간으로 스크롤한다(pendingSection).
+let pendingSection: string | null = null;
+function scrollToSection(id: string, smooth: boolean) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const head = document.querySelector('.pf > header')?.getBoundingClientRect().height ?? 56;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - head - 8, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+}
+function useGoSection() {
+  const router = useRouter();
+  return (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (window.location.pathname === '/portfolio') { scrollToSection(id, true); return; }
+    pendingSection = id;
+    router.push('/portfolio', { scroll: false });
+  };
+}
+
 const itemText = (it: Item) => (typeof it === 'string' ? it : it.t);
 const itemSubs = (it: Item) => (typeof it === 'string' ? [] : it.sub || []);
 
@@ -53,12 +88,16 @@ function ImgDuo({ wide, tall }: { wide: ItemImg; tall: ItemImg }) {
   const cap: CSSProperties = { fontSize: 13, lineHeight: 1.6, color: '#6E6E73', textWrap: 'pretty' };
   return (
     <figure style={{ margin: 0, display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) clamp(110px, 28%, 200px)', gridTemplateRows: 'auto auto', columnGap: 20, rowGap: 8, alignItems: 'stretch' }}>
-      <div style={frame}>
-        <Image src={wide.src} alt={wide.alt} width={wide.w} height={wide.h} sizes="(max-width: 640px) 70vw, 480px" style={{ width: '100%', height: 'auto', display: 'block' }} />
-      </div>
-      <div style={{ ...frame, position: 'relative', minHeight: 0 }}>
-        <Image src={tall.src} alt={tall.alt} fill sizes="200px" style={{ objectFit: 'cover', objectPosition: 'top' }} />
-      </div>
+      <Zoomable z={zoomOf(wide)}>
+        <div style={frame}>
+          <Image src={wide.src} alt={wide.alt} width={wide.w} height={wide.h} sizes="(max-width: 640px) 70vw, 480px" style={{ width: '100%', height: 'auto', display: 'block' }} />
+        </div>
+      </Zoomable>
+      <Zoomable z={zoomOf(tall)} style={{ height: '100%' }}>
+        <div style={{ ...frame, position: 'relative', minHeight: 0, height: '100%' }}>
+          <Image src={tall.src} alt={tall.alt} fill sizes="200px" style={{ objectFit: 'cover', objectPosition: 'top' }} />
+        </div>
+      </Zoomable>
       {(wide.caption || tall.caption) && (
         <figcaption style={{ ...cap, gridColumn: '1 / -1' }}>{[wide.caption, tall.caption].filter(Boolean).join(' ')}</figcaption>
       )}
@@ -70,9 +109,11 @@ function ImgDuo({ wide, tall }: { wide: ItemImg; tall: ItemImg }) {
 function ItemFigure({ img }: { img: ItemImg }) {
   return (
     <figure style={{ margin: '10px 0 6px', display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 420 }}>
-      <div style={{ border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' }}>
-        <Image src={img.src} alt={img.alt} width={img.w} height={img.h} sizes="420px" style={{ width: '100%', height: 'auto', display: 'block' }} />
-      </div>
+      <Zoomable z={zoomOf(img)}>
+        <div style={{ border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' }}>
+          <Image src={img.src} alt={img.alt} width={img.w} height={img.h} sizes="420px" style={{ width: '100%', height: 'auto', display: 'block' }} />
+        </div>
+      </Zoomable>
       {img.caption && <figcaption style={{ fontSize: 13, lineHeight: 1.65, color: '#6E6E73', textWrap: 'pretty' }}>{img.caption}</figcaption>}
     </figure>
   );
@@ -112,9 +153,11 @@ function CaseBlock({ b }: { b: Block }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-start' }}>
           {b.imgs.map((img) => (
             <figure key={img.src} style={{ margin: 0, flex: img.h > img.w ? '0 0 200px' : '1 1 360px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' }}>
-                <Image src={img.src} alt={img.alt} width={img.w} height={img.h} sizes={img.h > img.w ? '200px' : '(max-width: 640px) 100vw, 480px'} style={{ width: '100%', height: 'auto', display: 'block' }} />
-              </div>
+              <Zoomable z={zoomOf(img)}>
+                <div style={{ border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' }}>
+                  <Image src={img.src} alt={img.alt} width={img.w} height={img.h} sizes={img.h > img.w ? '200px' : '(max-width: 640px) 100vw, 480px'} style={{ width: '100%', height: 'auto', display: 'block' }} />
+                </div>
+              </Zoomable>
               {img.caption && <figcaption style={{ fontSize: 13, lineHeight: 1.6, color: '#6E6E73', textWrap: 'pretty' }}>{img.caption}</figcaption>}
             </figure>
           ))}
@@ -168,12 +211,18 @@ function FlowStrip({ flow }: { flow: Flow }) {
 }
 
 // 캡처 화면을 설명과 함께 가로로 넘겨 보는 갤러리 (스크롤 스냅 + 이전/다음 버튼)
-function Gallery({ shots, label: aria, title, dark }: { shots: Shot[]; label: string; title?: string; dark?: boolean }) {
+function Gallery({ shots, label: aria, title, dark, counter }: { shots: Shot[]; label: string; title?: string; dark?: boolean; counter?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [edge, setEdge] = useState({ prev: false, next: true });
+  // 지금 보이는 화면 번호(여러 장이 보이면 범위)
+  const [seen, setSeen] = useState({ from: 1, to: 1 });
   const update = () => {
     const el = ref.current;
-    if (el) setEdge({ prev: el.scrollLeft > 4, next: el.scrollLeft + el.clientWidth < el.scrollWidth - 4 });
+    if (!el) return;
+    setEdge({ prev: el.scrollLeft > 4, next: el.scrollLeft + el.clientWidth < el.scrollWidth - 4 });
+    const box = el.getBoundingClientRect();
+    const vis = Array.from(el.children).map((c, i) => { const r = c.getBoundingClientRect(); return r.left >= box.left - 4 && r.right <= box.right + 4 ? i + 1 : 0; }).filter(Boolean);
+    if (vis.length) setSeen({ from: vis[0], to: vis[vis.length - 1] });
   };
   useEffect(() => { update(); }, []);
   const move = (dir: 1 | -1) => {
@@ -185,9 +234,14 @@ function Gallery({ shots, label: aria, title, dark }: { shots: Shot[]; label: st
     <div style={{ minWidth: 0, width: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
         {title ? <span style={label}>{title}</span> : <span />}
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button type="button" aria-label="이전 화면" disabled={!edge.prev} onClick={() => move(-1)} className={edge.prev ? 'pf-arrow' : undefined} style={btn(edge.prev)}>←</button>
-          <button type="button" aria-label="다음 화면" disabled={!edge.next} onClick={() => move(1)} className={edge.next ? 'pf-arrow' : undefined} style={btn(edge.next)}>→</button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {counter && (
+            <span aria-live="polite" style={{ ...ui, fontSize: 13, color: '#6E6E73', marginRight: 6, fontVariantNumeric: 'tabular-nums' }}>
+              <span className="pf-sr">{aria} </span>{seen.from === seen.to ? seen.from : `${seen.from}–${seen.to}`} / {shots.length}
+            </span>
+          )}
+          <button type="button" aria-label={counter ? `${aria} 이전 화면 보기` : '이전 화면'} disabled={!edge.prev} onClick={() => move(-1)} className={edge.prev ? 'pf-arrow' : undefined} style={btn(edge.prev)}>←</button>
+          <button type="button" aria-label={counter ? `${aria} 다음 화면 보기` : '다음 화면'} disabled={!edge.next} onClick={() => move(1)} className={edge.next ? 'pf-arrow' : undefined} style={btn(edge.next)}>→</button>
         </div>
       </div>
       <div
@@ -202,9 +256,11 @@ function Gallery({ shots, label: aria, title, dark }: { shots: Shot[]; label: st
           const w = s.phone ? 230 : 'min(560px, 84vw)';
           return (
             <figure key={s.src} style={{ flex: '0 0 auto', width: w, margin: 0, scrollSnapAlign: 'start', display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ position: 'relative', aspectRatio: s.phone ? '780 / 1688' : '1440 / 732', border: '1px solid #D2D2D7', borderRadius: s.phone ? 28 : 18, overflow: 'hidden', background: dark ? '#1D1D1F' : '#fff' }}>
-                <Image src={s.src} alt={`${s.title} 화면`} fill sizes={s.phone ? '230px' : '(max-width: 640px) 84vw, 560px'} style={{ objectFit: 'cover', objectPosition: 'top' }} />
-              </div>
+              <Zoomable z={{ src: s.src, alt: `${s.title} 화면`, title: s.title, w: s.w ?? (s.phone ? 780 : 1440), h: s.h ?? (s.phone ? 1688 : 732), fit: true }}>
+                <div style={{ position: 'relative', aspectRatio: s.phone ? '780 / 1688' : '1440 / 732', border: '1px solid #D2D2D7', borderRadius: s.phone ? 28 : 18, overflow: 'hidden', background: dark ? '#1D1D1F' : '#fff' }}>
+                  <Image src={s.src} alt={`${s.title} 화면`} fill sizes={s.phone ? '230px' : '(max-width: 640px) 84vw, 560px'} style={{ objectFit: 'cover', objectPosition: 'top' }} />
+                </div>
+              </Zoomable>
               <figcaption style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <span style={{ fontSize: 15, fontWeight: 600 }}>{s.title}</span>
                 {s.desc && <span style={{ fontSize: 14, lineHeight: 1.65, color: '#424245', textWrap: 'pretty' }}>{s.desc}</span>}
@@ -218,19 +274,29 @@ function Gallery({ shots, label: aria, title, dark }: { shots: Shot[]; label: st
 }
 
 // 상세용: 단계 요약 → 단계별 화면 → 모바일 대기열 화면
-function FlowDetail({ flow, ink }: { flow: Flow; ink: string }) {
+function FlowDetail({ flow, ink, id, lead }: { flow: Flow; ink: string; id?: string; lead?: string }) {
   return (
-    <div style={{ paddingTop: 72 }}>
+    <div id={id} className="pf-flow" style={{ paddingTop: 72 }}>
       <div style={{ ...h2Bar(), marginBottom: 8 }}>
         <h2 style={h2}>주요 기능 플로우</h2>
       </div>
-      <div style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(200px, 100%), 1fr))', gap: '32px 24px' }}>
+      {lead && <p style={{ margin: '4px 0 0', fontSize: 17, lineHeight: 1.7, color: '#424245', maxWidth: 760, textWrap: 'pretty' }}>{lead}</p>}
+      <div className="pf-flow-grid" style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(200px, 100%), 1fr))', gap: '32px 24px' }}>
         {flow.steps.map((s, i) => (
           <React.Fragment key={s.title}>
           <figure style={{ margin: 0, display: 'flex', flexDirection: 'column', gap: 12, minWidth: 0 }}>
-            <a href={s.shot} target="_blank" aria-label={`${s.title} 화면 크게 보기`} style={{ display: 'block', border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' }}>
-              <Image src={s.shot} alt={`${s.title} 화면`} width={1440} height={900} sizes="(max-width: 640px) 100vw, 280px" style={{ width: '100%', height: 'auto', display: 'block' }} />
-            </a>
+            <Zoomable
+              z={{ src: s.shot, alt: `${s.title} 화면. ${s.desc}`, title: `${pad2(i + 1)} ${s.title}`, w: 1440, h: 900, fit: true }}
+              fallback={
+                <a href={s.shot} target="_blank" aria-label={`${s.title} 화면 크게 보기`} style={{ display: 'block', border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' }}>
+                  <Image src={s.shot} alt={`${s.title} 화면`} width={1440} height={900} sizes="(max-width: 640px) 100vw, 280px" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                </a>
+              }
+            >
+              <div style={{ border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' }}>
+                <Image src={s.shot} alt={`${s.title} 화면. ${s.desc}`} width={1440} height={900} sizes="(max-width: 640px) 100vw, 280px" style={{ width: '100%', height: 'auto', display: 'block' }} />
+              </div>
+            </Zoomable>
             <figcaption style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <span style={{ fontSize: 15, fontWeight: 600 }}><span style={{ ...ui, fontSize: 13, color: ink, marginRight: 8 }}>{pad2(i + 1)}</span>{s.title}</span>
               <span style={{ fontSize: 14, lineHeight: 1.65, color: '#424245', textWrap: 'pretty' }}>{s.desc}</span>
@@ -260,6 +326,7 @@ function FlowDetail({ flow, ink }: { flow: Flow; ink: string }) {
         <Gallery
           label="모바일 대기열 화면"
           dark
+          counter
           shots={flow.phones.map((ph) => ({ src: ph.shot, title: ph.cap, phone: true }))}
         />
       </div>
@@ -276,7 +343,7 @@ const CARD_COLORS = [
 ];
 const cardSrcs = (k: string) => [1, 2, 3].map((n) => `/image/nova/card/${k}-${n}.png`);
 
-function DemoSlider({ srcs, resetKey, onMount }: { srcs: string[]; resetKey: number; onMount: (id: string) => void }) {
+function DemoSlider({ srcs, alt, resetKey, onMount }: { srcs: string[]; alt: string; resetKey: number; onMount: (id: string) => void }) {
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; left: number } | null>(null);
@@ -322,9 +389,9 @@ function DemoSlider({ srcs, resetKey, onMount }: { srcs: string[]; resetKey: num
         onPointerCancel={onUp}
         style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', aspectRatio: '1 / 1', background: '#1D1D1F', cursor: 'grab', userSelect: 'none', touchAction: 'pan-x pan-y' }}
       >
-        {srcs.map((src) => (
+        {srcs.map((src, i) => (
           <div key={src} style={{ position: 'relative', flex: '0 0 100%', scrollSnapAlign: 'start' }}>
-            <Image src={src} alt="" fill sizes="320px" draggable={false} style={{ objectFit: 'contain', pointerEvents: 'none' }} />
+            <Image src={src} alt={`${alt} 사진 ${i + 1}/${srcs.length}`} fill sizes="320px" draggable={false} style={{ objectFit: 'contain', pointerEvents: 'none' }} />
           </div>
         ))}
       </div>
@@ -366,8 +433,9 @@ function ProductCardDemo() {
   const seg = (on: boolean): CSSProperties => ({ font: 'inherit', fontSize: 14, fontWeight: 600, padding: '9px 16px', borderRadius: 980, border: 'none', cursor: 'pointer', background: on ? '#1D1D1F' : 'transparent', color: on ? '#fff' : '#1D1D1F' });
   return (
     <div style={{ background: '#F5F5F7', borderRadius: 28, padding: 28, display: 'flex', flexWrap: 'wrap', gap: 28, alignItems: 'flex-start' }}>
-      <div style={{ flex: '0 0 auto', width: 'min(320px, 100%)', borderRadius: 20, overflow: 'hidden', background: '#1D1D1F', color: '#F5F5F7' }}>
-        <DemoSlider key={mode === 'before' ? c.key : 'fixed'} srcs={cardSrcs(c.key)} resetKey={resetKey} onMount={onMount} />
+      <div style={{ position: 'relative', flex: '0 0 auto', width: 'min(320px, 100%)', borderRadius: 20, overflow: 'hidden', background: '#1D1D1F', color: '#F5F5F7' }}>
+        <span style={{ ...ui, position: 'absolute', top: 10, left: 10, zIndex: 1, fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 980, background: mode === 'before' ? '#F5F5F7' : BLUE, color: mode === 'before' ? '#1D1D1F' : '#FFFFFF' }}>{mode === 'before' ? '수정 전 · key로 재생성' : '수정 후 · activeIndex만 초기화'}</span>
+        <DemoSlider key={mode === 'before' ? c.key : 'fixed'} srcs={cardSrcs(c.key)} alt={`맥북 프로 14 ${c.name}`} resetKey={resetKey} onMount={onMount} />
         <div style={{ padding: '16px 18px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ fontSize: 17, fontWeight: 600 }}>맥북 프로 14 <span style={{ fontWeight: 400, color: '#A1A1A6' }}>· {c.name}</span></div>
           <div role="radiogroup" aria-label="색상" style={{ display: 'flex', gap: 10 }}>
@@ -384,15 +452,16 @@ function ProductCardDemo() {
           <button type="button" aria-pressed={mode === 'after'} onClick={() => switchMode('after')} style={seg(mode === 'after')}>수정 후</button>
         </div>
         <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}>
-          <div><div style={{ fontSize: 13, color: '#6E6E73' }}>색을 누른 횟수</div><div style={{ fontSize: 36, fontWeight: 600, letterSpacing: '-0.03em' }}>{clicks}</div></div>
-          <div><div style={{ fontSize: 13, color: '#6E6E73' }}>슬라이더를 새로 만든 횟수</div><div style={{ fontSize: 36, fontWeight: 600, letterSpacing: '-0.03em', color: remounts > 0 ? '#0071E3' : '#1D1D1F' }}>{remounts}</div></div>
+          <div><div style={{ fontSize: 13, color: '#6E6E73' }}>색상 변경 횟수</div><div style={{ fontSize: 36, fontWeight: 600, letterSpacing: '-0.03em' }}>{clicks}</div></div>
+          <div><div style={{ fontSize: 13, color: '#6E6E73' }}>슬라이더 재생성 횟수</div><div aria-live="polite" style={{ fontSize: 36, fontWeight: 600, letterSpacing: '-0.03em', color: remounts > 0 ? '#0071E3' : '#1D1D1F' }}>{remounts}</div></div>
         </div>
         <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: '#424245', textWrap: 'pretty' }}>
+          <strong style={{ color: '#1D1D1F' }}>{mode === 'before' ? '수정 전: ' : '수정 후: '}</strong>
           {mode === 'before'
-            ? <>슬라이더에 <code style={{ fontFamily: CODE_FONT, fontSize: '0.9em', background: '#E8E8ED', padding: '1px 6px', borderRadius: 6 }}>key</code>를 사진 목록으로 걸어 둔 방식입니다. 색이 바뀔 때마다 슬라이더를 지우고 새로 만듭니다.</>
-            : <>슬라이더는 그대로 두고 사진과 현재 번호만 바꿉니다. 색을 눌러도 새로 만드는 일이 없습니다.</>}
+            ? <>슬라이더의 <code style={{ fontFamily: CODE_FONT, fontSize: '0.9em', background: '#E8E8ED', padding: '1px 6px', borderRadius: 6 }}>key</code>에 사진 목록을 연결한 방식입니다. 색상이 바뀔 때마다 슬라이더를 제거하고 다시 생성합니다.</>
+            : <>슬라이더는 그대로 두고 사진과 현재 위치만 바꿉니다. 색상을 바꿔도 슬라이더를 다시 생성하지 않습니다.</>}
         </p>
-        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: '#6E6E73', textWrap: 'pretty' }}>사진을 옆으로 넘긴 뒤 색을 눌러 보세요. 두 버전 모두 첫 장으로 돌아가지만, 만드는 횟수가 다릅니다. 실제 앱의 카드를 단순화한 데모이고, 실제로는 Swiper를 쓰며 여기서는 같은 구조를 CSS 스크롤 스냅으로 흉내 냈습니다.</p>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: '#6E6E73', textWrap: 'pretty' }}>사진을 옆으로 넘긴 뒤 색상을 바꿔 보세요. 두 버전 모두 첫 장으로 돌아가지만, 수정 전에는 색상을 바꿀 때마다 재생성 횟수가 1씩 늘고 수정 후에는 0으로 유지됩니다. 실제 앱의 카드를 단순화한 데모로, 실제 앱은 Swiper를 사용하며 여기서는 같은 구조를 CSS 스크롤 스냅으로 재현했습니다.</p>
       </div>
     </div>
   );
@@ -431,12 +500,103 @@ function BgFigureView({ fig }: { fig: BgFigure }) {
   );
 }
 
-type Zoom = { src: string; alt: string; title: string; w: number; h: number };
+
+type Toc = NonNullable<Project['toc']>;
+
+// 목차 목록 — 데스크톱 사이드와 모바일 패널이 같이 쓴다. 하위 항목이 활성이면 상위도 강조한다.
+function TocList({ toc, active, go }: { toc: Toc; active: string; go: (id: string) => void }) {
+  const link = (id: string, text: string, on: boolean, child?: boolean): React.ReactNode => (
+    <a
+      href={'#' + id}
+      aria-current={on ? 'location' : undefined}
+      onClick={(e) => { e.preventDefault(); go(id); }}
+      className="pf-toc-link"
+      style={{ display: 'block', padding: child ? '5px 0 5px 26px' : '7px 0 7px 12px', borderLeft: `2px solid ${on && !child ? BLUE : 'transparent'}`, fontSize: child ? 13 : 14, lineHeight: 1.45, fontWeight: on ? 600 : 400, color: on ? BLUE : child ? '#86868B' : '#6E6E73' }}
+    >
+      {text}
+    </a>
+  );
+  return (
+    <ol style={{ ...ul, borderLeft: '1px solid #E8E8ED' }}>
+      {toc.map((t) => {
+        const childOn = !!t.children?.some((c) => c.id === active);
+        return (
+          <li key={t.id}>
+            {link(t.id, t.label, t.id === active || childOn)}
+            {t.children && (
+              <ol style={{ ...ul }}>
+                {t.children.map((c, i) => (
+                  <li key={c.id}>
+                    {/* 보조 구현은 대표 사례와 구분해 작은 제목 아래에 둔다 */}
+                    {c.sub && !t.children![i - 1]?.sub && <span style={{ ...ui, display: 'block', padding: '8px 0 2px 26px', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', color: '#86868B' }}>보조 구현</span>}
+                    {link(c.id, c.label, c.id === active, true)}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+// 노션식 목차: 평소에는 화면 오른쪽 끝에 항목 수만큼 짧은 가로줄만 보이고(현재 위치는 파란 줄),
+// 마우스를 올리거나 Tab으로 들어오면 300px 목차 패널이 본문 위에 펼쳐진다. 본문 폭은 차지하지 않는다.
+function TocRail({ toc, active, go }: { toc: Toc; active: string; go: (id: string) => void }) {
+  const bars = toc.flatMap((t) => [
+    { id: t.id, child: false, on: t.id === active || !!t.children?.some((c) => c.id === active) },
+    ...(t.children ?? []).map((c) => ({ id: c.id, child: true, sub: !!c.sub, on: c.id === active })),
+  ]);
+  return (
+    <nav aria-label="페이지 목차" className="pf-rail" style={{ position: 'fixed', right: 12, top: 'calc(var(--pf-head, 56px) + 96px)', zIndex: 20, padding: '8px 4px 8px 28px' }}>
+      <div aria-hidden="true" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10 }}>
+        {bars.map((b) => <span key={b.id} style={{ display: 'block', width: b.child ? ('sub' in b && b.sub ? 6 : 10) : 18, height: 2, borderRadius: 2, background: b.on ? BLUE : '#C7C7CC' }} />)}
+      </div>
+      <div className="pf-rail-panel" style={{ position: 'absolute', top: -8, right: 0, width: 300, maxHeight: 'calc(100vh - var(--pf-head, 56px) - 140px)', overflowY: 'auto', boxSizing: 'border-box', background: '#FFFFFF', border: '1px solid #E8E8ED', borderRadius: 14, boxShadow: '0 12px 32px rgba(0,0,0,0.10)', padding: '14px 16px 14px 8px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <span style={{ ...label, fontSize: 12, paddingLeft: 14 }}>목차</span>
+        <TocList toc={toc} active={active} go={go} />
+      </div>
+    </nav>
+  );
+}
+
+// 모바일·좁은 화면: 오른쪽 아래 '목차' 버튼을 누르면 패널이 열린다. Esc·바깥 누르기·항목 선택으로 닫힘
+function TocMobile({ toc, active, go }: { toc: Toc; active: string; go: (id: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  const btn = useRef<HTMLButtonElement>(null);
+  const panelId = useId();
+  const current = toc.flatMap((t) => [t, ...(t.children ?? [])]).find((t) => t.id === active)?.label;
+  useEffect(() => {
+    if (!open) return;
+    box.current?.querySelector<HTMLAnchorElement>('a[aria-current], a')?.focus();
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setOpen(false); btn.current?.focus(); } };
+    const onDown = (e: PointerEvent) => { if (!box.current?.contains(e.target as Node)) setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('pointerdown', onDown);
+    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('pointerdown', onDown); };
+  }, [open]);
+  return (
+    <div ref={box} className="pf-toc-mobile" style={{ position: 'fixed', right: 16, bottom: 'calc(16px + env(safe-area-inset-bottom))', zIndex: 20 }}>
+      {open && (
+        <nav id={panelId} aria-label="페이지 목차" style={{ position: 'absolute', right: 0, bottom: 52, width: 'min(280px, calc(100vw - 32px))', maxHeight: '60vh', overflowY: 'auto', background: '#FFFFFF', border: '1px solid #D2D2D7', borderRadius: 18, padding: '14px 16px 14px 8px', boxShadow: '0 12px 32px rgba(0,0,0,0.12)' }}>
+          <TocList toc={toc} active={active} go={(id) => { setOpen(false); go(id); }} />
+        </nav>
+      )}
+      <button ref={btn} type="button" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen((v) => !v)}
+        style={{ ...ui, display: 'flex', alignItems: 'center', gap: 6, maxWidth: 'calc(100vw - 32px)', height: 44, padding: '0 18px', border: '1px solid #0071E3', borderRadius: 980, background: '#FFFFFF', color: BLUE, fontSize: 14, fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+        목차{current && <span style={{ fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>· {current}</span>}
+      </button>
+    </div>
+  );
+}
 
 function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => void }) {
   const p = PROJECTS[idx];
   // 지금 화면 위쪽에 걸린 구간(핵심 구현·트러블슈팅)을 헤더에 알린다.
   useEffect(() => {
+    if (p.toc) return () => onSection(''); // 목차가 있으면 아래 목차 활성 항목을 헤더에 쓴다
     const spots: [string, string][] = [['sec-core', '핵심 구현'], ['sec-trouble', '트러블슈팅']];
     const onScroll = () => {
       let current = '';
@@ -451,7 +611,53 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => { window.removeEventListener('scroll', onScroll); onSection(''); };
-  }, [idx, onSection]);
+  }, [idx, onSection, p.toc]);
+  // 페이지 안 목차 (목차가 있는 상세만): 고정 헤더 높이를 재서 앵커 이동·활성 판정 기준으로 쓴다
+  const goSection = useGoSection();
+  const toc = p.toc;
+  const [headH, setHeadH] = useState(56);
+  const [active, setActive] = useState('');
+  useEffect(() => {
+    if (!toc) return;
+    const header = document.querySelector<HTMLElement>('.pf > header');
+    if (!header) return;
+    const measure = () => setHeadH(Math.round(header.getBoundingClientRect().height));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(header);
+    return () => ro.disconnect();
+  }, [toc]);
+  useEffect(() => {
+    if (!toc) return;
+    const onScroll = () => {
+      const line = headH + 40;
+      const top = (id: string) => document.getElementById(id)?.getBoundingClientRect();
+      let cur = toc[0].id;
+      let parent = toc[0];
+      for (const t of toc) { const r = top(t.id); if (r && r.top <= line) { cur = t.id; parent = t; } }
+      for (const c of parent.children ?? []) { const r = top(c.id); if (r && r.top <= line && r.bottom > line) cur = c.id; }
+      // 페이지 끝에서는 마지막 섹션이 기준선까지 올라오지 못한다 — 끝에 닿으면 마지막 항목을 표시
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = toc[toc.length - 1].id;
+      setActive(cur);
+      onSection(cur === toc[0].id ? '' : (toc.find((t) => t.id === cur || t.children?.some((c) => c.id === cur))?.label ?? ''));
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); };
+  }, [toc, headH, onSection]);
+  const go = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - headH - 24, behavior: reduce ? 'auto' : 'smooth' });
+    history.replaceState(null, '', '#' + id);
+    // 키보드 사용자가 이동한 곳에서 이어 읽도록 포커스도 옮긴다
+    el.setAttribute('tabindex', '-1');
+    el.style.outline = 'none'; // 섹션 전체에 포커스 테두리가 생기지 않게
+    el.focus({ preventScroll: true });
+    setActive(id);
+  };
   const fw = FW[p.fw];
   const next = PROJECTS[(idx + 1) % PROJECTS.length];
   const sections: [string, Case[]][] = [['핵심 구현', p.core]];
@@ -463,11 +669,24 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
     p.erdImg && { src: p.erdImg, title: '데이터 모델', alt: `${p.name} 데이터 모델 ERD`, w: 1100, h: 810 },
   ].filter((d): d is Zoom => !!d);
   const [zoom, setZoom] = useState<Zoom | null>(null);
-  const opener = useRef<HTMLButtonElement | null>(null);
+  const opener = useRef<HTMLElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const openZoom = (z: Zoom, el: HTMLElement) => { opener.current = el; setZoom(z); };
   // 열려 있는 동안: Esc로 닫기, 뒤 화면 스크롤 잠금. 닫으면 눌렀던 그림 버튼으로 포커스를 돌려준다
   useEffect(() => {
     if (!zoom) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setZoom(null); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setZoom(null);
+      // Tab이 모달 밖으로 나가지 않게 처음·끝에서 돌린다
+      if (e.key === 'Tab' && dialogRef.current) {
+        const f = Array.from(dialogRef.current.querySelectorAll<HTMLElement>('button, [tabindex="0"]'));
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (!dialogRef.current.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+        else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
     window.addEventListener('keydown', onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -475,8 +694,8 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev; btn?.focus(); };
   }, [zoom]);
   // 왼쪽 라벨 + 오른쪽 Block 목록 (기획·디자인·배포와 운영)
-  const blockRow = (title: string, blocks?: Block[]) => blocks && (
-    <div style={row}>
+  const blockRow = (title: string, blocks?: Block[], id?: string) => blocks && (
+    <div id={toc ? id : undefined} style={row}>
       <div style={sideLabel}>{title}</div>
       <div style={{ flex: '1 1 480px', display: 'flex', flexDirection: 'column', gap: 22, minWidth: 0, maxWidth: 760 }}>
         {blocks.map((b, j) => <CaseBlock key={j} b={b} />)}
@@ -484,10 +703,10 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
     </div>
   );
 
-  return (
-    <article style={{ ...wrap, padding: '56px 32px 96px' }}>
-      <Link href="/portfolio#projects" className="pf-link" style={{ display: 'inline-flex', gap: 8, fontSize: 17, padding: '6px 0' }}>‹ 전체 프로젝트</Link>
-      <div style={{ padding: '40px 0 56px', borderBottom: '1px solid #D2D2D7' }}>
+  const body = (
+    <>
+      <Link href="/portfolio" onClick={goSection('projects')} className="pf-link" style={{ display: 'inline-flex', gap: 8, fontSize: 17, padding: '6px 0' }}>‹ 전체 프로젝트</Link>
+      <div id={toc ? 'sec-intro' : undefined} style={{ padding: '40px 0 56px', borderBottom: '1px solid #D2D2D7' }}>
         <div style={{ ...ui, display: 'flex', gap: 12, alignItems: 'center', fontSize: 13, flexWrap: 'wrap' }}>
           <span style={{ color: BLUE }}>{p.no}</span>
           <span style={fwBadge(p.fw)}>{fw.label}</span>
@@ -498,7 +717,7 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
         <p style={{ margin: '28px 0 0', fontSize: 19, lineHeight: 1.7, maxWidth: '56ch', textWrap: 'pretty' }}>{p.tagline}</p>
         {p.focus && (
           <div style={{ marginTop: 36, paddingTop: 28, borderTop: '1px solid #D2D2D7', display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 820 }}>
-            <span style={{ ...label, fontSize: 13 }}>이 프로젝트에서 다룬 문제</span>
+            <span style={{ ...label, fontSize: 13 }}>핵심 과제</span>
             <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, fontWeight: 600, letterSpacing: '-0.01em', textWrap: 'pretty' }}>{p.focus.lead}</p>
             <Dashes items={p.focus.items} strong={{ color: '#1D1D1F', fontWeight: 600 }} size={16} gap={10} />
           </div>
@@ -519,7 +738,7 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
       </div>
 
       {p.shots && (
-        <div style={{ ...row, flexDirection: 'column', flexWrap: 'nowrap', gap: 24 }}>
+        <div id={toc ? 'sec-shots' : undefined} style={{ ...row, flexDirection: 'column', flexWrap: 'nowrap', gap: 24 }}>
           {Array.from(new Set(p.shots.map((x) => x.group ?? ''))).map((g) => (
             <Gallery key={g} title={g} label={`${p.name} ${g} 화면`} shots={p.shots!.filter((x) => (x.group ?? '') === g)} />
           ))}
@@ -527,7 +746,7 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
       )}
 
       {p.background && (
-        <div style={row}>
+        <div id={toc ? 'sec-background' : undefined} style={row}>
           <div style={sideLabel}>기획 배경</div>
           <div style={{ flex: '1 1 480px', display: 'flex', flexDirection: 'column', gap: 14, minWidth: 0, maxWidth: 720 }}>
             {p.background.map((t, i) => (
@@ -542,13 +761,19 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
 
       {p.scope && (
         <div style={row}>
-          <div style={sideLabel}>역할 구분</div>
+          <div style={sideLabel}>{toc ? '역할과 담당 업무' : '역할 구분'}</div>
           <div style={{ flex: '1 1 480px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: '28px 40px', minWidth: 0 }}>
             {p.scope.map((g, i) => (
               <div key={g.label} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <span style={{ fontSize: 15, fontWeight: 600, color: i ? BLUE : '#1D1D1F' }}>{g.label}</span>
                 {g.note && <span style={{ fontSize: 14, lineHeight: 1.6, color: '#6E6E73', textWrap: 'pretty' }}>{g.note}</span>}
                 <Dashes items={g.items} />
+                {i === p.scope!.length - 1 && p.duties.map((d) => (
+                  <div key={d.group} style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 14 }}>
+                    <span style={{ ...label, fontSize: 12 }}>{d.group}</span>
+                    <Dashes items={d.items} strong={{ color: '#1D1D1F', fontWeight: 600 }} size={14} />
+                  </div>
+                ))}
               </div>
             ))}
           </div>
@@ -572,19 +797,32 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
         </div>
       )}
 
-      {blockRow('기획', p.planning)}
+      {blockRow('기획', p.planning, 'sec-planning')}
       {blockRow('디자인', p.design)}
 
-      {p.flow && <FlowDetail flow={p.flow} ink={BLUE} />}
+      {p.flow && <FlowDetail flow={p.flow} ink={BLUE} id={toc ? 'sec-flow' : undefined} lead={p.leads?.flow} />}
 
-      <div style={row}>
+      <div id={toc ? 'sec-stack' : undefined} style={row}>
         <div style={sideLabel}>기술 스택</div>
-        <div style={{ flex: '1 1 480px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {p.stack.map((s) => <span key={s} style={{ ...chip, fontSize: 12, padding: '6px 10px', color: undefined }}>{s}</span>)}
-        </div>
+        {p.stackGroups ? (
+          <dl style={{ flex: '1 1 480px', margin: 0, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {p.stackGroups.map((g) => (
+              <div key={g.label} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '6px 16px' }}>
+                <dt style={{ ...label, flex: '0 0 120px', fontSize: 13 }}>{g.label}</dt>
+                <dd style={{ margin: 0, flex: '1 1 240px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {g.items.map((x) => <span key={x} style={{ ...chip, fontSize: 12, padding: '6px 10px', color: undefined }}>{x}</span>)}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        ) : (
+          <div style={{ flex: '1 1 480px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {p.stack.map((s) => <span key={s} style={{ ...chip, fontSize: 12, padding: '6px 10px', color: undefined }}>{s}</span>)}
+          </div>
+        )}
       </div>
 
-      <div style={row}>
+      {!p.scope && <div style={row}>
         <div style={sideLabel}>담당 업무</div>
         <div style={{ flex: '1 1 480px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: '28px 40px' }}>
           {p.duties.map((g) => (
@@ -594,16 +832,16 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
             </div>
           ))}
         </div>
-      </div>
+      </div>}
 
       {diagrams.length > 0 && (
-        <div style={{ ...row, flexDirection: 'column', flexWrap: 'nowrap', gap: 16 }}>
+        <div id={toc ? 'sec-arch' : undefined} style={{ ...row, flexDirection: 'column', flexWrap: 'nowrap', gap: 16 }}>
           {/* 둘이면 좌우로, 좁은 화면이나 하나뿐이면 전체 폭으로 */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(420px, 100%), 1fr))', gap: 24, alignItems: 'start' }}>
             {diagrams.map((d) => (
               <div key={d.src} style={{ display: 'flex', flexDirection: 'column', gap: 16, minWidth: 0 }}>
                 <span style={label}>{d.title}</span>
-                <button type="button" aria-haspopup="dialog" aria-label={`${d.title} 그림 크게 보기`} onClick={(e) => { opener.current = e.currentTarget; setZoom(d); }} style={{ display: 'block', width: '100%', padding: 0, border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#fff', cursor: 'zoom-in' }}>
+                <button type="button" aria-haspopup="dialog" aria-label={`${d.title} 그림 크게 보기`} onClick={(e) => openZoom(d, e.currentTarget)} style={{ display: 'block', width: '100%', padding: 0, border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#fff', cursor: 'zoom-in' }}>
                   <Image src={d.src} alt={d.alt} width={d.w} height={d.h} unoptimized style={{ width: '100%', height: 'auto', display: 'block' }} />
                 </button>
               </div>
@@ -615,14 +853,16 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
 
       {zoom && (
         <div onClick={() => setZoom(null)} style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div role="dialog" aria-modal="true" aria-labelledby="zoom-title" onClick={(e) => e.stopPropagation()} style={{ background: '#fff', borderRadius: 28, width: '100%', maxHeight: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="zoom-title" onClick={(e) => e.stopPropagation()} style={{ background: '#fff', borderRadius: 28, width: '100%', maxHeight: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '16px 16px 12px 28px' }}>
               <span id="zoom-title" style={label}>{zoom.title}</span>
               <button type="button" aria-label="닫기" autoFocus onClick={() => setZoom(null)} className="pf-arrow" style={{ flex: '0 0 auto', width: 40, height: 40, borderRadius: 99, border: 'none', background: 'rgba(232,232,237,0.8)', color: '#1D1D1F', fontSize: 20, lineHeight: 1, cursor: 'pointer' }}>×</button>
             </div>
             {/* 모달 폭에 맞춰 키우되 원본 폭 아래로는 줄이지 않는다 — 넘치면 여기서 스크롤 */}
             <div tabIndex={0} aria-label={`${zoom.title} 그림`} style={{ flex: '1 1 auto', minHeight: 0, overflow: 'auto', padding: '0 28px 28px', scrollbarWidth: 'thin', scrollbarColor: '#C7C7CC transparent' }}>
-              <Image src={zoom.src} alt={zoom.alt} width={zoom.w} height={zoom.h} unoptimized style={{ width: '100%', minWidth: zoom.w, height: 'auto', display: 'block' }} />
+              {zoom.fit
+                ? <Image src={zoom.src} alt={zoom.alt} width={zoom.w} height={zoom.h} sizes="100vw" style={{ display: 'block', margin: '0 auto', width: 'auto', height: 'auto', maxWidth: '100%', maxHeight: 'calc(100dvh - 150px)' }} />
+                : <Image src={zoom.src} alt={zoom.alt} width={zoom.w} height={zoom.h} unoptimized style={{ width: '100%', minWidth: zoom.w, height: 'auto', display: 'block' }} />}
             </div>
           </div>
         </div>
@@ -641,6 +881,9 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
             <h2 style={h2}>{title}</h2>
             <span style={{ ...ui, fontSize: 12, color: '#6E6E73' }}>{pad(cases.length)}</span>
           </div>
+          {(title === '트러블슈팅' ? p.leads?.trouble : p.leads?.core) && (
+            <p style={{ margin: '4px 0 12px', fontSize: 17, lineHeight: 1.7, color: '#424245', maxWidth: 760, textWrap: 'pretty' }}>{title === '트러블슈팅' ? p.leads?.trouble : p.leads?.core}</p>
+          )}
           {cases.map((c, i) => {
             const hasSub = cases.some((x) => x.sub);
             return (
@@ -648,10 +891,10 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
                 {c.sub && !cases[i - 1]?.sub && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 40px', padding: '44px 0 4px' }}>
                     <span style={{ ...sideLabel, color: '#1D1D1F' }}>보조 구현</span>
-                    <span style={{ flex: '1 1 480px', fontSize: 15, lineHeight: 1.7, color: '#6E6E73' }}>위 대표 사례를 받쳐 주는 기반 작업입니다.</span>
+                    <span style={{ flex: '1 1 480px', fontSize: 15, lineHeight: 1.7, color: '#6E6E73' }}>대표 사례를 뒷받침하는 기반 작업입니다.</span>
                   </div>
                 )}
-                <div style={{ ...row, padding: c.sub ? '28px 0' : '36px 0' }}>
+                <div id={c.id} style={{ ...row, padding: c.sub ? '28px 0' : '36px 0' }}>
                   <div style={{ flex: '0 0 200px' }}>
                     <span style={{ ...ui, fontSize: c.sub ? 20 : 28, fontWeight: 500, color: c.sub ? '#86868B' : BLUE }}>{pad(i + 1)}</span>
                   </div>
@@ -673,21 +916,46 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
         </div>
       ))}
 
-      {blockRow('배포와 운영', p.ops)}
+      {blockRow('배포와 운영', p.ops, 'sec-ops')}
 
-      <div style={{ ...row, padding: '72px 0 40px' }}>
+      <div id={toc ? 'sec-verify' : undefined} style={{ ...row, padding: '72px 0 40px' }}>
         <div style={sideLabel}>{p.verifyTitle}</div>
-        <div style={{ flex: '1 1 480px', maxWidth: 760 }}>
+        <div style={{ flex: '1 1 480px', minWidth: 0, maxWidth: 760 }}>
           {p.verifyGroups ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 36 }}>
-              {p.verifyGroups.map((g) => (
-                <div key={g.label} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <span style={{ fontSize: 15, fontWeight: 600 }}>{g.label}</span>
-                  {g.lead && <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: '#424245', textWrap: 'pretty' }}>{g.lead}</p>}
-                  <Dashes items={g.items} strong={{ color: '#1D1D1F', fontWeight: 600 }} gap={10} />
-                  {g.extra && <div style={{ marginTop: 16 }}><CaseBlock b={g.extra} /></div>}
-                </div>
-              ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+              {p.leads?.verify && <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, color: '#424245', textWrap: 'pretty' }}>{p.leads.verify}</p>}
+              {p.verifyGroups.map((g) => {
+                const tone = g.sub ? { size: 14, color: '#6E6E73' } : { size: 15, color: '#424245' };
+                return (
+                  <div key={g.label} style={{ display: 'flex', flexDirection: 'column', gap: 12, ...(g.sub ? { paddingTop: 28, borderTop: '1px solid #E8E8ED' } : {}) }}>
+                    <span style={{ fontSize: g.sub ? 14 : 15, fontWeight: 600, color: g.sub ? '#6E6E73' : '#1D1D1F' }}>{g.sub ? `보조 · ${g.label}` : g.label}</span>
+                    {g.metrics && (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))', gap: '16px 28px', margin: '4px 0 8px' }}>
+                        {g.metrics.map((m) => (
+                          <div key={m.k} style={{ borderTop: '1px solid #D2D2D7', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                            <span style={{ ...ui, fontSize: 30, fontWeight: 600, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>{m.v}</span>
+                            <span style={{ fontSize: 13, lineHeight: 1.55, color: '#6E6E73', textWrap: 'pretty' }}>{m.k}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {g.scenarios && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
+                        <span style={{ ...label, fontSize: 12 }}>대표 시나리오</span>
+                        <Dashes items={g.scenarios} strong={{ color: '#1D1D1F', fontWeight: 600 }} size={15} color="#1D1D1F" gap={8} />
+                      </div>
+                    )}
+                    {g.lead && <p style={{ margin: 0, fontSize: tone.size, lineHeight: 1.7, color: tone.color, textWrap: 'pretty' }}>{g.lead}</p>}
+                    <Dashes items={g.items} strong={{ color: g.sub ? '#424245' : '#1D1D1F', fontWeight: 600 }} size={tone.size} color={tone.color} gap={10} />
+                    {g.extra && (g.extraLabel ? (
+                      <details style={{ marginTop: 8 }}>
+                        <summary className="pf-summary">{g.extraLabel}</summary>
+                        <div style={{ marginTop: 16 }}><CaseBlock b={g.extra} /></div>
+                      </details>
+                    ) : <div style={{ marginTop: 16 }}><CaseBlock b={g.extra} /></div>)}
+                  </div>
+                );
+              })}
             </div>
           ) : (() => {
             const cut = p.verifyExtra ? (p.verifyExtraAfter ?? p.verify.length) : p.verify.length;
@@ -710,7 +978,18 @@ function Detail({ idx, onSection }: { idx: number; onSection: (s: string) => voi
         </div>
         <span style={{ fontSize: 32 }}>→</span>
       </Link>
-    </article>
+    </>
+  );
+
+  return (
+    <ZoomCtx.Provider value={toc ? openZoom : null}>
+      <article className={toc ? 'pf-ux' : undefined} style={{ ...wrap, padding: '56px 32px 96px', ...(toc ? { ['--pf-head' as string]: `${headH}px` } : {}) }}>
+        {/* 키보드로는 목차를 먼저 만나도록 본문보다 앞에 둔다(화면에서는 오른쪽 끝에 고정) */}
+        {toc && <TocRail toc={toc} active={active} go={go} />}
+        {body}
+        {toc && <TocMobile toc={toc} active={active} go={go} />}
+      </article>
+    </ZoomCtx.Provider>
   );
 }
 
@@ -735,8 +1014,8 @@ function Home() {
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: '0.01em' }}>김혜진 · Frontend Developer</div>
         <h1 style={{ margin: '16px auto 0', fontSize: 'clamp(38px,6vw,72px)', lineHeight: 1.1, letterSpacing: '-0.035em', fontWeight: 600, maxWidth: '16ch', textWrap: 'balance' }}>사용자도, 팀도 막히지 않게 만드는 프론트엔드 개발자입니다.</h1>
         <div style={{ margin: '48px auto 0', maxWidth: 680, display: 'flex', flexDirection: 'column', gap: 18, fontSize: 19, lineHeight: 1.7, color: '#424245', textWrap: 'pretty' }}>
-          <p style={{ margin: 0 }}>사용자가 막히는 곳을 출시 전에 찾고, 실제 사용자 앞에서 문제를 해결해 왔습니다. 디엔소프트에서 3일간 754명이 참여한 박람회 이벤트의 현장 장애 대응을 맡았고, 100개 이상의 초등학교가 사용한 관리자 시스템을 일정 안에 오픈했습니다.</p>
-          <p style={{ margin: 0 }}>다른 파트가 늦어져도 팀이 기다리지 않도록 공통 스타일과 MSW 목 API를 먼저 준비하고, 성능은 측정으로 병목을 찾아 고칩니다. NEXT GACHA 홈의 LCP 병목이 하이드레이션 뒤에 직렬로 나가던 데이터 요청임을 찾아 서버 렌더링 단계로 옮기고, 모바일 실측 LCP를 3.28s에서 1.78s로 줄였습니다(Lighthouse 3회 중앙값).</p>
+          <p style={{ margin: 0 }}>사용자가 막히는 지점을 출시 전에 찾아내고, 실제 서비스 현장에서 문제를 해결해 왔습니다. 디엔소프트에서 3일간 754명이 참여한 박람회 이벤트의 현장 장애 대응을 맡았고, 100개 이상의 초등학교가 사용한 관리자 시스템을 일정 안에 오픈했습니다.</p>
+          <p style={{ margin: 0 }}>다른 파트의 일정이 늦어져도 팀이 기다리지 않도록 공통 스타일과 MSW 목 API를 먼저 준비하고, 성능 문제는 측정을 통해 병목을 찾아 개선합니다. NEXT GACHA 홈에서는 하이드레이션 이후 순차적으로 실행되던 데이터 요청이 LCP 병목임을 확인하고 이를 서버 렌더링 단계로 옮겨, 모바일 실측 LCP를 3.28s에서 1.78s로 줄였습니다(Lighthouse 3회 측정 중앙값).</p>
         </div>
         <div style={{ marginTop: 40, display: 'flex', gap: '12px 28px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
           <a href="mailto:khj000217@gmail.com" className="pf-btn">이메일 보내기</a>
@@ -766,7 +1045,7 @@ function Home() {
                 <p style={{ margin: 0, fontSize: 17, lineHeight: 1.7, color: '#424245', maxWidth: '62ch', textWrap: 'pretty' }}>{p.tagline}</p>
                 {p.highlights && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 760 }}>
-                    <span style={{ ...label, fontSize: 13 }}>기술적으로 다룬 문제</span>
+                    <span style={{ ...label, fontSize: 13 }}>주요 기술 과제</span>
                     <Dashes items={p.highlights} strong={{ color: '#1D1D1F', fontWeight: 600 }} gap={6} />
                   </div>
                 )}
@@ -835,7 +1114,7 @@ function Home() {
             </div>
           ))}
           <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap', padding: '40px 0 0' }}>
-            <div style={{ flex: '0 0 260px', fontSize: 22, fontWeight: 600, letterSpacing: '-0.02em' }}>실무에서 얻은 것</div>
+            <div style={{ flex: '0 0 260px', fontSize: 22, fontWeight: 600, letterSpacing: '-0.02em' }}>실무에서 배운 점</div>
             <div style={{ flex: '1 1 420px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               {dnLearned.map((l) => (
                 <div key={l.t} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -957,7 +1236,16 @@ function Home() {
 // 경로 라우팅: /portfolio 첫 화면, /portfolio/<slug> 프로젝트 상세. 서버가 내려주는 HTML에 상세 내용이 담긴다
 export default function Portfolio({ slug }: { slug?: string }) {
   const router = useRouter();
+  const goSection = useGoSection();
   const [section, setSection] = useState('');
+
+  // 상세 페이지에서 '전체 프로젝트'·헤더 메뉴로 넘어왔으면, 첫 화면이 그려진 뒤 그 구간으로 스크롤한다
+  useEffect(() => {
+    if (slug || !pendingSection) return;
+    const id = pendingSection;
+    pendingSection = null;
+    requestAnimationFrame(() => requestAnimationFrame(() => scrollToSection(id, false)));
+  }, [slug]);
 
   // 예전 해시 주소(/portfolio#/nova)로 들어오면 새 주소로 넘긴다. #projects 같은 일반 앵커는 건드리지 않는다
   useEffect(() => {
@@ -990,6 +1278,19 @@ export default function Portfolio({ slug }: { slug?: string }) {
         .pf ::-webkit-scrollbar-thumb{background:#C7C7CC;border-radius:99px}
         .pf .pf-next:hover{color:${ACCENT};text-decoration:none}
         .pf section[id]{scroll-margin-top:56px}
+        .pf .pf-rail{display:none}
+        @media (hover:hover) and (min-width:1200px){.pf .pf-rail{display:block}.pf .pf-toc-mobile{display:none}}
+        .pf .pf-rail-panel{opacity:0;transform:translateX(6px);pointer-events:none;transition:opacity .15s ease,transform .15s ease}
+        .pf .pf-rail:hover .pf-rail-panel,.pf .pf-rail:focus-within .pf-rail-panel{opacity:1;transform:none;pointer-events:auto}
+        @media (prefers-reduced-motion:reduce){.pf .pf-rail-panel{transition:none}}
+        .pf .pf-flow{container-type:inline-size}
+        @container (min-width:720px){.pf .pf-flow-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}}
+        .pf .pf-toc-link{overflow-wrap:anywhere}
+        .pf .pf-ux [id]{scroll-margin-top:calc(var(--pf-head,56px) + 24px)}
+        .pf .pf-ux :focus-visible{outline:2px solid #0071E3;outline-offset:3px;border-radius:6px}
+        .pf .pf-toc-link:hover{color:#0071E3!important;text-decoration:none}
+        .pf .pf-summary{cursor:pointer;color:#0071E3;font-size:15px;padding:6px 0}
+        .pf .pf-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
       `}</style>
 
       <header style={{ position: 'sticky', top: 0, zIndex: 10, background: 'rgba(255,255,255,0.8)', backdropFilter: 'saturate(180%) blur(20px)', WebkitBackdropFilter: 'saturate(180%) blur(20px)', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
@@ -1004,9 +1305,9 @@ export default function Portfolio({ slug }: { slug?: string }) {
             )}
           </div>
           <nav style={{ display: 'flex', gap: 28, fontSize: 13, flexWrap: 'wrap', color: 'rgba(0,0,0,0.8)' }}>
-            <Link href="/portfolio#projects" style={{ padding: '14px 0' }}>Projects</Link>
-            <Link href="/portfolio#experience" style={{ padding: '14px 0' }}>Experience</Link>
-            <Link href="/portfolio#other" style={{ padding: '14px 0' }}>Other</Link>
+            <Link href="/portfolio" onClick={goSection('projects')} style={{ padding: '14px 0' }}>Projects</Link>
+            <Link href="/portfolio" onClick={goSection('experience')} style={{ padding: '14px 0' }}>Experience</Link>
+            <Link href="/portfolio" onClick={goSection('other')} style={{ padding: '14px 0' }}>Other</Link>
             <a href="#contact" onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ padding: '14px 0' }}>Contact</a>
           </nav>
         </div>
