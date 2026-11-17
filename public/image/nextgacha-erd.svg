@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 810" width="1100" height="810" font-family="'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif">
+<defs><style>@font-face{font-family:'Silkscreen';src:url(data:font/woff2;base64,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) format('woff2');}</style></defs>
+<rect width="1100" height="810" fill="#fff"/>
+<rect x="16" y="14" width="1068" height="780" rx="14" fill="#F5F8FA" stroke="#D9D9D9"/>
+<text x="40" y="46" font-size="20" font-weight="700" fill="#4C4C4C" text-anchor="start">NEXT GACHA 데이터 모델</text>
+<text x="40" y="66" font-size="13" font-weight="400" fill="#6F6F6F" text-anchor="start">MongoDB Atlas 컬렉션과 참조 관계 · 외래키 없이 email, num, orderId 값으로 연결</text>
+<text x="1060" y="46" font-size="12" fill="#3184C4" text-anchor="end" font-family="Silkscreen">DATA MODEL</text>
+<path d="M284,170 H420" fill="none" stroke="#6F6F6F" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M154,312 V440" fill="none" stroke="#6F6F6F" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M680,170 H816" fill="none" stroke="#6F6F6F" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M196,440 V410 H870 V356" fill="none" stroke="#6F6F6F" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M520,440 V378" fill="none" stroke="#6F6F6F" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M680,520 H748 V300 H816" fill="none" stroke="#6F6F6F" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M1000,440 V356" fill="none" stroke="#6F6F6F" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="31" y="91" width="256" height="226" rx="10" fill="#BFE3FF"/>
+<rect x="28" y="88" width="256" height="226" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<path d="M28,128 v-30 a10,10 0 0 1 10,-10 h236 a10,10 0 0 1 10,10 v30 z" fill="#DDF0FD"/><path d="M28,128 H284" stroke="#75C3FE"/>
+<text x="42" y="114" font-size="15" fill="#133D5D" font-family="Silkscreen">user</text>
+<text x="270" y="113" font-size="12" font-weight="400" fill="#3184C4" text-anchor="end">회원</text>
+<rect x="38" y="138" width="20" height="15" rx="3" fill="#75C3FE"/>
+<text x="48" y="149" font-size="8.5" fill="#0B2A41" text-anchor="middle" font-family="Silkscreen">PK</text>
+<text x="66" y="149" font-size="13" font-weight="700" fill="#4C4C4C" text-anchor="start">email</text>
+<text x="272" y="149" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<text x="66" y="171" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">nickname</text>
+<text x="272" y="171" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<text x="66" y="193" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">address</text>
+<text x="272" y="193" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<text x="66" y="215" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">point</text>
+<text x="272" y="215" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">number</text>
+<rect x="38" y="226" width="20" height="15" rx="3" fill="#DDF0FD"/>
+<text x="48" y="237" font-size="8.5" fill="#1C537D" text-anchor="middle" font-family="Silkscreen">FK</text>
+<text x="66" y="237" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">like[]</text>
+<text x="272" y="237" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">product.num</text>
+<text x="66" y="259" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">keep[]</text>
+<text x="272" y="259" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">array</text>
+<text x="66" y="281" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">lastSeen</text>
+<text x="272" y="281" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">{ ip, did }</text>
+<text x="66" y="303" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">created_at</text>
+<text x="272" y="303" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<rect x="423" y="91" width="260" height="292" rx="10" fill="#BFE3FF"/>
+<rect x="420" y="88" width="260" height="292" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<path d="M420,128 v-30 a10,10 0 0 1 10,-10 h240 a10,10 0 0 1 10,10 v30 z" fill="#DDF0FD"/><path d="M420,128 H680" stroke="#75C3FE"/>
+<text x="434" y="114" font-size="15" fill="#133D5D" font-family="Silkscreen">order</text>
+<text x="666" y="113" font-size="12" font-weight="400" fill="#3184C4" text-anchor="end">주문</text>
+<rect x="430" y="138" width="20" height="15" rx="3" fill="#75C3FE"/>
+<text x="440" y="149" font-size="8.5" fill="#0B2A41" text-anchor="middle" font-family="Silkscreen">PK</text>
+<text x="458" y="149" font-size="13" font-weight="700" fill="#4C4C4C" text-anchor="start">orderId</text>
+<text x="668" y="149" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<rect x="430" y="160" width="20" height="15" rx="3" fill="#DDF0FD"/>
+<text x="440" y="171" font-size="8.5" fill="#1C537D" text-anchor="middle" font-family="Silkscreen">FK</text>
+<text x="458" y="171" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">email</text>
+<text x="668" y="171" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">user.email</text>
+<rect x="430" y="182" width="20" height="15" rx="3" fill="#DDF0FD"/>
+<text x="440" y="193" font-size="8.5" fill="#1C537D" text-anchor="middle" font-family="Silkscreen">FK</text>
+<text x="458" y="193" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">list[]</text>
+<text x="668" y="193" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">{ num, product[] }</text>
+<text x="458" y="215" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">status</text>
+<text x="668" y="215" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<text x="458" y="237" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">courier · invoice</text>
+<text x="668" y="237" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<text x="458" y="259" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">totalPrice</text>
+<text x="668" y="259" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">number</text>
+<text x="458" y="281" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">addPoint · usedPoint</text>
+<text x="668" y="281" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">number</text>
+<text x="458" y="303" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">address</text>
+<text x="668" y="303" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<text x="458" y="325" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">review</text>
+<text x="668" y="325" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">boolean</text>
+<text x="458" y="347" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">created_at · arrivedDate</text>
+<text x="668" y="347" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<text x="458" y="369" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">deviceId · ip</text>
+<text x="668" y="369" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<rect x="819" y="91" width="256" height="270" rx="10" fill="#BFE3FF"/>
+<rect x="816" y="88" width="256" height="270" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<path d="M816,128 v-30 a10,10 0 0 1 10,-10 h236 a10,10 0 0 1 10,10 v30 z" fill="#DDF0FD"/><path d="M816,128 H1072" stroke="#75C3FE"/>
+<text x="830" y="114" font-size="15" fill="#133D5D" font-family="Silkscreen">product</text>
+<text x="1058" y="113" font-size="12" font-weight="400" fill="#3184C4" text-anchor="end">상품</text>
+<rect x="826" y="138" width="20" height="15" rx="3" fill="#75C3FE"/>
+<text x="836" y="149" font-size="8.5" fill="#0B2A41" text-anchor="middle" font-family="Silkscreen">PK</text>
+<text x="854" y="149" font-size="13" font-weight="700" fill="#4C4C4C" text-anchor="start">num</text>
+<text x="1060" y="149" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">number</text>
+<text x="854" y="171" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">title · company</text>
+<text x="1060" y="171" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<text x="854" y="193" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">group[]</text>
+<text x="1060" y="193" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string[]</text>
+<text x="854" y="215" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">price</text>
+<text x="1060" y="215" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">number</text>
+<text x="854" y="237" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">discount · isDiscount</text>
+<text x="1060" y="237" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">number</text>
+<text x="854" y="259" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">list[]</text>
+<text x="1060" y="259" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">{ name, count }</text>
+<text x="854" y="281" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">image[] · detail[]</text>
+<text x="1060" y="281" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">url</text>
+<text x="854" y="303" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">reserve · reserveStart · End</text>
+<text x="1060" y="303" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<text x="854" y="325" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">create</text>
+<text x="1060" y="325" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">Date</text>
+<text x="854" y="347" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">created_at · updated_at</text>
+<text x="1060" y="347" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<rect x="31" y="443" width="256" height="94" rx="10" fill="#BFE3FF"/>
+<rect x="28" y="440" width="256" height="94" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<path d="M28,480 v-30 a10,10 0 0 1 10,-10 h236 a10,10 0 0 1 10,10 v30 z" fill="#DDF0FD"/><path d="M28,480 H284" stroke="#75C3FE"/>
+<text x="42" y="466" font-size="15" fill="#133D5D" font-family="Silkscreen">cart</text>
+<text x="270" y="465" font-size="12" font-weight="400" fill="#3184C4" text-anchor="end">장바구니</text>
+<rect x="38" y="490" width="24" height="15" rx="3" fill="#75C3FE"/>
+<text x="50" y="501" font-size="8.5" fill="#0B2A41" text-anchor="middle" font-family="Silkscreen">PF</text>
+<text x="66" y="501" font-size="13" font-weight="700" fill="#4C4C4C" text-anchor="start">user</text>
+<text x="272" y="501" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">user.email</text>
+<rect x="38" y="512" width="20" height="15" rx="3" fill="#DDF0FD"/>
+<text x="48" y="523" font-size="8.5" fill="#1C537D" text-anchor="middle" font-family="Silkscreen">FK</text>
+<text x="66" y="523" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">cart[]</text>
+<text x="272" y="523" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">{ num, product[] }</text>
+<rect x="423" y="443" width="260" height="204" rx="10" fill="#BFE3FF"/>
+<rect x="420" y="440" width="260" height="204" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<path d="M420,480 v-30 a10,10 0 0 1 10,-10 h240 a10,10 0 0 1 10,10 v30 z" fill="#DDF0FD"/><path d="M420,480 H680" stroke="#75C3FE"/>
+<text x="434" y="466" font-size="15" fill="#133D5D" font-family="Silkscreen">review</text>
+<text x="666" y="465" font-size="12" font-weight="400" fill="#3184C4" text-anchor="end">리뷰 (상품별 문서)</text>
+<rect x="430" y="490" width="24" height="15" rx="3" fill="#75C3FE"/>
+<text x="442" y="501" font-size="8.5" fill="#0B2A41" text-anchor="middle" font-family="Silkscreen">PF</text>
+<text x="458" y="501" font-size="13" font-weight="700" fill="#4C4C4C" text-anchor="start">num</text>
+<text x="668" y="501" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">product.num</text>
+<text x="458" y="523" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">review[]</text>
+<text x="668" y="523" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">array</text>
+<rect x="430" y="534" width="20" height="15" rx="3" fill="#DDF0FD"/>
+<text x="440" y="545" font-size="8.5" fill="#1C537D" text-anchor="middle" font-family="Silkscreen">FK</text>
+<text x="462" y="545" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">orderId</text>
+<text x="668" y="545" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">order.orderId</text>
+<path d="M450,533 v8 h8" fill="none" stroke="#D3DCE4"/>
+<rect x="430" y="556" width="20" height="15" rx="3" fill="#DDF0FD"/>
+<text x="440" y="567" font-size="8.5" fill="#1C537D" text-anchor="middle" font-family="Silkscreen">FK</text>
+<text x="462" y="567" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">user</text>
+<text x="668" y="567" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">user.email</text>
+<path d="M450,555 v8 h8" fill="none" stroke="#D3DCE4"/>
+<text x="462" y="589" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">rate · content</text>
+<text x="668" y="589" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">number · string</text>
+<path d="M450,577 v8 h8" fill="none" stroke="#D3DCE4"/>
+<text x="462" y="611" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">list · purchaseDate</text>
+<text x="668" y="611" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">array · string</text>
+<path d="M450,599 v8 h8" fill="none" stroke="#D3DCE4"/>
+<text x="462" y="633" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">created_at</text>
+<text x="668" y="633" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<path d="M450,621 v8 h8" fill="none" stroke="#D3DCE4"/>
+<rect x="819" y="443" width="256" height="204" rx="10" fill="#BFE3FF"/>
+<rect x="816" y="440" width="256" height="204" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<path d="M816,480 v-30 a10,10 0 0 1 10,-10 h236 a10,10 0 0 1 10,10 v30 z" fill="#DDF0FD"/><path d="M816,480 H1072" stroke="#75C3FE"/>
+<text x="830" y="466" font-size="15" fill="#133D5D" font-family="Silkscreen">qna</text>
+<text x="1058" y="465" font-size="12" font-weight="400" fill="#3184C4" text-anchor="end">문의 (상품별 문서)</text>
+<rect x="826" y="490" width="24" height="15" rx="3" fill="#75C3FE"/>
+<text x="838" y="501" font-size="8.5" fill="#0B2A41" text-anchor="middle" font-family="Silkscreen">PF</text>
+<text x="854" y="501" font-size="13" font-weight="700" fill="#4C4C4C" text-anchor="start">num</text>
+<text x="1060" y="501" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">product.num</text>
+<text x="854" y="523" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">qna[]</text>
+<text x="1060" y="523" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">array</text>
+<text x="858" y="545" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">qna_num</text>
+<text x="1060" y="545" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">number</text>
+<path d="M846,533 v8 h8" fill="none" stroke="#D3DCE4"/>
+<rect x="826" y="556" width="20" height="15" rx="3" fill="#DDF0FD"/>
+<text x="836" y="567" font-size="8.5" fill="#1C537D" text-anchor="middle" font-family="Silkscreen">FK</text>
+<text x="858" y="567" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">email</text>
+<text x="1060" y="567" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">user.email</text>
+<path d="M846,555 v8 h8" fill="none" stroke="#D3DCE4"/>
+<text x="858" y="589" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">question · secret</text>
+<text x="1060" y="589" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string · boolean</text>
+<path d="M846,577 v8 h8" fill="none" stroke="#D3DCE4"/>
+<text x="858" y="611" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">request[]</text>
+<text x="1060" y="611" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">{ writer, content }</text>
+<path d="M846,599 v8 h8" fill="none" stroke="#D3DCE4"/>
+<text x="858" y="633" font-size="13" font-weight="500" fill="#4C4C4C" text-anchor="start">created_at · updated_at</text>
+<text x="1060" y="633" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="end">string</text>
+<path d="M846,621 v8 h8" fill="none" stroke="#D3DCE4"/>
+<text x="292" y="164" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">1</text>
+<text x="412" y="164" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">N</text>
+<rect x="325.5" y="160" width="53" height="20" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<text x="352" y="174" font-size="11.5" font-weight="400" fill="#6F6F6F" text-anchor="middle">email</text>
+<text x="164" y="326" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">1</text>
+<text x="164" y="434" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">1</text>
+<rect x="101.6" y="366" width="104.80000000000001" height="20" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<text x="154" y="380" font-size="11.5" font-weight="400" fill="#6F6F6F" text-anchor="middle">user = email</text>
+<text x="688" y="164" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">N</text>
+<text x="808" y="164" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">M</text>
+<rect x="703" y="160" width="90" height="20" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<text x="748" y="174" font-size="11.5" font-weight="400" fill="#6F6F6F" text-anchor="middle">list[].num</text>
+<text x="206" y="434" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">N</text>
+<text x="880" y="370" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">M</text>
+<rect x="305" y="400" width="90" height="20" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<text x="350" y="414" font-size="11.5" font-weight="400" fill="#6F6F6F" text-anchor="middle">cart[].num</text>
+<text x="530" y="392" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">1</text>
+<text x="530" y="434" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">N</text>
+<rect x="486.1" y="400" width="67.80000000000001" height="20" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<text x="520" y="414" font-size="11.5" font-weight="400" fill="#6F6F6F" text-anchor="middle">orderId</text>
+<text x="688" y="514" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">N</text>
+<text x="808" y="294" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">1</text>
+<rect x="728.9" y="390" width="38.2" height="20" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<text x="748" y="404" font-size="11.5" font-weight="400" fill="#6F6F6F" text-anchor="middle">num</text>
+<text x="1010" y="434" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">1</text>
+<text x="1010" y="370" font-size="11" font-weight="400" fill="#3184C4" text-anchor="middle" font-family="Silkscreen">1</text>
+<rect x="980.9" y="388" width="38.2" height="20" rx="10" fill="#fff" stroke="#D9D9D9"/>
+<text x="1000" y="402" font-size="11.5" font-weight="400" fill="#6F6F6F" text-anchor="middle">num</text>
+<text x="40" y="676" font-size="13" font-weight="700" fill="#4C4C4C" text-anchor="start">관계가 없는 컬렉션 · 번호 발급과 운영 데이터</text>
+<rect x="31" y="695" width="192" height="84" rx="8" fill="#BFE3FF"/><rect x="28" y="692" width="192" height="84" rx="8" fill="#fff" stroke="#D9D9D9"/>
+<text x="40" y="714" font-size="13" fill="#133D5D" font-family="Silkscreen">counter</text>
+<text x="208" y="713" font-size="11.5" font-weight="400" fill="#3184C4" text-anchor="end">번호 발급</text>
+<text x="40" y="734" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">id · num</text>
+<text x="40" y="752" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">product·notice·qna 번호를</text>
+<text x="40" y="770" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">1씩 올려 발급</text>
+<rect x="243" y="695" width="192" height="84" rx="8" fill="#BFE3FF"/><rect x="240" y="692" width="192" height="84" rx="8" fill="#fff" stroke="#D9D9D9"/>
+<text x="252" y="714" font-size="13" fill="#133D5D" font-family="Silkscreen">notice</text>
+<text x="420" y="713" font-size="11.5" font-weight="400" fill="#3184C4" text-anchor="end">공지</text>
+<text x="252" y="734" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">num · category · title</text>
+<text x="252" y="752" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">content · pinned</text>
+<text x="252" y="770" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">state · publish_at</text>
+<rect x="455" y="695" width="192" height="84" rx="8" fill="#BFE3FF"/><rect x="452" y="692" width="192" height="84" rx="8" fill="#fff" stroke="#D9D9D9"/>
+<text x="464" y="714" font-size="13" fill="#133D5D" font-family="Silkscreen">banner</text>
+<text x="632" y="713" font-size="11.5" font-weight="400" fill="#3184C4" text-anchor="end">배너</text>
+<text x="464" y="734" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">id · title · link</text>
+<text x="464" y="752" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">image · start · end</text>
+<text x="464" y="770" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">visible · order</text>
+<rect x="667" y="695" width="192" height="84" rx="8" fill="#BFE3FF"/><rect x="664" y="692" width="192" height="84" rx="8" fill="#fff" stroke="#D9D9D9"/>
+<text x="676" y="714" font-size="13" fill="#133D5D" font-family="Silkscreen">category</text>
+<text x="844" y="713" font-size="11.5" font-weight="400" fill="#3184C4" text-anchor="end">카테고리</text>
+<text x="676" y="734" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">_id = "menu" 문서 1개</text>
+<text x="676" y="752" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">character[] · ani[]</text>
+<text x="676" y="770" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">series[] · groups[]</text>
+<rect x="879" y="695" width="192" height="84" rx="8" fill="#BFE3FF"/><rect x="876" y="692" width="192" height="84" rx="8" fill="#fff" stroke="#D9D9D9"/>
+<text x="888" y="714" font-size="13" fill="#133D5D" font-family="Silkscreen">error</text>
+<text x="1056" y="713" font-size="11.5" font-weight="400" fill="#3184C4" text-anchor="end">오류 신고</text>
+<text x="888" y="734" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">type: report · system</text>
+<text x="888" y="752" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">status · pathname</text>
+<text x="888" y="770" font-size="12" font-weight="400" fill="#6F6F6F" text-anchor="start">textareaValue</text>
+</svg>

@@ -166,7 +166,7 @@ function FlowStrip({ flow }: { flow: Flow }) {
 }
 
 // 캡처 화면을 설명과 함께 가로로 넘겨 보는 갤러리 (스크롤 스냅 + 이전/다음 버튼)
-function Gallery({ shots, label: aria, dark }: { shots: Shot[]; label: string; dark?: boolean }) {
+function Gallery({ shots, label: aria, title, dark }: { shots: Shot[]; label: string; title?: string; dark?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [edge, setEdge] = useState({ prev: false, next: true });
   const update = () => {
@@ -182,7 +182,7 @@ function Gallery({ shots, label: aria, dark }: { shots: Shot[]; label: string; d
   return (
     <div style={{ minWidth: 0, width: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-        <span />
+        {title ? <span style={label}>{title}</span> : <span />}
         <div style={{ display: 'flex', gap: 8 }}>
           <button type="button" aria-label="이전 화면" disabled={!edge.prev} onClick={() => move(-1)} className={edge.prev ? 'pf-arrow' : undefined} style={btn(edge.prev)}>←</button>
           <button type="button" aria-label="다음 화면" disabled={!edge.next} onClick={() => move(1)} className={edge.next ? 'pf-arrow' : undefined} style={btn(edge.next)}>→</button>
@@ -429,6 +429,8 @@ function BgFigureView({ fig }: { fig: BgFigure }) {
   );
 }
 
+type Zoom = { src: string; alt: string; title: string; w: number; h: number };
+
 function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) => void; goHome: (e: React.MouseEvent) => void; onSection: (s: string) => void }) {
   const p = PROJECTS[idx];
   // 지금 화면 위쪽에 걸린 구간(핵심 구현·트러블슈팅)을 헤더에 알린다.
@@ -453,6 +455,32 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
   const sections: [string, Case[]][] = [['핵심 구현', p.core]];
   if (p.trouble.length) sections.push(['트러블슈팅', p.trouble]);
   const pad = (n: number) => String(n).padStart(2, '0');
+  // 시스템 구성도·데이터 모델: 클릭하면 모달로 크게 본다 (Home 모달과 같은 방식)
+  const diagrams = [
+    p.archImg && { src: p.archImg, title: '시스템 구성', alt: `${p.name} 시스템 구성도`, w: 1100, h: 800 },
+    p.erdImg && { src: p.erdImg, title: '데이터 모델', alt: `${p.name} 데이터 모델 ERD`, w: 1100, h: 810 },
+  ].filter((d): d is Zoom => !!d);
+  const [zoom, setZoom] = useState<Zoom | null>(null);
+  const opener = useRef<HTMLButtonElement | null>(null);
+  // 열려 있는 동안: Esc로 닫기, 뒤 화면 스크롤 잠금. 닫으면 눌렀던 그림 버튼으로 포커스를 돌려준다
+  useEffect(() => {
+    if (!zoom) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setZoom(null); };
+    window.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const btn = opener.current;
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev; btn?.focus(); };
+  }, [zoom]);
+  // 왼쪽 라벨 + 오른쪽 Block 목록 (기획·디자인·배포와 운영)
+  const blockRow = (title: string, blocks?: Block[]) => blocks && (
+    <div style={row}>
+      <div style={sideLabel}>{title}</div>
+      <div style={{ flex: '1 1 480px', display: 'flex', flexDirection: 'column', gap: 22, minWidth: 0, maxWidth: 760 }}>
+        {blocks.map((b, j) => <CaseBlock key={j} b={b} />)}
+      </div>
+    </div>
+  );
 
   return (
     <article style={{ ...wrap, padding: '56px 32px 96px' }}>
@@ -482,15 +510,17 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
       </div>
 
       {p.shots && (
-        <div style={{ ...row, flexDirection: 'column', flexWrap: 'nowrap', gap: 0 }}>
-          <Gallery label={`${p.name} 화면`} shots={p.shots} />
+        <div style={{ ...row, flexDirection: 'column', flexWrap: 'nowrap', gap: 24 }}>
+          {Array.from(new Set(p.shots.map((x) => x.group ?? ''))).map((g) => (
+            <Gallery key={g} title={g} label={`${p.name} ${g} 화면`} shots={p.shots!.filter((x) => (x.group ?? '') === g)} />
+          ))}
         </div>
       )}
 
       {p.background && (
         <div style={row}>
           <div style={sideLabel}>기획 배경</div>
-          <div style={{ flex: '1 1 480px', display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 720 }}>
+          <div style={{ flex: '1 1 480px', display: 'flex', flexDirection: 'column', gap: 14, minWidth: 0, maxWidth: 720 }}>
             {p.background.map((t, i) => (
               <React.Fragment key={i}>
                 <p style={{ margin: 0, fontSize: 16, lineHeight: 1.75, textWrap: 'pretty' }}><Rich text={t} strong={HL} /></p>
@@ -500,6 +530,26 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
           </div>
         </div>
       )}
+
+      {p.timeline && (
+        <div style={row}>
+          <div style={sideLabel}>진행 과정</div>
+          <ol style={{ ...ul, flex: '1 1 480px', minWidth: 0, maxWidth: 760 }}>
+            {p.timeline.map((t, i) => (
+              <li key={t.when} style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 24px', padding: '16px 0', borderTop: i ? '1px solid #D2D2D7' : undefined }}>
+                <span style={{ ...ui, flex: '0 0 140px', fontSize: 13, lineHeight: 1.75, color: BLUE }}>{t.when}</span>
+                <div style={{ flex: '1 1 260px', display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
+                  <span style={{ fontSize: 16, fontWeight: 600 }}>{t.title}</span>
+                  <span style={{ fontSize: 15, lineHeight: 1.7, color: '#424245', textWrap: 'pretty' }}>{t.desc}</span>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {blockRow('기획', p.planning)}
+      {blockRow('디자인', p.design)}
 
       {p.flow && <FlowDetail flow={p.flow} ink={BLUE} />}
 
@@ -522,13 +572,35 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
         </div>
       </div>
 
-      {p.archImg && (
+      {diagrams.length > 0 && (
         <div style={{ ...row, flexDirection: 'column', flexWrap: 'nowrap', gap: 16 }}>
-          <span style={label}>시스템 구성</span>
-          <a href={p.archImg} target="_blank" style={{ display: 'block', border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#fff' }}>
-            <Image src={p.archImg} alt={`${p.name} 시스템 구성도`} width={1100} height={800} unoptimized style={{ width: '100%', height: 'auto', display: 'block' }} />
-          </a>
-          <span style={{ ...ui, fontSize: 12, color: '#6E6E73' }}>클릭하면 원본 크기로 열립니다.</span>
+          {/* 둘이면 좌우로, 좁은 화면이나 하나뿐이면 전체 폭으로 */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(420px, 100%), 1fr))', gap: 24, alignItems: 'start' }}>
+            {diagrams.map((d) => (
+              <div key={d.src} style={{ display: 'flex', flexDirection: 'column', gap: 16, minWidth: 0 }}>
+                <span style={label}>{d.title}</span>
+                <button type="button" aria-haspopup="dialog" aria-label={`${d.title} 그림 크게 보기`} onClick={(e) => { opener.current = e.currentTarget; setZoom(d); }} style={{ display: 'block', width: '100%', padding: 0, border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#fff', cursor: 'zoom-in' }}>
+                  <Image src={d.src} alt={d.alt} width={d.w} height={d.h} unoptimized style={{ width: '100%', height: 'auto', display: 'block' }} />
+                </button>
+              </div>
+            ))}
+          </div>
+          <span style={{ ...ui, fontSize: 12, color: '#6E6E73' }}>클릭하면 크게 볼 수 있습니다.</span>
+        </div>
+      )}
+
+      {zoom && (
+        <div onClick={() => setZoom(null)} style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="zoom-title" onClick={(e) => e.stopPropagation()} style={{ background: '#fff', borderRadius: 28, width: '100%', maxHeight: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '16px 16px 12px 28px' }}>
+              <span id="zoom-title" style={label}>{zoom.title}</span>
+              <button type="button" aria-label="닫기" autoFocus onClick={() => setZoom(null)} className="pf-arrow" style={{ flex: '0 0 auto', width: 40, height: 40, borderRadius: 99, border: 'none', background: 'rgba(232,232,237,0.8)', color: '#1D1D1F', fontSize: 20, lineHeight: 1, cursor: 'pointer' }}>×</button>
+            </div>
+            {/* 모달 폭에 맞춰 키우되 원본 폭 아래로는 줄이지 않는다 — 넘치면 여기서 스크롤 */}
+            <div tabIndex={0} aria-label={`${zoom.title} 그림`} style={{ flex: '1 1 auto', minHeight: 0, overflow: 'auto', padding: '0 28px 28px', scrollbarWidth: 'thin', scrollbarColor: '#C7C7CC transparent' }}>
+              <Image src={zoom.src} alt={zoom.alt} width={zoom.w} height={zoom.h} unoptimized style={{ width: '100%', minWidth: zoom.w, height: 'auto', display: 'block' }} />
+            </div>
+          </div>
         </div>
       )}
 
@@ -552,6 +624,11 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
               </div>
               <div style={{ flex: '1 1 480px', display: 'flex', flexDirection: 'column', gap: 22, minWidth: 0, maxWidth: 760 }}>
                 <h3 style={{ margin: 0, fontSize: 22, lineHeight: 1.4, letterSpacing: '-0.02em', fontWeight: 600, textWrap: 'balance' }}><Rich text={c.title} codeSize="0.82em" /></h3>
+                {c.tags && c.tags.length > 0 && (
+                  <ul role="list" style={{ listStyle: 'none', margin: '-8px 0 0', padding: 0, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {c.tags.map((t) => <li key={t} style={{ ...chip, fontSize: 12, padding: '6px 10px', color: undefined }}>{t}</li>)}
+                  </ul>
+                )}
                 {c.demo === 'productCard' && <ProductCardDemo />}
                 {c.blocks.map((b, j) => <CaseBlock key={j} b={b} />)}
               </div>
@@ -559,6 +636,8 @@ function Detail({ idx, go, goHome, onSection }: { idx: number; go: (r: string) =
           ))}
         </div>
       ))}
+
+      {blockRow('배포와 운영', p.ops)}
 
       <div style={{ ...row, padding: '72px 0 40px' }}>
         <div style={sideLabel}>{p.verifyTitle}</div>
