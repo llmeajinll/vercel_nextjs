@@ -1,0 +1,61 @@
+/* 기존 Portfolio.tsx의 제목·본문·라벨·행·칩 규격. 새 규격은 화면에서 추가하지 않는다. */
+.heading { margin: 0; font-weight: 600; }
+.page { margin-top: 16px; font-size: clamp(44px, 7vw, 96px); line-height: 1.02; letter-spacing: -.035em; }
+.section { font-size: clamp(32px, 4vw, 48px); line-height: 1.19; letter-spacing: -.025em; }
+.case, .supporting { font-size: 22px; line-height: 1.4; letter-spacing: -.02em; text-wrap: balance; }
+.supporting { font-size: 19px; }
+.label { margin: 0; font-size: var(--pf-label-size); font-weight: var(--pf-label-weight); line-height: var(--pf-label-line-height); letter-spacing: var(--pf-label-tracking); color: var(--pf-muted); }
+.labelSmall { font-size: var(--pf-metadata-size); }
+.labelBlock { font-size: 12px; letter-spacing: .04em; color: inherit; }
+.labelSide { flex: 0 0 200px; padding-top: 4px; }
+.text { margin: 0; text-wrap: pretty; }
+.body { font-size: 16px; line-height: 1.75; }
+.lead { font-size: 17px; line-height: 1.7; color: var(--pf-secondary); }
+.summary { font-size: 18px; line-height: 1.6; font-weight: 600; letter-spacing: -.01em; }
+.intro { margin-top: 28px; font-size: 19px; line-height: 1.7; }
+.note { font-size: 14px; line-height: 1.7; color: var(--pf-muted); }
+.secondary { color: var(--pf-secondary); }
+.reading { max-width: 760px; }
+.intro.reading { max-width: 56ch; }
+.subtitle { margin-top: 12px; font-size: var(--pf-subtitle-size); color: var(--pf-secondary); }
+.subtitleAccent { color: var(--pf-accent); font-weight: 600; }
+.summaryGrid { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.summaryCell { min-width: 0; padding: 24px; border-radius: 24px; background: var(--pf-surface-muted); display: flex; flex-direction: column; gap: 12px; }
+.summaryContent { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.descriptionList { margin: 0; }
+.descriptionRow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 24px 0; border-top: 1px solid var(--pf-border); }
+.descriptionRow:last-child { padding-bottom: 0; }
+.descriptionTitle { min-width: 0; color: var(--pf-accent); }
+.descriptionBody { margin: 0; min-width: 0; }
+@media (min-width: 900px) {
+  .summaryGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .descriptionRow { grid-template-columns: 200px minmax(0, 1fr); column-gap: 40px; }
+}
+.titleBar { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 14px; gap: 16px; flex-wrap: wrap; }
+.titleBarSpaced { margin-bottom: 8px; }
+.row { display: flex; gap: 40px; flex-wrap: wrap; padding: 40px 0; border-bottom: 1px solid var(--pf-border); }
+.rowCase { padding: 36px 0; }
+.rowSupporting { padding: 28px 0; }
+.rowVerify { padding: 72px 0 40px; }
+.rowStack { flex-direction: column; flex-wrap: nowrap; gap: 24px; }
+.chip { display: inline; font-size: 13px; padding: 5px 12px; background: var(--pf-surface); border: 1px solid var(--pf-border); border-radius: 980px; color: var(--pf-text); }
+.compact { font-size: 12px; padding: 6px 10px; color: inherit; }
+.badge { font-size: 12px; font-weight: 600; padding: 3px 10px; border: 1px solid var(--pf-border); border-radius: 980px; background: var(--pf-surface); }
+.pill { display: inline-flex; gap: 6px; border: 1px solid var(--pf-accent); border-radius: 980px; padding: 9px 18px; }
+.pillButton { font: inherit; padding: 7px 16px; cursor: pointer; min-height: 44px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-bottom: 1px solid var(--pf-border); }
+.fact { padding: 20px 20px 22px 0; display: flex; flex-direction: column; gap: 6px; }
+.factValue { font-size: 15px; line-height: 1.55; }
+.links { display: flex; gap: 12px; flex-wrap: wrap; padding: 20px 0; border-bottom: 1px solid var(--pf-border); font-size: 15px; }
+.insetInfo { margin-top: 28px; border-top: 1px solid var(--pf-border); }
+.evidence { max-width: 76ch; margin: 24px 0 0; font-size: 14px; line-height: 1.7; color: var(--pf-muted); text-wrap: pretty; }
+.evidence > strong { display: block; margin-bottom: 4px; color: var(--pf-secondary); font-weight: 600; }
+.evidenceVerification { margin: 0 0 28px; max-width: none; }
+.frame { padding: 40px 0 56px; border-bottom: 1px solid var(--pf-border); }
+.frameWithInfo { padding-bottom: 0; border-bottom: 0; }
+.identity { display: flex; gap: 12px; align-items: center; font-size: 13px; flex-wrap: wrap; }
+.identityNumber { color: var(--pf-accent); }
+.identityKind { color: var(--pf-muted); }
+.introGroup { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+.focus { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--pf-border); display: flex; flex-direction: column; gap: 14px; }
+.focusReading { max-width: 820px; }
