@@ -2,7 +2,7 @@
 export type ItemImg = { src: string; alt: string; w: number; h: number; caption?: string };
 export type Item = string | { t: string; sub?: string[]; img?: ItemImg };
 export type Block = { label?: string; p?: string; items?: Item[]; imgs?: ItemImg[]; table?: string[][]; note?: string };
-// sub: 대표 사례를 받쳐 주는 보조 구현 (상세에서 한 단계 낮은 비중으로 그린다)
+// sub: 주요 기능 개발을 뒷받침하는 보조 구현 (상세에서 한 단계 낮은 비중으로 그린다)
 export type Case = { id?: string; title: string; tags?: string[]; sub?: boolean; blocks: Block[]; demo?: 'productCard' };
 export type FwKey = 'react' | 'vue' | 'next';
 export type Shot = { src: string; title: string; desc?: string; phone?: boolean; w?: number; h?: number; group?: string };
@@ -12,7 +12,11 @@ export type FlowBranch = { after: number; title: string; fast: string; slow: str
 export type Flow = { steps: FlowStep[]; branch: FlowBranch; phonesLead: string; phones: { shot: string; cap: string }[] };
 export type Project = {
   slug: string; fw: FwKey; no: string; name: string; kr: string; ongoing?: boolean; kind: string;
-  highlights?: string[];
+  // 목록에서는 대표 사례 하나만 보여주고, 구현과 검증 근거는 상세에서 다룬다.
+  preview: { description: string; role: string; title: string; body: string; note?: string };
+  evidenceNote: string;
+  // 과제 조건을 소개와 프론트엔드 핵심 과제 사이에 보여준다.
+  requirements?: string[];
   // 상세 첫머리: 이 프로젝트에서 다룬 문제 / 기획 배경 아래: 팀 시스템과 내 담당 범위 구분
   focus?: { lead: string; items: string[] }; scope?: { label: string; note?: string; items: string[] }[];
   // 검증 섹션을 주제별로 묶을 때 (있으면 verify 대신 사용)
@@ -36,7 +40,7 @@ export type Other = {
   role: string; team: string; scale: string; stack: string[]; links: [string, string][];
   blocks: { label: string; items: Item[] }[];
 };
-export type DnProject = { no: string; name: string; period: string; team: string; desc: string; blocks: { label: string; items: Item[] }[] };
+export type DnProject = { no: string; name: string; period: string; team: string; summary: string; desc: string; blocks: { label: string; items: Item[] }[] };
 
 export const FW: Record<FwKey, { label: string; fill: string; on: string; ink: string; inkDark?: string }> = {
   react: { label: 'React', fill: '#0071E3', on: '#F0FBFF', ink: '#0071E3' },
@@ -46,14 +50,25 @@ export const FW: Record<FwKey, { label: string; fill: string; on: string; ink: s
 
 export const PROJECTS: Project[] = [
   {
-    slug: 'nova', fw: 'react', no: '01', name: 'Nova', kr: '스마트폰 사전예약 플랫폼', kind: 'LG유플러스 유레카 최종융합프로젝트',
-    tagline: '오픈 직후 신청이 몰려도 사전예약을 유실 없이 접수하고, 외부 시스템 처리를 기다리지 않고 결과를 안내하는 스마트폰 사전예약 플랫폼',
-    highlights: ['**대기열**: 대기열 창을 닫아도 순번이 계속 표시되고, 대기·차례 도착·연결 끊김·재진입 등 서버 상태에 맞는 안내를 보여줌', '**중복 접수 방지**: 응답을 받지 못한 접수는 멱등키로 한 번만 재전송하고, 같은 키로 다시 요청하면 기존 예약을 반환', '**실패 유형별 재시도**: 오류 유형에 따라 재시도 여부와 백오프 간격을 다르게 적용'],
+    slug: 'nova', fw: 'react', no: '01', name: 'Nova', kr: '휴대폰 사전예약 시스템', kind: 'LG유플러스 유레카 최종융합프로젝트',
+    tagline: 'LG유플러스 유레카 최종융합프로젝트에서 휴대폰 사전예약 시스템을 주제로 선택해 개발했습니다.',
+    requirements: [
+      '**신청 규모**: 오픈 직후 **10초 안에 5,000건**의 신청이 몰리는 상황을 가정했습니다.',
+      '**외부 예약 시스템**: 평균 응답 시간 **0.5초**, 호출 실패율 **5%**를 가정했습니다.',
+      '**처리 조건**: 신청 유실 **0건**, 중복 예약 **0건**, 내부·외부 예약 기록 **100% 일치**를 만족해야 했습니다.',
+    ],
+    preview: {
+      description: '대기열부터 접수·결제까지 이어지는 스마트폰 사전예약 서비스입니다.',
+      role: '구매자 화면 전담 · Frontend 2명 중 1명',
+      title: '페이지를 이동해도 이어지는 대기열 안내',
+      body: '서버에서 받은 순번과 상태를 화면에 표시합니다. 페이지 이동 중에도 조회와 안내를 이어가고, 새로고침 후에는 서버에 다시 요청해 화면을 복원합니다.',
+    },
+    evidenceNote: '10초 안에 5,000건의 신청과 유실·중복 0건은 과제의 요구 조건이며, 부하 테스트로 측정한 성과가 아닙니다. 프론트엔드 검증은 목 서버 기반 E2E 테스트로 진행했습니다.',
     toc: [
       { id: 'sec-intro', label: '프로젝트 소개' },
-      { id: 'sec-background', label: '기획 배경' },
+      { id: 'sec-background', label: '프로젝트 배경과 과제' },
       { id: 'sec-flow', label: '주요 기능' },
-      { id: 'sec-core', label: '핵심 구현', children: [
+      { id: 'sec-core', label: '주요 개발 내용', children: [
         { id: 'core-queue', label: '대기열' },
         { id: 'core-status', label: '예약 상태 관리' },
         { id: 'core-retry', label: '재시도 정책' },
@@ -68,8 +83,8 @@ export const PROJECTS: Project[] = [
       { id: 'sec-verify', label: '테스트 및 협업' },
     ],
     leads: {
-      flow: '메인 화면부터 결제, 예약 내역 확인까지 사용자가 거치는 7단계입니다. 단계별 구현 방식은 아래 핵심 구현에서 다룹니다.',
-      core: '신청이 몰리는 상황에서도 사용자가 자신의 진행 상태를 놓치지 않도록 구현한 대표 사례 3가지와, 이를 뒷받침하는 보조 구현 2가지입니다.',
+      flow: '메인 화면부터 결제, 예약 내역 확인까지 사용자가 거치는 7단계입니다. 단계별 구현 방식은 아래 주요 개발 내용에서 다룹니다.',
+      core: '대기열 조회와 안내, 예약 상태에 따른 화면 표시, 재시도 정책을 어떻게 설계했는지 설명합니다. API 클라이언트와 코드 의존성 규칙도 함께 정리했습니다.',
       trouble: '응답 유실, 불필요한 컴포넌트 재생성, 사용자 간 데이터 혼선 문제를 원인부터 분석해 해결한 사례입니다.',
       verify: '핵심 지표와 대표 시나리오를 먼저 정리하고, 전체 목록은 펼쳐서 볼 수 있도록 구성했습니다.',
     },
@@ -81,30 +96,28 @@ export const PROJECTS: Project[] = [
       { label: '품질 · 배포', items: ['ESLint', 'husky + commitlint', 'Vercel'] },
     ],
     focus: {
-      lead: '복잡한 비동기 흐름 속에서도 사용자 상태와 데이터 일관성을 유지하는 데 집중했습니다.',
+      lead: '저는 구매자 화면을 맡아, 사용자가 현재 처리 상태를 이해할 수 있도록 안내하고 중복 신청과 사용자 간 데이터 혼선을 막는 데 집중했습니다.',
       items: [
-        '**대기열 상태 유지**: 대기열 상태를 앱 최상단 한 곳에서 관리해, 창을 닫거나 페이지를 이동하거나 새로고침해도 순번이 유지되도록 했습니다.',
+        '**대기열 조회와 안내**: 서버가 관리하는 순번을 조회해 표시했습니다. 대기열 창을 닫거나 페이지를 이동해도 조회와 안내가 이어지고, 새로고침 후에는 서버 응답에 맞춰 대기열 화면을 복원하도록 했습니다.',
         '**접수와 확정의 분리**: 서버의 예약 단계(`displayStatus`)에 따라 "접수"와 "외부 등록 완료(확정)"를 서로 다른 화면 상태로 구분하고, 결제는 등록이 완료된 뒤에만 가능하도록 했습니다.',
         '**실패 유형별 재시도**: 오류를 4xx·5xx·타임아웃·네트워크 오류로 구분해 재시도 여부를 결정하고, 백오프·Jitter·`Retry-After`를 적용해 서버 장애 시 요청이 한꺼번에 몰리지 않도록 했습니다.',
         '**중복 접수와 사용자 혼선 방지**: 응답을 받지 못한 접수는 멱등키로 한 번만 재전송하고, 로그아웃 시 이전 사용자의 대기열 정보를 함께 삭제했습니다.',
-        '**실패 상황 검증**: 목 서버로 장애 상황을 재현하고, Playwright E2E 테스트 65개로 대기열·접수·결제 과정의 실패 상황을 브라우저에서 검증했습니다.',
+        '**실패 상황 검증**: 목 서버로 장애 상황을 재현하고, Playwright로 고객 화면 E2E 테스트 60개를 직접 작성했습니다. 운영자 시나리오 5개는 팀원과 공동 작성했습니다.',
       ],
     },
     scope: [
-      { label: '담당 영역: Frontend (구매자 화면 전담)', items: ['서버에서 받은 예약 상태를 화면에 반영', '접수와 예약 확정 단계의 UI 분리', '대기열 상태 관리와 사용자 안내', '네트워크 오류 처리와 재시도 UX', '멱등키 기반 중복 접수 방지', 'API 클라이언트 및 프론트엔드 테스트 환경 구축'] },
+      { label: '담당 영역: Frontend (구매자 화면 전담)', items: ['서버에서 받은 예약 상태를 화면에 반영', '접수와 예약 확정 단계의 UI 분리', '대기열 조회·화면 상태 관리와 사용자 안내', '네트워크 오류 처리와 재시도 UX', '멱등키 기반 중복 접수 방지', 'API 클라이언트 및 프론트엔드 테스트 환경 구축'] },
     ],
-    period: '2026.09 ~ 2026.10', roleShort: 'Frontend',
+    period: '2026.09 ~ 2026.10 · 약 1.5개월', roleShort: 'Frontend',
     stackShort: ['React 19', 'TypeScript', 'TanStack Query', 'MSW', 'FSD'],
-    meta: [['기간', '2026.09.15 ~ 2026.10.28'], ['역할', 'Frontend (구매자 화면 전담)'], ['인원', '7명 (Backend 5, Frontend 2)'], ['기여도', 'Frontend 60%']],
+    meta: [['기간', '2026.09.15 ~ 2026.10.28 (약 1.5개월)'], ['역할', 'Frontend (구매자 화면 전담)'], ['인원', '7명 (Backend 5, Frontend 2)'], ['기여도', 'Frontend 60%']],
     links: [['배포', 'https://www.grandis-nova.link'], ['GitHub', 'https://github.com/Grandis-2/fe']],
     stack: ['React 19', 'TypeScript', 'Vite', 'TanStack Query v5', 'Zustand', 'Axios', 'Vanilla Extract', 'react-router v7', 'MSW 2', '토스페이먼츠 SDK', '카카오 OAuth', 'Storybook 10 + Vitest', 'Playwright', 'Amplitude', 'ESLint', 'husky + commitlint', 'Vercel'],
     background: [
-      '프로젝트의 요구 조건은 까다로웠습니다. 사전예약이 열리면 **10초 안에 5,000건**의 신청이 몰리는 상황을 가정했습니다. 예약을 확정하려면 외부 예약 시스템에 등록해야 하는데, 이 시스템은 **평균 응답 시간 0.5초, 실패율 5%**로 가정했습니다. 그럼에도 **신청 유실 0건, 중복 예약 0건, 외부 시스템과 내부 서버 기록 100% 일치**를 만족해야 했습니다. 이 수치는 과제의 요구사항과 가정이며, 부하 테스트로 측정한 값은 아닙니다.',
-      '외부 시스템의 응답을 기다린 뒤 결과를 알려 주면, 5,000명이 모두 0.5초씩 기다려야 하고 실패한 5%는 신청 자체가 실패합니다. 그래서 처리를 두 단계로 나눴습니다. **접수**는 "신청이 완료되었습니다. 3,215번입니다"처럼 순번만 즉시 알려 주는 단계이고, **확정**은 이후 서버가 외부 예약 시스템에 등록해 실제 예약으로 만드는 단계입니다. 인기 맛집에서 번호표를 먼저 나눠 주고 자리는 나중에 안내하는 방식과 같습니다. 외부 시스템이 느려지거나 멈춰도 접수는 계속 받을 수 있습니다.',
-      '외부 등록에 실패해도 신청은 사라지지 않습니다. 일시적인 실패는 서버가 자동으로 재시도하고, 그래도 실패하면 운영자가 확인한 뒤 다시 등록합니다. 같은 신청이 두 번 들어와도 예약은 하나만 생성되며, 서버가 매일 새벽 두 기록을 대조해 불일치 건을 운영자가 바로 처리할 수 있습니다. 프론트엔드는 이 두 단계를 화면에서 **서로 다른 상태로 보여주는 역할**을 맡았습니다.',
+      '팀은 외부 예약 시스템의 응답을 기다리지 않고 접수 결과를 안내하기 위해, **신청 접수와 외부 등록을 분리**했습니다. 접수 결과는 먼저 안내하고, 외부 등록은 서버에서 비동기로 처리하는 구조입니다.',
     ],
     bgFigure: {
-      after: 2,
+      after: 1,
       caption: '접수까지는 사용자에게 즉시 응답하고, 외부 서버 등록(확정)은 백그라운드에서 처리합니다. 결제는 등록이 끝난 뒤에 가능합니다.',
       groups: [
         { label: '즉시 응답', tone: 0, steps: [{ title: '접속' }, { title: '대기열' }, { title: '접수' }] },
@@ -128,7 +141,7 @@ export const PROJECTS: Project[] = [
         fast: '5초 안에 등록이 끝나면 바로 결제 페이지로 이동합니다.',
         slow: '5초가 지나면 예약 접수 확인 화면으로 이동해 현재 처리 단계와 처리 이력을 보여줍니다.',
       },
-      phonesLead: '대기열 창을 닫아도 순번은 유지되며, 상단에 내 번호가 표시된 pill이 남아 있어 다른 페이지를 둘러볼 수 있습니다.',
+      phonesLead: '대기열 창을 닫아도 서버에서 순번을 계속 조회하고, 상단 pill에 표시해 다른 페이지를 둘러보는 동안에도 확인할 수 있습니다.',
       phones: [
         { shot: '/image/nova/m-1-queue.png', cap: '줄 서기 · 대기열 창' },
         { shot: '/image/nova/m-2-pill.png', cap: '창을 닫고 둘러보기 · 내 번호 pill' },
@@ -142,7 +155,7 @@ export const PROJECTS: Project[] = [
       { group: 'Frontend 기반', items: ['FSD 레이어 구조 설계, ESLint로 의존성 방향 강제', 'API 클라이언트, TanStack Query 캐시·재시도 정책', 'MSW 목 서버와 실패 재현 도구, 디자인 토큰·공용 UI 컴포넌트', 'Storybook·Vitest·Playwright 테스트 작성 (개인·팀별 수치는 테스트 및 협업 참고)'] },
     ],
     core: [
-      { id: 'core-queue', title: '사전예약 대기열: 창을 닫아도 유지되는 순번 pill과 상태별 안내', tags: ['RootLayout 전역 배치', 'QueuePill', '새로고침 복구', 'useEffectEvent'], blocks: [
+      { id: 'core-queue', title: '사전예약 대기열: 페이지 이동 중에도 이어지는 순번 조회와 안내', tags: ['RootLayout 전역 배치', 'QueuePill', '새로고침 후 재조회', 'useEffectEvent'], blocks: [
         { imgs: [
           { src: '/image/nova/web-pill-center.png', alt: '웹 화면. 사전예약 목록 상단 가운데에 내 번호가 표시된 pill이 떠 있는 모습', w: 1120, h: 432, caption: '대기열 창을 닫고 다른 페이지로 이동해도 상단에 pill이 계속 표시됩니다.' },
           { src: '/image/nova/m-pill-center.png', alt: '모바일 화면. 사전예약 목록 상단 가운데에 내 번호가 표시된 pill이 떠 있는 모습', w: 648, h: 648 },
@@ -152,8 +165,9 @@ export const PROJECTS: Project[] = [
           'pill이 떠 있는 상태로 다른 페이지로 이동해 다른 상품을 둘러볼 수 있어야 합니다.',
           '대기열 창의 안내 문구는 현재 서버 상태에 따라 달라져야 합니다.',
         ] },
-        { label: '판단', p: '대기열은 특정 페이지에 속한 상태가 아니라, 사전예약을 시도하는 동안 계속 유지되어야 하는 상태입니다. 페이지 안에 두면 페이지를 이동할 때 창과 순번 정보가 함께 사라지기 때문에, 대기열 창을 **앱 최상단(`RootLayout`) 한 곳에만** 배치했습니다.' },
-        { label: '구현', p: '대기열에 진입하는 쪽은 `joinPreorderQueue()`만 호출하면 되는, 토스트와 같은 구조입니다. 그래서 창을 닫아도 대기 상태가 유지되고, 다른 페이지로 이동해도 내 번호가 표시된 작은 pill(`QueuePill`)이 화면에 계속 남습니다. 새로고침하거나 창을 닫았다 열어도 같은 순번, 같은 키로 이어집니다.', items: [
+        { label: '판단', p: '대기 순서와 참여 여부는 서버가 관리합니다. 프론트엔드에서는 페이지를 이동해도 조회와 안내가 끊기지 않도록 대기열 창을 **앱 최상단(`RootLayout`) 한 곳에만** 배치했습니다. 개별 페이지 안에 두면 페이지 이동 시 대기열 컴포넌트가 해제되기 때문입니다.' },
+        { label: '구현', p: '대기열에 진입하는 화면에서는 `joinPreorderQueue()`만 호출하고, `RootLayout`에 배치한 컴포넌트가 서버 요청과 화면 표시를 담당합니다. 대기열 창만 닫으면 순번 조회는 계속되며, 다른 페이지로 이동해도 `QueuePill`에서 서버가 보내준 순번과 상태를 확인할 수 있습니다.', items: [
+          '**새로고침 후 화면 복원**: `sessionStorage`에 저장한 상품 정보로 대기열 진입을 다시 요청하고, 서버가 응답한 순번과 상태를 화면에 반영합니다. 서버가 기존 대기열 참여를 유지하고 있다고 응답한 경우(`rejoined: true`)에만 기존 자리로 돌아왔다는 안내를 표시합니다.',
           '**pill 문구**: 확인 전에는 "내 번호 확인 중", 대기 중에는 "내 번호 23번", 차례가 가까워지면 "곧 내 차례예요 · 내 번호 23번", 차례가 오면 "내 차례예요 · 곧 예약 페이지로 이동해요"와 남은 시간을 보여줍니다.',
           '**차례가 와도 화면이 갑자기 전환되지 않도록 했습니다.** 사용자가 흐름을 놓치지 않도록 여유 시간을 두었습니다. 창이 열려 있으면 진행률 100%를 0.8초간 보여준 뒤 이동하고, 창이 닫혀 있으면 상단 pill에서 5초를 센 뒤 전환합니다.',
         ] },
@@ -165,7 +179,7 @@ export const PROJECTS: Project[] = [
           ['인터넷 연결 끊김', '"인터넷 연결이 끊겼어요. 연결되면 자동으로 이어서 확인해요."'],
           ['연결이 오래 끊겨 대기열에서 빠졌을 가능성', '"연결이 오래 끊겨 줄에서 빠졌을 수 있어요. 연결되면 바로 다시 확인할게요."'],
           ['연결이 끊긴 사이 대기열에서 빠져 재진입', '"연결이 끊긴 사이 줄에서 빠져 다시 줄을 섰어요 (40번 → 52번)."'],
-          ['새로고침 후 같은 순번으로 복귀', '"전에 서 있던 자리 그대로예요. 순번을 잃지 않았어요."'],
+          ['새로고침 후 서버가 기존 대기열 참여를 확인\n`rejoined: true`', '"전에 서 있던 자리 그대로예요. 순번을 잃지 않았어요."'],
         ] },
         { items: [
           '**대기열 진입에 실패하면 다시 시도합니다.** 대기열이 가득 차면(`QUEUE_FULL`) 10초 뒤, 일시적인 장애면 2초 뒤 다시 진입합니다.',
@@ -302,7 +316,7 @@ export const PROJECTS: Project[] = [
         { v: '87 / 190', k: 'Storybook 스토리 파일 · 본인 작성 / 팀 전체' },
         { v: '11 / 37', k: 'Vitest 단위 테스트 파일 · 본인 작성 / 팀 전체' },
       ], scenarios: [
-        '새로고침해도 대기열 순번이 유지되고, 진입 요청이 503이어도 대기열 유지 (`queue-scenarios`)',
+        '새로고침 후 서버 응답에 따른 대기열 화면 복원·안내, 진입 요청이 503이면 창을 유지하며 재시도 (`queue-scenarios`)',
         '같은 순간에 두 번 눌러도 예약은 하나만 생성되고, 응답을 받지 못해 다시 보내도 처음 예약번호 반환 (`preorder-retry`)',
         '승인된 결제 주소를 다시 열어도 중복 결제되지 않고, 화면 금액 위조 차단 (`cart-payment`)',
         '다른 창에서 로그아웃하면 대기열이 닫히고, 대기열·입장권 저장소 초기화 (`preorder-windows`)',
@@ -311,7 +325,7 @@ export const PROJECTS: Project[] = [
         '**Playwright E2E**: 대기열·접수·결제·여러 창·서버 오류 상황을 브라우저에서 처음부터 끝까지 검증합니다. 목 서버로 실행해 `.env.local` 설정과 무관하고, 토스 결제창은 가짜 SDK로 대체해 실행합니다.',
       ], extraLabel: 'E2E 시나리오 전체 보기 (고객 화면 11개 파일, 테스트 60개)', extra: { table: [
       ['파일', '테스트', '검증 내용'],
-      ['`queue-scenarios`', '24', '대기열 진입(새로고침해도 순번 유지, 진입 요청이 503이어도 대기열 유지), 대기 중(pill 유지, 순번 조회 실패 안내), 입장권(시간 만료 시 바로 다시 대기열 진입), 접수, 여러 창, 접수 이후(외부 등록이 5초를 넘기면 처리 중 화면)'],
+      ['`queue-scenarios`', '24', '대기열 진입(새로고침 후 화면 복원·기존 참여 안내, 진입 요청이 503이면 창 유지·재시도), 대기 중(pill 유지, 순번 조회 실패 안내), 입장권(시간 만료 시 바로 다시 대기열 진입), 접수, 여러 창, 접수 이후(외부 등록이 5초를 넘기면 처리 중 화면)'],
       ['`cart-payment`', '11', '장바구니 합계, 약관 미동의·빈 칸 검증, 결제창에 화면 금액 그대로 전달, 승인 성공, 승인된 주소를 다시 열어도 중복 결제되지 않음, 금액 위조 차단, 승인 서버 장애, 결제창을 닫은 경우'],
       ['`preorder-retry`', '5', '같은 순간에 두 번 눌러도 예약 1개, 일시 장애 후 같은 키로 한 번만 접수, 응답을 받지 못해 다시 보내도 처음 예약번호 반환'],
       ['`preorder`', '5', '비회원은 로그인 모달 표시, 대기열을 거쳐 접수 후 결제로 이동, 이미 예약한 모델은 "구매 확정하기"로 표시, 입장권이 있으면 대기열 없이 바로 입장'],
@@ -337,11 +351,17 @@ export const PROJECTS: Project[] = [
   {
     slug: 'ephyra', fw: 'react', no: '02', name: 'Ephyra', kr: '에피라 · AI 통신 요금제 상담 · 가입 플랫폼', kind: 'LG유플러스 유레카 프론트엔드 개발자 과정 종합프로젝트',
     tagline: '데이터·통화·예산·OTT 이용 성향을 채팅으로 입력하면 AI가 요금제를 추천하고, 비교·가입·리워드까지 하나의 채팅 흐름으로 연결하는 서비스',
-    highlights: ['**LLM 역할 분리**: 요금제명·절감액처럼 정확해야 하는 값은 코드가, 요약은 LLM이 맡도록 상담 레포트 구조를 개편', '**QA와 회귀 테스트**: 마감 3일 전 실제 백엔드를 대상으로 QA를 진행해 P0 2건을 발견하고, Playwright 회귀 테스트 3종으로 남김', '**데이터 출처 불일치**: 요금제를 변경해도 채팅에 이전 요금제가 남던 원인을 TanStack Query 캐시와 Zustand 스토어로 나뉜 데이터 출처에서 찾음'],
+    preview: {
+      description: '채팅으로 요금제를 추천받고 비교·가입까지 진행하는 AI 상담 서비스입니다.',
+      role: '조장·PL · 상담 레포트·공통 UI·QA 담당',
+      title: '정확한 값은 코드가, 요약은 LLM이',
+      body: '요금제명과 절감액은 구조화된 데이터에서 가져오고, LLM은 서술 요약을 맡도록 상담 레포트를 개편했습니다.',
+    },
+    evidenceNote: '마감 전 QA에서 P0 2건을 발견하고, 실제 백엔드 대상 Playwright 회귀 테스트 3종을 작성했습니다. 발견한 문제와 해결·검증 상태는 사례별로 구분해 기록했습니다.',
     toc: [
       { id: 'sec-intro', label: '프로젝트 소개' },
       { id: 'sec-stack', label: '기술 스택·담당 업무' },
-      { id: 'sec-core', label: '핵심 구현', children: [
+      { id: 'sec-core', label: '주요 개발 내용', children: [
         { id: 'ep-report', label: '상담 레포트 구조 개편' },
         { id: 'ep-qa', label: 'QA와 회귀 테스트' },
         { id: 'ep-guest', label: '비로그인 사용자 정책' },
@@ -435,7 +455,14 @@ export const PROJECTS: Project[] = [
   {
     slug: 'nextgacha', fw: 'next', no: '03', name: 'NEXT GACHA', kr: '1인 5개 구매 제한 가챠 쇼핑몰', kind: '개인 프로젝트 · 1인 개발',
     tagline: '되팔이의 대량 구매를 막기 위해 같은 상품을 1인당 최대 5개까지만 살 수 있게 만든 온라인 가챠 쇼핑몰',
-    highlights: ['**구매 한도 정합성**: 화면, 장바구니 API, 결제 트랜잭션으로 검증 단계를 나누고, 동시 요청은 트랜잭션에서 차단', '**렌더링과 성능**: 홈의 데이터 요청을 서버 렌더링 단계로 옮기고 병렬 처리해 모바일 실측 LCP를 3.28s에서 1.78s로 단축', '**접근 제어**: 한 번도 실행되지 않던 로그인 검사를 찾아 수정하고, HTTP 요청으로 응답 코드를 검증'],
+    preview: {
+      description: '같은 상품을 1인당 최대 5개까지 구매할 수 있는 가챠 쇼핑몰입니다.',
+      role: '1인 개발 · 기획·디자인·Frontend·Backend',
+      title: '모바일 LCP 3.28s → 1.78s',
+      body: '홈의 데이터 요청을 서버 렌더링 단계로 옮기고, 서로 독립적인 조회를 병렬로 처리했습니다.',
+      note: '2026.10 측정 · 이후 재디자인에서 발생한 CLS 회귀는 상세에 기록했습니다.',
+    },
+    evidenceNote: 'LCP 3.28s → 1.78s는 2026.10 운영 환경에서 Lighthouse를 3회 실행한 중앙값입니다. 11월 재디자인 이후 CLS 회귀는 미해결 상태이며, 아래 트러블슈팅에 별도로 기록했습니다.',
     toc: [
       { id: 'sec-intro', label: '프로젝트 소개' },
       { id: 'sec-shots', label: '주요 화면' },
@@ -443,7 +470,7 @@ export const PROJECTS: Project[] = [
       { id: 'sec-planning', label: '기획·디자인' },
       { id: 'sec-stack', label: '기술 스택·담당 업무' },
       { id: 'sec-arch', label: '시스템 구성' },
-      { id: 'sec-core', label: '핵심 구현', children: [
+      { id: 'sec-core', label: '주요 개발 내용', children: [
         { id: 'ng-limit', label: '1인 5개 한도' },
         { id: 'ng-payment', label: '결제 처리' },
         { id: 'ng-order', label: '주문 상태 전환' },
@@ -667,17 +694,17 @@ export const OTHERS: Other[] = [
 ];
 
 export const DN_PROJECTS: DnProject[] = [
-  { no: '01', name: '교사용 LMS 리뉴얼', period: '2024.01 ~ 2024.03', team: 'Backend 1 · Frontend 2 · Designer 1', desc: '학교 선생님이 학생의 학습 진행도, 문제 풀이 데이터, AI 학습 대화를 한 화면에서 확인하는 관리 사이트입니다. 반별 학생 조회, 단원별 진행 상황, AI 발음 평가 결과, AI 대화 재현 페이지, 레이아웃 초기 디자인을 담당했습니다.',
+  { no: '01', name: '교사용 LMS 리뉴얼', period: '2024.01 ~ 2024.03', team: 'Backend 1 · Frontend 2 · Designer 1', summary: '공통 스타일과 MSW 목 API를 먼저 준비해, 다른 파트의 일정 지연에도 기간 내 개발을 완료했습니다.', desc: '학교 선생님이 학생의 학습 진행도, 문제 풀이 데이터, AI 학습 대화를 한 화면에서 확인하는 관리 사이트입니다. 반별 학생 조회, 단원별 진행 상황, AI 발음 평가 결과, AI 대화 재현 페이지, 레이아웃 초기 디자인을 담당했습니다.',
     blocks: [
       { label: '다른 파트를 기다리지 않는 개발', items: ['**디자인 지연 대응**: 디자이너가 다른 프로젝트를 병행하느라 바로 투입되기 어려웠습니다. 그래서 초기 UI를 직접 구성해 개발을 먼저 시작했습니다. 여백·색상·타이포그래피는 SCSS 유틸리티 클래스로 설계해서, 디자인이 확정된 뒤에는 클래스 조합만 바꿔 반영할 수 있게 했습니다.', '**백엔드 지연 대응**: 백엔드 API는 프로젝트 막바지에 완성될 예정이었습니다. Swagger로 공유받은 명세를 기반으로 MSW Mock API를 먼저 만들어, 실제 서버 없이도 기능 개발과 테스트를 진행했습니다.', '**결과**: 디자인과 백엔드 일정이 모두 지연됐지만 계획된 기간 안에 프로젝트를 완료했습니다.'] },
       { label: 'Vue 2 → Vue 3 마이그레이션', items: ['Options API에 흩어져 있던 로직을 Composition API로 옮기고, Vuex의 `this.$store`는 `useStore()`로 바꿨습니다.', '재사용 가능한 컴포넌트를 구분하고, 추가 기능에 맞춰 파일 구조를 다시 설계했습니다.'] },
     ] },
-  { no: '02', name: '사내 관리자 페이지', period: '2024.01 ~ 2024.03 (LMS와 병행)', team: 'Backend 1 · Frontend 1', desc: '운영자가 학교, 계정, 정산, 안내 발송을 한 곳에서 처리하는 관리자 시스템입니다. 개발 시점 기준 100개 이상의 초등학교에서 사용되었습니다.',
+  { no: '02', name: '사내 관리자 페이지', period: '2024.01 ~ 2024.03 (LMS와 병행)', team: 'Backend 1 · Frontend 1', summary: '계정 대량 등록·정산·안내 발송 화면을 맡아, LMS와 병행하면서 3월 말 기한 안에 오픈했습니다.', desc: '운영자가 학교, 계정, 정산, 안내 발송을 한 곳에서 처리하는 관리자 시스템입니다. 개발 시점 기준 100개 이상의 초등학교에서 사용되었습니다.',
     blocks: [
       { label: '담당', items: ['학생 계정 Excel 대량 등록', '학교·반 검색과 학교·담당 교사 정보 수정', '정산서 PDF 다운로드', 'Email·SMS 단체 발송과 미리보기'] },
       { label: '일정 관리', items: ['새 학기 수업이 시작되기 전인 3월 말까지 반드시 오픈해야 했습니다. 기획 변경과 API 수정 사항을 기획자·백엔드와 수시로 공유하며 우선순위가 높은 기능부터 개발했고, 완성된 기능은 바로 공유해 다른 파트가 이어서 작업할 수 있게 했습니다. **LMS 리뉴얼과 함께 두 프로젝트 모두 일정 안에 오픈했습니다.**'] },
     ] },
-  { no: '03', name: '전시회 응원·퀴즈 이벤트 페이지', period: '2023.09 ~ 2023.10', team: 'Backend 1 · Frontend 1 · Designer 1', desc: 'KSGE / SIEF 2023 박람회 부스 방문객이 휴대폰 본인 인증 후 참여하는 모바일 이벤트 페이지입니다. 응원 메시지 이벤트 프론트엔드를 단독으로 신규 구축하고, 퀴즈 이벤트 기존 코드 리팩토링과 초기 레이아웃 디자인을 담당했습니다.',
+  { no: '03', name: '전시회 응원·퀴즈 이벤트 페이지', period: '2023.09 ~ 2023.10', team: 'Backend 1 · Frontend 1 · Designer 1', summary: '모바일 이벤트 화면 개발과 현장 장애 대응을 맡고, 인증번호 발송 지연에 대응했습니다.', desc: 'KSGE / SIEF 2023 박람회 부스 방문객이 휴대폰 본인 인증 후 참여하는 모바일 이벤트 페이지입니다. 응원 메시지 이벤트 프론트엔드를 단독으로 신규 구축하고, 퀴즈 이벤트 기존 코드 리팩토링과 초기 레이아웃 디자인을 담당했습니다.',
     blocks: [
       { label: '현장 장애 대응', items: ['박람회 3일 동안 장애 대응 담당자로 현장에 참여했습니다. 총 **754명**(1일차 193명 · 2일차 328명 · 3일차 233명)이 참여했습니다.', '1일차 초반에 인증번호 발송이 지연되자 서버 리소스 증설을 요청했습니다. 지연이 해소된 뒤에는 원래 사양으로 되돌려 불필요한 비용을 줄였습니다.', '그 결과 참여자가 가장 많았던 2일차에도 지연 없이 운영했습니다.'] },
       { label: '성능 개선', items: ['**스타일 구조 개선**: 반복되는 inline style을 SCSS로 옮기고, 컴포넌트 하나의 폴더에 섞여 있던 파일들을 Atomic Design 구조로 재구성했습니다.', '**폰트 경량화**: 회사 요구로 Noto Sans CJK(Regular·Medium·Bold)를 써야 했는데, 한중일 글자를 모두 담고 있어 용량이 커서 초기 렌더링이 느렸습니다. 온라인 변환기로 WOFF2 변환을 시도했지만 글자가 깨졌고, Python `fonttools`로 직접 변환해 용량을 줄였습니다. 그래도 용량이 커서, 글자는 기본 글꼴로 먼저 보이고 폰트는 나중에 적용되도록 설정했습니다.', '**이미지 경량화**: 이미지를 WebP로 바꿔 리소스 용량을 줄였습니다.'] },
@@ -697,7 +724,7 @@ export const TECH_USAGE: [string, string][] = [
   ['Next.js (App Router)', 'NEXT GACHA 홈의 서버 컴포넌트 전환, Parallel Routes·Intercepting Routes 활용'],
   ['TanStack Query', 'Nova의 실패 유형별 재시도·백오프 정책, NEXT GACHA 장바구니 중복 요청 제어'],
   ['MSW', 'Nova 목 서버 구축과 실패 상황 재현, 디엔소프트 Swagger 기반 Mock API'],
-  ['Playwright', 'Nova E2E 시나리오 65개, Ephyra 실제 백엔드 대상 회귀 테스트 3종'],
+  ['Playwright', 'Nova 고객 화면 E2E 60개 직접 작성·운영자 5개 공동 작성, Ephyra 회귀 테스트 3종'],
   ['Storybook · Vitest', 'Nova 컴포넌트 상태별 스토리(로딩·빈 상태·에러)와 단위 테스트'],
   ['Vue.js', '디엔소프트 실서비스 4건, Vue 2 → 3 마이그레이션'],
   ['스타일', 'Vanilla Extract, Tailwind CSS, SCSS'],
