@@ -10,15 +10,17 @@ export type FlowStep ={ title: string; desc: string; shot: string };
 export type BgFigure = { after: number; caption: string; groups: { label: string; tone: 0 | 1 | 2; steps: { title: string; hot?: boolean }[] }[] };
 export type FlowBranch = { after: number; title: string; fast: string; slow: string };
 export type Flow = { steps: FlowStep[]; branch: FlowBranch; phonesLead: string; phones: { shot: string; cap: string }[] };
+export type SummaryItem = { label: string; value: string; description: string };
+export type DescriptionItem = { title: string; body: string };
 export type Project = {
   slug: string; fw: FwKey; no: string; name: string; kr: string; ongoing?: boolean; kind: string;
   // 목록에서는 대표 사례 하나만 보여주고, 구현과 검증 근거는 상세에서 다룬다.
   preview: { description: string; role: string; title: string; body: string; note?: string };
   evidenceNote: string;
   // 과제 조건을 소개와 프론트엔드 핵심 과제 사이에 보여준다.
-  requirements?: string[];
+  requirements?: SummaryItem[];
   // 상세 첫머리: 이 프로젝트에서 다룬 문제 / 기획 배경 아래: 팀 시스템과 내 담당 범위 구분
-  focus?: { lead: string; items: string[] }; scope?: { label: string; note?: string; items: string[] }[];
+  focus?: { lead: string; items: DescriptionItem[] }; scope?: { label: string; note?: string; items: string[] }[];
   // 검증 섹션을 주제별로 묶을 때 (있으면 verify 대신 사용)
   // metrics: 먼저 보여줄 핵심 지표, scenarios: 대표 시나리오, extraLabel: extra를 접어 두고 펼칠 때 쓰는 이름, sub: 보조 영역(작게)
   verifyGroups?: { label: string; lead?: string; metrics?: { v: string; k: string }[]; scenarios?: string[]; items: Item[]; extra?: Block; extraLabel?: string; sub?: boolean }[];
@@ -53,9 +55,9 @@ export const PROJECTS: Project[] = [
     slug: 'nova', fw: 'react', no: '01', name: 'Nova', kr: '휴대폰 사전예약 시스템', kind: 'LG유플러스 유레카 최종융합프로젝트',
     tagline: 'LG유플러스 유레카 최종융합프로젝트에서 휴대폰 사전예약 시스템을 주제로 선택해 개발했습니다.',
     requirements: [
-      '**신청 규모**: 오픈 직후 **10초 안에 5,000건**의 신청이 몰리는 상황을 가정했습니다.',
-      '**외부 예약 시스템**: 평균 응답 시간 **0.5초**, 호출 실패율 **5%**를 가정했습니다.',
-      '**처리 조건**: 신청 유실 **0건**, 중복 예약 **0건**, 내부·외부 예약 기록 **100% 일치**를 만족해야 했습니다.',
+      { label: '신청 규모', value: '10초 안에 5,000건', description: '오픈 직후 신청이 몰리는 상황을 가정했습니다.' },
+      { label: '외부 예약 시스템', value: '평균 0.5초 · 실패율 5%', description: '외부 시스템의 응답 시간과 호출 실패율을 가정했습니다.' },
+      { label: '처리 조건', value: '신청 유실·중복 예약 0건', description: '내부·외부 예약 기록도 100% 일치해야 했습니다.' },
     ],
     preview: {
       description: '대기열부터 접수·결제까지 이어지는 스마트폰 사전예약 서비스입니다.',
@@ -98,11 +100,11 @@ export const PROJECTS: Project[] = [
     focus: {
       lead: '저는 구매자 화면을 맡아, 사용자가 현재 처리 상태를 이해할 수 있도록 안내하고 중복 신청과 사용자 간 데이터 혼선을 막는 데 집중했습니다.',
       items: [
-        '**대기열 조회와 안내**: 서버가 관리하는 순번을 조회해 표시했습니다. 대기열 창을 닫거나 페이지를 이동해도 조회와 안내가 이어지고, 새로고침 후에는 서버 응답에 맞춰 대기열 화면을 복원하도록 했습니다.',
-        '**접수와 확정의 분리**: 서버의 예약 단계(`displayStatus`)에 따라 "접수"와 "외부 등록 완료(확정)"를 서로 다른 화면 상태로 구분하고, 결제는 등록이 완료된 뒤에만 가능하도록 했습니다.',
-        '**실패 유형별 재시도**: 오류를 4xx·5xx·타임아웃·네트워크 오류로 구분해 재시도 여부를 결정하고, 백오프·Jitter·`Retry-After`를 적용해 서버 장애 시 요청이 한꺼번에 몰리지 않도록 했습니다.',
-        '**중복 접수와 사용자 혼선 방지**: 응답을 받지 못한 접수는 멱등키로 한 번만 재전송하고, 로그아웃 시 이전 사용자의 대기열 정보를 함께 삭제했습니다.',
-        '**실패 상황 검증**: 목 서버로 장애 상황을 재현하고, Playwright로 고객 화면 E2E 테스트 60개를 직접 작성했습니다. 운영자 시나리오 5개는 팀원과 공동 작성했습니다.',
+        { title: '대기열 조회와 안내', body: '서버가 관리하는 순번을 조회해 표시했습니다. 대기열 창을 닫거나 페이지를 이동해도 조회와 안내가 이어지고, 새로고침 후에는 서버 응답에 맞춰 대기열 화면을 복원하도록 했습니다.' },
+        { title: '접수와 확정의 분리', body: '서버의 예약 단계(`displayStatus`)에 따라 "접수"와 "외부 등록 완료(확정)"를 서로 다른 화면 상태로 구분하고, 결제는 등록이 완료된 뒤에만 가능하도록 했습니다.' },
+        { title: '실패 유형별 재시도', body: '오류를 4xx·5xx·타임아웃·네트워크 오류로 구분해 재시도 여부를 결정하고, 백오프·Jitter·`Retry-After`를 적용해 서버 장애 시 요청이 한꺼번에 몰리지 않도록 했습니다.' },
+        { title: '중복 접수와 사용자 혼선 방지', body: '응답을 받지 못한 접수는 멱등키로 한 번만 재전송하고, 로그아웃 시 이전 사용자의 대기열 정보를 함께 삭제했습니다.' },
+        { title: '실패 상황 검증', body: '목 서버로 장애 상황을 재현하고, Playwright로 고객 화면 E2E 테스트 60개를 직접 작성했습니다. 운영자 시나리오 5개는 팀원과 공동 작성했습니다.' },
       ],
     },
     scope: [

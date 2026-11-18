@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import { type CSSProperties } from 'react';
-import type { Block, Item } from '../data';
+import type { Block, DescriptionItem, Item } from '../data';
 import { ImgDuo, ItemFigure, Zoomable, zoomOf } from './Images';
 import { Label, Text } from './PortfolioUI';
 import { CODE_FONT, dash, HL, ui, ul } from './tokens';
+import styles from './PortfolioUI.module.css';
 
 // `code`, **bold** 마크업 렌더링. strong 미지정 시 bold는 평문으로 표시
 export type Emphasis = 'none' | 'bold' | 'highlight' | 'muted' | 'inverse';
@@ -34,6 +35,20 @@ export function Rich({ text, emphasis = 'none', codeTone = 'subtle', codeSize = 
 
 export const itemText = (it: Item) => (typeof it === 'string' ? it : it.t);
 export const itemSubs = (it: Item) => (typeof it === 'string' ? [] : it.sub || []);
+
+/** 제목을 먼저 훑고 상세 설명을 읽을 수 있는 목록. 기존 텍스트 규격을 조합한다. */
+export function DescriptionList({ items }: { items: DescriptionItem[] }) {
+  return (
+    <dl className={styles.descriptionList}>
+      {items.map((item) => (
+        <div key={item.title} className={styles.descriptionRow}>
+          <dt className={styles.descriptionTitle}><Text variant="summary">{item.title}</Text></dt>
+          <dd className={styles.descriptionBody}><Text secondary measure="reading"><Rich text={item.body} emphasis="bold" /></Text></dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
 
 // 기존 목록의 용도별 규격. 화면에서 크기나 색상을 따로 지정하지 않는다.
 export type ListVariant = 'default' | 'body' | 'compact' | 'content' | 'intro' | 'conditions' | 'scenario' | 'verification' | 'supporting' | 'experience';

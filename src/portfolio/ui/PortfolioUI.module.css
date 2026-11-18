@@ -19,6 +19,18 @@
 .intro.reading { max-width: 56ch; }
 .subtitle { margin-top: 12px; font-size: var(--pf-subtitle-size); color: var(--pf-secondary); }
 .subtitleAccent { color: var(--pf-accent); font-weight: 600; }
+.summaryGrid { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.summaryCell { min-width: 0; padding: 24px; border-radius: 24px; background: var(--pf-surface-muted); display: flex; flex-direction: column; gap: 12px; }
+.summaryContent { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.descriptionList { margin: 0; }
+.descriptionRow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 24px 0; border-top: 1px solid var(--pf-border); }
+.descriptionRow:last-child { padding-bottom: 0; }
+.descriptionTitle { min-width: 0; color: var(--pf-accent); }
+.descriptionBody { margin: 0; min-width: 0; }
+@media (min-width: 900px) {
+  .summaryGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .descriptionRow { grid-template-columns: 200px minmax(0, 1fr); column-gap: 40px; }
+}
 .titleBar { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 14px; gap: 16px; flex-wrap: wrap; }
 .titleBarSpaced { margin-bottom: 8px; }
 .row { display: flex; gap: 40px; flex-wrap: wrap; padding: 40px 0; border-bottom: 1px solid var(--pf-border); }

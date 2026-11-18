@@ -37,4 +37,5 @@ export const themeVariables = {
   '--pf-muted': '#6E6E73',
   '--pf-border': '#D2D2D7',
   '--pf-surface': '#FFFFFF',
+  '--pf-surface-muted': '#F5F5F7',
 } as CSSProperties;

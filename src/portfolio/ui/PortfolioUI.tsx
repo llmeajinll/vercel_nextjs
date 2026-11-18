@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { FW, type FwKey, type Project } from '../data';
+import { FW, type FwKey, type Project, type SummaryItem } from '../data';
 import styles from './PortfolioUI.module.css';
 
 type Children = { children: ReactNode };
@@ -21,6 +21,23 @@ export function Text({ children, variant = 'body', secondary, measure = 'full' }
 
 export function ProjectSubtitle({ children, accent = false }: Children & { accent?: boolean }) {
   return <div className={`${styles.subtitle} ${accent ? styles.subtitleAccent : ''}`}>{children}</div>;
+}
+
+/** 동일한 비중의 조건을 비교한다. 글자 규격은 기존 Label과 Text를 재사용한다. */
+export function SummaryGrid({ items }: { items: SummaryItem[] }) {
+  return (
+    <dl className={styles.summaryGrid}>
+      {items.map((item) => (
+        <div key={item.label} className={styles.summaryCell}>
+          <dt><Label>{item.label}</Label></dt>
+          <dd className={styles.summaryContent}>
+            <Text variant="summary">{item.value}</Text>
+            <Text secondary>{item.description}</Text>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 
 export function TitleBar({ children, spaced = false }: Children & { spaced?: boolean }) {

@@ -22,10 +22,10 @@
 ## 조합
 
 ```tsx
-<IntroGroup>
-  <Label as="h2">과제 조건</Label>
-  <Dashes items={requirements} variant="conditions" />
-</IntroGroup>
+<SectionRow id="sec-background" variant="stack">
+  <Label as="h2">프로젝트 배경과 과제</Label>
+  <SummaryGrid items={requirements} />
+</SectionRow>
 
 <SectionRow>
   <Label as="div" variant="side">기획 배경</Label>
@@ -35,6 +35,8 @@
 
 - `ProjectFacts`: 기간·역할·인원·기여도와 외부 링크. `inset`은 소개 문장 아래 배치할 때 사용한다.
 - `ProjectContext`: 과제 조건·팀의 처리 구조·프론트엔드 담당 과제를 한 섹션으로 조합한다.
+- `SummaryGrid`: 조건을 900px 이상에서 같은 너비의 3칸, 좁은 화면에서 세로로 표시한다. `Label` 14px·`Text summary` 18px·본문 16px를 재사용한다. 기존 회색 배경(#F5F5F7), 24px 안쪽 여백·모서리, 16px 칸 간격을 사용하며 수치와 가정·요구 조건 설명을 함께 보여준다.
+- `DescriptionList`: 제목·설명을 분리한 목록이다. 제목은 기존 `Text summary` 18px/600/28.8px와 파란색(#0071E3), 설명은 `Text` 16px/28px를 사용한다. 900px 이상에서는 제목 200px·열 간격 40px로 정렬하고, 좁은 화면에서는 제목 아래에 설명을 둔다. 항목은 기존 1px 구분선과 위아래 24px 여백으로 나눈다. 데이터에서 제목과 본문을 나누되 설명은 생략하지 않는다.
 - `SectionRow`, `TitleBar`: 기존 구분선과 섹션 간격을 재사용한다.
 - `FrameworkBadge`, `Chip`, `PillLink`, `PillButton`: 기존 배지·칩·버튼 규격이다.
 - `Dashes`: 기존 목록을 용도별로 고정한다. `conditions`·`intro`는 16px, 기본 목록은 15px, 보조 설명은 14px이다. 호출부에 임의의 글자 크기나 색상을 받지 않는다.
