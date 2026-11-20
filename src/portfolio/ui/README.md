@@ -1,50 +1,55 @@
-# 기존 포트폴리오 UI 규격
+# 공통 UI 구현 안내
 
-기존 `Portfolio.tsx`의 컴포넌트와 공통 스타일을 추출했다. Pretendard, 색상, 여백, 반응형 레이아웃을 유지한다. 현재 작업에서 바꾼 소제목과 요약문만 기존 규격으로 정리했다.
+디자인의 기준 문서는 [기본 규격](../../../.agents/rules/design-foundations.md)과 [컴포넌트·페이지 구조](../../../.agents/rules/design-components.md)다. **UI 수정 전에 두 문서를 모두 읽는다.** 이 문서는 구현 위치를 안내하며 별도의 크기·색상·간격 기준을 만들지 않는다.
 
-## 텍스트
+## 구현 위치
 
-| 역할 | 컴포넌트 | 크기 | 굵기 | 행간 |
-| --- | --- | --- | --- | --- |
-| 프로젝트 제목 | `Heading variant="page"` | 44–96px | 600 | 1.02 |
-| 주요 섹션 제목 | `Heading` | 32–48px | 600 | 1.19 |
-| 개발 사례 제목 | `Heading variant="case"` | 22px | 600 | 1.4 |
-| 보조 개발 사례 제목 | `Heading variant="supporting"` | 19px | 600 | 1.4 |
-| 섹션 소제목 | `Label` | **14px** | **600** | **21px** |
-| 메타정보 라벨 | `Label variant="small"` | 12px | 600 | 18px |
-| 프로젝트 요약 | `ProjectSubtitle` | 20px | 기본 400, accent 600 | 1.5 |
-| 소개 문장 | `Text variant="intro"` | 19px | 400 | 1.7 |
-| 핵심 설명 | `Text variant="summary"` | 18px | 600 | 1.6 |
-| 본문 | `Text` | 16px | 400 | 1.75 |
+| 파일·컴포넌트 | 역할 |
+| --- | --- |
+| `tokens.ts` | 공통 색상·서체·타이포그래피 값과 CSS 변수 전달 |
+| `PortfolioUI.module.css` | 공통 UI의 시각 규격과 반응형 배치 |
+| `PortfolioUI.tsx` | `Heading`, `Text`, `Label`, `ProjectSubtitle`, `Chip`, `FrameworkBadge`, `PillLink`, `PillButton` |
+| `ProjectFacts`, `ProjectIdentity`, `IntroFrame` | 소개의 식별 줄·기간·역할·인원·기여도·외부 링크 |
+| `SectionIntro`, `TitleBar`, `SectionRow`, `NarrativeRow` | 큰 섹션 제목·정보 행·단계별 설명 조합 |
+| `SummaryGrid`, `MetricGrid`, `EvidenceNote` | 과제 조건·검증 지표·검증 범위 안내 |
+| `Content.tsx` | `Rich`, `Dashes`, `DescriptionList`, `CaseBlock`과 표·노트 |
+| `Images.tsx` | `Zoomable`, 이미지 쌍·본문 이미지, 확대 컨텍스트 |
+| `ProjectScreens.tsx`, `ProjectScreens.module.css` | `Gallery`, `FlowDetail`, `GroupedFlow`, `BgFigureView` |
+| `TableOfContents.tsx` | 데스크톱 선 목차·모바일 목차 |
+| `ProductCardDemo.tsx` | 색상 변경 시 슬라이더 재생성을 비교하는 실제 동작 데모 |
+| `PortfolioShell.tsx` | 공통 헤더·푸터·폰트·테마 변수 |
 
-`Label`의 실제 규격은 `tokens.ts`의 `typography.label` 하나에서 정의한다. `PortfolioShell`이 CSS 변수로 전달하며, 기존 레이아웃용 라벨도 같은 값을 사용한다. 자간은 0.01em(14px에서 0.14px), 색상은 #6E6E73이다.
+## 사용 원칙
 
-## 조합
+- 화면 조합부에서 공통 컴포넌트의 `style`·`className`을 덮어쓰지 않는다. 역할에 맞는 정해진 옵션을 사용한다.
+- 같은 역할의 요소가 이미 있으면 재사용한다. 변형을 추가하기 전 디자인 규칙에 해당 역할과 값이 있는지 확인한다.
+- `DescriptionList`는 제목과 설명을 나누고, `numbered`는 순서 표시를 포함한다. 설명을 줄여서 레이아웃에 맞추지 않는다.
+- `DecisionList`의 판단 카드는 `body` 문단형과 `situation`·`decision`·`reason` 구조형을 받는다. 구조형은 상황·판단·근거 라벨 행으로 표시하며, 카드 폭이 520px 미만이면 라벨을 본문 위에 둔다.
+- `GroupedFlow`는 `flow.groups`가 있을 때 사용한다. 기존 이미지·설명·확대 기능과 모바일 캐러셀을 유지한다.
+- 기술 스택은 프로젝트의 `stackGroups`를 이용해 분류별로 표시한다.
+- `Rich`는 코드와 핵심 구절을 표시한다. 강조와 코드 스타일의 기준은 디자인 규칙에 따른다.
+- 컴포넌트 데이터는 `../data.ts`, 화면 조합은 `../components/`에서 관리한다.
 
-```tsx
-<SectionRow id="sec-background" variant="stack">
-  <Label as="h2">프로젝트 배경과 과제</Label>
-  <SummaryGrid items={requirements} />
-</SectionRow>
+## 현재 구현과 새 기준의 차이
 
-<SectionRow>
-  <Label as="div" variant="side">기획 배경</Label>
-  <Text>프로젝트를 이해하는 데 필요한 설명</Text>
-</SectionRow>
-```
+아래는 새 스타일을 승인하는 표가 아니라, 사용자 제공 디자인 규칙을 적용할 때 확인해야 하는 **기존 구현의 차이**다. 이번 규칙 문서 정리에서 런타임 UI를 일괄 변경하지 않았다.
 
-- `ProjectFacts`: 기간·역할·인원·기여도와 외부 링크. `inset`은 소개 문장 아래 배치할 때 사용한다.
-- `ProjectContext`: 과제 조건·팀의 처리 구조·프론트엔드 담당 과제를 한 섹션으로 조합한다.
-- `SummaryGrid`: 조건을 900px 이상에서 같은 너비의 3칸, 좁은 화면에서 세로로 표시한다. `Label` 14px·`Text summary` 18px·본문 16px를 재사용한다. 기존 회색 배경(#F5F5F7), 24px 안쪽 여백·모서리, 16px 칸 간격을 사용하며 수치와 가정·요구 조건 설명을 함께 보여준다.
-- `DescriptionList`: 제목·설명을 분리한 목록이다. 제목은 기존 `Text summary` 18px/600/28.8px와 파란색(#0071E3), 설명은 `Text` 16px/28px를 사용한다. 900px 이상에서는 제목 200px·열 간격 40px로 정렬하고, 좁은 화면에서는 제목 아래에 설명을 둔다. 항목은 기존 1px 구분선과 위아래 24px 여백으로 나눈다. 데이터에서 제목과 본문을 나누되 설명은 생략하지 않는다.
-- `SectionRow`, `TitleBar`: 기존 구분선과 섹션 간격을 재사용한다.
-- `FrameworkBadge`, `Chip`, `PillLink`, `PillButton`: 기존 배지·칩·버튼 규격이다.
-- `Dashes`: 기존 목록을 용도별로 고정한다. `conditions`·`intro`는 16px, 기본 목록은 15px, 보조 설명은 14px이다. 호출부에 임의의 글자 크기나 색상을 받지 않는다.
-- `Rich`: 강조는 `bold`·`highlight`·`muted`·`inverse`, 코드 표시는 정해진 옵션만 사용한다.
-- `Images`, `ProjectScreens`, `TableOfContents`, `ProductCardDemo`: 기존 이미지·캐러셀·목차·데모 구현을 옮겼다.
+| 확인할 곳 | 현재 구현에 남아 있는 차이 | 적용할 기준 |
+| --- | --- | --- |
+| `Text body` | 행간 1.75 | 기본 본문 행간 1.7 |
+| `ProjectSubtitle` | `accent`가 없으면 회색·굵기 400 | 제목 아래 부제는 항상 파란색·20px·600 |
+| `Text intro` 읽기 폭 | `56ch` 또는 전체 폭 선택 | 소개 문단 읽기 폭 640px |
+| `Dashes` | 하위 목록의 세로선, 용도별로 다른 항목 간격 | 2단계는 `·`, 15px, `ink-2`; 기본 항목 간격 12px |
+| `SummaryGrid`·일부 노트 | 일반 카드 24px·검증 범위 노트 16px 반경 | 일반 카드 18px·노트 14px |
+| `ProjectIntro` | 일부 프로젝트에서 검증 범위를 소개 안에 표시 | 검증 범위는 하단 테스트·검증 영역 맨 위 |
+| `ProjectDetail` | 일부 프로젝트에 미분류 스택·초반 화면 갤러리 경로 존재 | 분류별 스택과 정해진 상세 페이지 순서, 주요 화면의 h2 제목 |
+| 다음 프로젝트 링크 | 반응형 값의 데스크톱 상한이 48px | `next-title` 데스크톱 기준 44px |
 
-화면 조합부에서 `style`이나 `className`으로 공통 컴포넌트의 규격을 변경하지 않는다. 콘텐츠 수정과 UI 규격 변경은 별개로 검토한다.
+이 표가 전체 UI의 준수 여부를 보증하지는 않는다. 수정 대상의 코드를 읽고 디자인 규칙과 직접 대조한다. 요청 범위 안에서 공통 구현을 수정하고 영향을 받는 화면을 확인한다. 범위 밖의 미반영 항목을 고쳤다고 보고하지 않는다.
 
-## 확인 기준
+## 확인 방법
 
-데스크톱 1440px과 모바일 390px에서 프로젝트 배경과 과제·역할과 담당 업무·기술 스택·테스트 및 협업의 소제목의 `getComputedStyle`을 비교한다. `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing`, `color`가 일치해야 한다. 공통 UI를 추출할 때는 홈·Nova·Ephyra·NEXT GACHA의 텍스트와 레이아웃, 목차, 확대 모달의 ESC·포커스 복귀도 확인한다.
+- 디자인 기준값은 `.agents/rules` 문서에서 확인한다. 이 파일에 별도 기준 표를 복제하지 않는다.
+- 같은 역할의 요소를 브라우저의 `getComputedStyle`로 비교하고 글자 크기·굵기·행간·자간·색상을 기록한다.
+- 라벨 영역과 본문 시작점은 요소의 실제 좌표를 확인한다. 큰 섹션 제목과 작은 행 라벨을 서로 비교하지 않는다.
+- 공통 UI를 바꾸면 홈·Nova·Ephyra·NEXT GACHA를 데스크톱과 모바일에서 비교하고, 영향을 받는 목차·앵커·확대 모달의 ESC와 포커스 복귀·캐러셀·데모를 확인한다.

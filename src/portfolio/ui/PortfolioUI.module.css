@@ -27,9 +27,37 @@
 .descriptionRow:last-child { padding-bottom: 0; }
 .descriptionTitle { min-width: 0; color: var(--pf-accent); }
 .descriptionBody { margin: 0; min-width: 0; }
+.descriptionNumbered { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--pf-text); }
+.descriptionNumberedRow { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 8px 16px; padding: 24px 0; border-bottom: 1px solid var(--pf-border); }
+.descriptionNumber { color: var(--pf-accent); padding-top: 4px; }
+.descriptionNumberedBody { grid-column: 2; min-width: 0; }
+.decisions { margin: 0; padding: 0; list-style: none; container-type: inline-size; display: flex; flex-direction: column; gap: 12px; }
+.decision { min-width: 0; padding: 20px; border-radius: 18px; background: var(--pf-surface-muted); display: flex; flex-direction: column; gap: 12px; }
+.decisionParts { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+.decisionPart { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+.decisionPart dd { margin: 0; min-width: 0; }
+@container (min-width: 520px) {
+  .decision { padding: 24px; }
+  .decisionPart { grid-template-columns: 40px minmax(0, 1fr); column-gap: 16px; align-items: baseline; }
+}
+.sectionIntro { padding: 72px 0 32px; display: flex; flex-direction: column; gap: 12px; }
+.narrativeRow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 40px 0; border-top: 1px solid var(--pf-border); }
+.narrativeLabel { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.narrativeStep { color: var(--pf-accent); }
+.narrativeStep > span, .descriptionNumber > span { color: inherit; }
+.narrativeContent { min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+.metricGrid { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 24px; }
+.metric { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 4px; border-top: 1px solid var(--pf-text); padding-top: 12px; }
+.metric dt { font-size: 13px; line-height: 1.55; color: var(--pf-secondary); }
+.metric dd { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 @media (min-width: 900px) {
   .summaryGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .descriptionRow { grid-template-columns: 200px minmax(0, 1fr); column-gap: 40px; }
+  .narrativeRow { grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+}
+@media (min-width: 1200px) {
+  .descriptionNumberedRow { grid-template-columns: 32px 180px minmax(0, 1fr); gap: 24px; }
+  .descriptionNumberedBody { grid-column: auto; }
 }
 .titleBar { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 14px; gap: 16px; flex-wrap: wrap; }
 .titleBarSpaced { margin-bottom: 8px; }
@@ -51,6 +79,7 @@
 .evidence { max-width: 76ch; margin: 24px 0 0; font-size: 14px; line-height: 1.7; color: var(--pf-muted); text-wrap: pretty; }
 .evidence > strong { display: block; margin-bottom: 4px; color: var(--pf-secondary); font-weight: 600; }
 .evidenceVerification { margin: 0 0 28px; max-width: none; }
+.evidenceCallout { margin: 0; padding: 18px; border-radius: 16px; background: var(--pf-surface-muted); }
 .frame { padding: 40px 0 56px; border-bottom: 1px solid var(--pf-border); }
 .frameWithInfo { padding-bottom: 0; border-bottom: 0; }
 .identity { display: flex; gap: 12px; align-items: center; font-size: 13px; flex-wrap: wrap; }

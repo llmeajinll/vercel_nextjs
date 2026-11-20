@@ -38,7 +38,7 @@ export function PortfolioHome() {
     <>
       <section className={styles.hero}>
         <p className={styles.identity}>김혜진 · Frontend Developer</p>
-        <h1>사용자도, 팀도 막히지 않게 만드는 프론트엔드 개발자입니다.</h1>
+        <h1>문제의 원인을 측정과 근거로 확인하고, 서비스에 맞는 해결 방법을 골라 적용하는 프론트엔드 개발자입니다.</h1>
         <p className={styles.intro}>사용자가 겪는 문제를 찾아 해결하고,<br className={styles.desktopBreak} /> 공통 스타일과 목 API를 먼저 준비해 팀이 함께 나아가도록 돕습니다.</p>
         <div className={styles.evidence}>
           <Link href="/portfolio#experience" onClick={goSection('experience')}>
@@ -98,8 +98,8 @@ export function PortfolioHome() {
                 <h3>디엔소프트</h3>
                 <FrameworkBadge framework={'vue'} />
               </div>
-              <p className={styles.companyRole}>Frontend 개발자 (계약직) · 초기 레이아웃 디자인</p>
-              <p className={styles.companyIntro}>전시회 현장 이벤트와 학교용 관리자 시스템 등 실서비스 4건을 개발했습니다.</p>
+              <p className={styles.companyRole}>Frontend 개발자 · 초기 레이아웃 디자인<br />현장실습 2023.09 ~ 2023.12 → 계약직 전환 2024.01 ~ 2024.03</p>
+              <p className={styles.companyIntro}>교사용 LMS, 사내 관리자 페이지, 전시회 응원 메시지 이벤트와 퀴즈 이벤트까지 실서비스 4건을 개발했습니다.</p>
               <div className={styles.chips}>
                 {dnStack.map((s) => <span key={s} className={styles.darkChip}>{s}</span>)}
               </div>

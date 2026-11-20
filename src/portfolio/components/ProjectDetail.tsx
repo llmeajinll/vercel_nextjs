@@ -6,13 +6,14 @@ import { useGoSection } from '../navigation';
 import styles from '../Portfolio.module.css';
 import { CaseBlock, Dashes, Rich } from '../ui/Content';
 import { ZoomCtx, type Zoom } from '../ui/Images';
-import { Chip, EvidenceNote, Heading, Label, ProjectFacts, SectionRow, Text, TitleBar } from '../ui/PortfolioUI';
+import { Chip, EvidenceNote, Heading, Label, ProjectFacts, SectionIntro, SectionRow, Text, TitleBar } from '../ui/PortfolioUI';
 import { ProductCardDemo } from '../ui/ProductCardDemo';
 import { BgFigureView, FlowDetail, Gallery } from '../ui/ProjectScreens';
 import { TocMobile, TocRail } from '../ui/TableOfContents';
 import { BLUE, CODE_FONT, label, row, sideLabel, ui, ul, wrap } from '../ui/tokens';
 import { ProjectIntro } from './ProjectIntro';
 import { ProjectContext } from './ProjectContext';
+import { ProjectVerification } from './ProjectVerification';
 
 export function ProjectDetail({ idx, onSection }: { idx: number; onSection: (s: string) => void }) {
   const p = PROJECTS[idx];
@@ -132,14 +133,6 @@ export function ProjectDetail({ idx, onSection }: { idx: number; onSection: (s: 
       <ProjectContext project={p} />
       {!p.requirements && <ProjectFacts meta={p.meta} links={p.links} />}
 
-      {p.shots && (
-        <SectionRow id={toc ? 'sec-shots' : undefined} variant="stack">
-          {Array.from(new Set(p.shots.map((x) => x.group ?? ''))).map((g) => (
-            <Gallery key={g} title={g} label={`${p.name} ${g} 화면`} shots={p.shots!.filter((x) => (x.group ?? '') === g)} />
-          ))}
-        </SectionRow>
-      )}
-
       {!p.requirements && p.background && (
         <SectionRow id={toc ? 'sec-background' : undefined}>
           <Label variant="side" as="div">기획 배경</Label>
@@ -196,8 +189,6 @@ export function ProjectDetail({ idx, onSection }: { idx: number; onSection: (s: 
       {blockRow('기획', p.planning, 'sec-planning')}
       {blockRow('디자인', p.design)}
 
-      {p.flow && <FlowDetail flow={p.flow} ink={BLUE} id={toc ? 'sec-flow' : undefined} lead={p.leads?.flow} />}
-
       <SectionRow id={toc ? 'sec-stack' : undefined}>
         <Label variant="side" as="div">기술 스택</Label>
         {p.stackGroups ? (
@@ -218,6 +209,8 @@ export function ProjectDetail({ idx, onSection }: { idx: number; onSection: (s: 
         )}
       </SectionRow>
 
+      {p.flow && <FlowDetail flow={p.flow} ink={BLUE} id={toc ? 'sec-flow' : undefined} lead={p.leads?.flow} />}
+
       {!p.scope && <SectionRow>
         <Label variant="side" as="div">담당 업무</Label>
         <div style={{ flex: '1 1 480px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: '28px 40px' }}>
@@ -229,6 +222,20 @@ export function ProjectDetail({ idx, onSection }: { idx: number; onSection: (s: 
           ))}
         </div>
       </SectionRow>}
+
+      {/* 주요 화면은 h2로 시작하고, 정보 행(담당 업무·기술 스택) 다음에 둔다 */}
+      {p.shots && (
+        <section id={toc ? 'sec-shots' : undefined}>
+          <SectionIntro title="주요 화면" note={pad(p.shots.length)}>
+            {p.leads?.shots && <Text variant="lead" measure="reading">{p.leads.shots}</Text>}
+          </SectionIntro>
+          <SectionRow variant="stack">
+            {Array.from(new Set(p.shots.map((x) => x.group ?? ''))).map((g) => (
+              <Gallery key={g} title={g} label={`${p.name} ${g} 화면`} shots={p.shots!.filter((x) => (x.group ?? '') === g)} />
+            ))}
+          </SectionRow>
+        </section>
+      )}
 
       {diagrams.length > 0 && (
         <div id={toc ? 'sec-arch' : undefined} style={{ ...row, flexDirection: 'column', flexWrap: 'nowrap', gap: 16 }}>
@@ -278,7 +285,9 @@ export function ProjectDetail({ idx, onSection }: { idx: number; onSection: (s: 
             <span style={{ ...ui, fontSize: 12, color: '#6E6E73' }}>{pad(cases.length)}</span>
           </TitleBar>
           {(title === '트러블슈팅' ? p.leads?.trouble : p.leads?.core) && (
-            <p style={{ margin: '4px 0 12px', fontSize: 17, lineHeight: 1.7, color: '#424245', maxWidth: 760, textWrap: 'pretty' }}>{title === '트러블슈팅' ? p.leads?.trouble : p.leads?.core}</p>
+            <p style={{ margin: '4px 0 12px', fontSize: 17, lineHeight: 1.7, color: '#424245', maxWidth: 760, textWrap: 'pretty' }}>
+              {(title === '트러블슈팅' ? p.leads?.trouble : p.leads?.core)?.split('\n').map((line, i) => <React.Fragment key={i}>{i > 0 && <br />}{line}</React.Fragment>)}
+            </p>
           )}
           {cases.map((c, i) => {
             return (
@@ -294,7 +303,7 @@ export function ProjectDetail({ idx, onSection }: { idx: number; onSection: (s: 
                     <span style={{ ...ui, fontSize: c.sub ? 20 : 28, fontWeight: 500, color: c.sub ? '#86868B' : BLUE }}>{pad(i + 1)}</span>
                   </div>
                   <div style={{ flex: '1 1 480px', display: 'flex', flexDirection: 'column', gap: 22, minWidth: 0, maxWidth: 760 }}>
-                    <Heading variant={c.sub ? "supporting" : "case"}><Rich text={c.title} codeSize="title" /></Heading>
+                    <Heading variant={c.sub && !p.context ? "supporting" : "case"}><Rich text={c.title} codeSize="title" /></Heading>
                     {c.tags && c.tags.length > 0 && (
                       <ul role="list" style={{ listStyle: 'none', margin: '-8px 0 0', padding: 0, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                         {c.tags.map((t) => <Chip key={t} as="li" compact>{t}</Chip>)}
@@ -312,10 +321,10 @@ export function ProjectDetail({ idx, onSection }: { idx: number; onSection: (s: 
 
       {blockRow('배포와 운영', p.ops, 'sec-ops')}
 
-      <SectionRow id={toc ? 'sec-verify' : undefined} variant="verify">
+      {p.context ? <ProjectVerification project={p} /> : <SectionRow id={toc ? 'sec-verify' : undefined} variant="verify">
         <Label variant="side" as="div">{p.verifyTitle}</Label>
         <div style={{ flex: '1 1 480px', minWidth: 0, maxWidth: 760 }}>
-          {p.requirements && <EvidenceNote placement="verification">{p.evidenceNote}</EvidenceNote>}
+          <EvidenceNote placement="verification">{p.evidenceNote}</EvidenceNote>
           {p.verifyGroups ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
               {p.leads?.verify && <Text secondary>{p.leads.verify}</Text>}
@@ -363,7 +372,7 @@ export function ProjectDetail({ idx, onSection }: { idx: number; onSection: (s: 
             );
           })()}
         </div>
-      </SectionRow>
+      </SectionRow>}
 
       <Link href={'/portfolio/' + next.slug} className="pf-next" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24, padding: '40px 0', borderBottom: '1px solid #D2D2D7' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

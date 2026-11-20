@@ -44,6 +44,30 @@ export function TitleBar({ children, spaced = false }: Children & { spaced?: boo
   return <div className={`${styles.titleBar} ${spaced ? styles.titleBarSpaced : ''}`}>{children}</div>;
 }
 
+export function SectionIntro({ title, note, children }: Children & { title: string; note?: ReactNode }) {
+  return <div className={styles.sectionIntro}>
+    <TitleBar><Heading>{title}</Heading>{note && <Label>{note}</Label>}</TitleBar>
+    {children}
+  </div>;
+}
+
+/** 설명의 왼쪽 제목과 오른쪽 본문을 맞추고, 좁은 화면에서는 위에서부터 읽는다. */
+export function NarrativeRow({ label, step, children }: Children & { label: string; step?: string }) {
+  return <div className={styles.narrativeRow}>
+    <div className={styles.narrativeLabel}>
+      {step && <span className={styles.narrativeStep}><Label variant="small">{step}</Label></span>}
+      <Text variant="summary">{label}</Text>
+    </div>
+    <div className={styles.narrativeContent}>{children}</div>
+  </div>;
+}
+
+export function MetricGrid({ items }: { items: { v: string; k: string }[] }) {
+  return <dl className={styles.metricGrid}>{items.map((item) => <div key={item.k} className={styles.metric}>
+    <dt>{item.k}</dt><dd>{item.v}</dd>
+  </div>)}</dl>;
+}
+
 export function SectionRow({ children, id, variant = 'default' }: Children & { id?: string; variant?: 'default' | 'case' | 'supporting' | 'verify' | 'stack' }) {
   const variants = { default: '', case: styles.rowCase, supporting: styles.rowSupporting, verify: styles.rowVerify, stack: styles.rowStack };
   return <div id={id} className={`${styles.row} ${variants[variant]}`}>{children}</div>;
@@ -78,8 +102,8 @@ export function ProjectFacts({ meta, links, inset = false }: Pick<Project, 'meta
   return inset ? <div className={styles.insetInfo}>{content}</div> : content;
 }
 
-export function EvidenceNote({ children, placement = 'intro' }: Children & { placement?: 'intro' | 'verification' }) {
-  return <p className={`${styles.evidence} ${placement === 'verification' ? styles.evidenceVerification : ''}`}><strong>검증 범위</strong>{children}</p>;
+export function EvidenceNote({ children, placement = 'intro' }: Children & { placement?: 'intro' | 'verification' | 'callout' }) {
+  return <p className={`${styles.evidence} ${placement !== 'intro' ? styles.evidenceVerification : ''} ${placement === 'callout' ? styles.evidenceCallout : ''}`}><strong>검증 범위</strong>{children}</p>;
 }
 
 export function IntroFrame({ children, id, endsWithInfo = false }: Children & { id?: string; endsWithInfo?: boolean }) {

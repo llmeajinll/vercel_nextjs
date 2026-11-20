@@ -69,7 +69,7 @@ export function PortfolioShell({ section, children }: { section: string; childre
 
       <footer id="contact" style={{ background: '#F5F5F7' }}>
         <div className={styles.footerInner}>
-          <div style={{ fontSize: 'clamp(28px,4vw,48px)', fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.2, maxWidth: '22ch' }}>막히는 곳을 먼저 찾고, 끝까지 고치는 프론트엔드 개발자입니다.</div>
+          <div style={{ fontSize: 'clamp(28px,4vw,48px)', fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.2, maxWidth: '22ch' }}>문제의 원인을 측정과 근거로 확인하고, 서비스에 맞는 해결 방법을 골라 적용하는 프론트엔드 개발자입니다.</div>
           <div style={{ display: 'flex', gap: '8px 28px', flexWrap: 'wrap', fontSize: 17 }}>
             <a href="mailto:khj000217@gmail.com" className="pf-link">khj000217@gmail.com</a>
             <a href="tel:01099826381">010.9982.6381</a>

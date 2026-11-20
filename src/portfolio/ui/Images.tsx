@@ -13,7 +13,7 @@ export function Zoomable({ z, children, fallback, style }: { z: Zoom; children: 
     </button>
   );
 }
-export const zoomOf = (img: ItemImg): Zoom => ({ src: img.src, alt: img.alt, title: img.caption || img.alt, w: img.w, h: img.h, fit: true });
+export const zoomOf = (img: ItemImg): Zoom => ({ src: img.src, alt: img.alt, title: img.title || img.caption || img.alt, w: img.w, h: img.h, fit: img.kind !== 'diagram' });
 
 
 // 웹 화면과 모바일 화면을 나란히 — 모바일은 웹과 같은 높이가 되도록 아래쪽을 잘라 보여준다.
