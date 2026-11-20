@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
-import { BgFigure, Flow, Shot } from '../data';
+import { BgFigure, Flow, LifecycleFigure, Shot } from '../data';
 import { Zoomable } from '../ui/Images';
-import { Heading, Label, TitleBar } from '../ui/PortfolioUI';
+import { Heading, Label, NarrativeRow, SectionIntro, Text, TitleBar } from '../ui/PortfolioUI';
 import { ui } from '../ui/tokens';
+import styles from './ProjectScreens.module.css';
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
@@ -72,6 +73,7 @@ export function Gallery({ shots, label: aria, title, dark, counter }: { shots: S
 
 // 상세용: 단계 요약 → 단계별 화면 → 모바일 대기열 화면
 export function FlowDetail({ flow, ink, id, lead }: { flow: Flow; ink: string; id?: string; lead?: string }) {
+  if (flow.groups) return <GroupedFlow flow={flow} id={id} lead={lead} />;
   return (
     <div id={id} className="pf-flow" style={{ paddingTop: 72 }}>
       <TitleBar spaced>
@@ -132,7 +134,10 @@ export function FlowDetail({ flow, ink, id, lead }: { flow: Flow; ink: string; i
 }
 
 // ---- 데모: 상품 카드 색 선택 (수정 전 / 수정 후 비교) ----
-export function BgFigureView({ fig }: { fig: BgFigure }) {
+export function BgFigureView(props: { fig: BgFigure; variant?: 'default' | 'registration' } | { fig: LifecycleFigure; variant: 'lifecycle' }) {
+  if (props.variant === 'lifecycle') return <LifecycleFlow fig={props.fig} />;
+  const { fig, variant = 'default' } = props;
+  if (variant === 'registration') return <RegistrationFlow fig={fig} />;
   const tones = [
     { bg: 'rgba(0,113,227,0.1)', fg: '#0071E3' },
     { bg: '#0071E3', fg: '#FFFFFF' },
@@ -162,4 +167,79 @@ export function BgFigureView({ fig }: { fig: BgFigure }) {
       <figcaption style={{ fontSize: 14, lineHeight: 1.65, color: '#6E6E73', textWrap: 'pretty' }}>{fig.caption}</figcaption>
     </figure>
   );
+}
+
+function GroupedFlow({ flow, id, lead }: { flow: Flow; id?: string; lead?: string }) {
+  return <section id={id} className={styles.flow}>
+    <SectionIntro title="주요 기능 플로우" note={pad2(flow.steps.length)}>
+      {lead && <Text variant="lead" measure="reading">{lead}</Text>}
+    </SectionIntro>
+    {flow.groups?.map((group) => <NarrativeRow key={group.from} step={`${pad2(group.from)}–${pad2(group.to)}`} label={group.title}>
+      <div className={styles.steps}>
+        {flow.steps.slice(group.from - 1, group.to).map((step, index) => {
+          const no = pad2(group.from + index);
+          return <figure key={step.shot} className={styles.step}>
+            <Zoomable z={{ src: step.shot, alt: `${step.title} 화면. ${step.desc}`, title: `${no} ${step.title}`, w: 1440, h: 900, fit: true }}>
+              <div className={styles.frame}><Image src={step.shot} alt={`${step.title} 화면. ${step.desc}`} width={1440} height={900} sizes="(max-width: 640px) 100vw, 280px" className={styles.image} /></div>
+            </Zoomable>
+            <figcaption className={styles.caption}>
+              <span className={styles.number}><Label variant="small">{no}</Label></span>
+              <Text variant="summary">{step.title}</Text>
+              <Text secondary>{step.desc}</Text>
+            </figcaption>
+          </figure>;
+        })}
+      </div>
+    </NarrativeRow>)}
+    <NarrativeRow label="접수 후 화면 안내">
+      <div className={styles.branch}>
+        <Text variant="summary">{flow.branch.title}</Text>
+        <div className={styles.branchChoices}>
+          <div className={styles.choice}><Text variant="summary">5초 안에 끝나면</Text><Text>{flow.branch.fast}</Text></div>
+          <div className={styles.choice}><Text variant="summary">5초를 넘기면</Text><Text>{flow.branch.slow}</Text></div>
+        </div>
+      </div>
+    </NarrativeRow>
+    <NarrativeRow step="모바일" label="대기열 화면">
+      <Text>{flow.phonesLead}</Text>
+      <Gallery label="모바일 대기열 화면" dark counter shots={flow.phones.map((ph) => ({ src: ph.shot, title: ph.cap, phone: true }))} />
+    </NarrativeRow>
+  </section>;
+}
+
+// 본문 속 조회 흐름. DOM 순서를 유지하며 좁은 본문에서는 세로로 읽는다.
+function LifecycleFlow({ fig }: { fig: LifecycleFigure }) {
+  return <figure className={styles.lifecycle} aria-label={fig.title}>
+    <Label variant="block">{fig.title}</Label>
+    <ol className={styles.lifecycleSteps}>
+      {fig.steps.map((step) => <li key={step.label} className={styles.lifecycleStep}>
+        <Label variant="block">{step.label}</Label>
+        <Text variant="summary">{step.name}</Text>
+        {step.detail && <Text secondary>{step.detail}</Text>}
+      </li>)}
+    </ol>
+    <dl className={styles.lifecycleConditions}>
+      {fig.conditions.map((condition) => <div key={condition.label} className={styles.lifecycleCondition}>
+        <dt><Label variant="block">{condition.label}</Label></dt>
+        <dd><Text>{condition.detail}</Text></dd>
+      </div>)}
+    </dl>
+  </figure>;
+}
+
+function RegistrationFlow({ fig }: { fig: BgFigure }) {
+  const total = fig.groups.reduce((count, group) => count + group.steps.length, 0);
+  const tones = [styles.immediate, styles.external, styles.later];
+  let no = 0;
+  return <figure className={styles.registration}>
+    <div className={styles.registrationScroll} role="region" aria-label="신청 접수와 외부 등록 처리 흐름" tabIndex={0}>
+      <div className={styles.registrationGrid} style={{ '--pf-flow-steps': total } as CSSProperties}>
+        {fig.groups.map((group) => <div key={group.label} className={`${styles.group} ${tones[group.tone]}`} style={{ gridColumn: `span ${group.steps.length}` }}>{group.label}</div>)}
+        {fig.groups.flatMap((group) => group.steps.map((step) => <div key={step.title} className={`${styles.registrationStep} ${tones[group.tone]}`}>
+          <span>{pad2(++no)}</span><Text variant="summary">{step.title}</Text>
+        </div>))}
+      </div>
+    </div>
+    <figcaption><Text variant="note">{fig.caption}</Text></figcaption>
+  </figure>;
 }

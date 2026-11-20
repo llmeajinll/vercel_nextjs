@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import { type CSSProperties } from 'react';
-import type { Block, DescriptionItem, Item } from '../data';
+import type { Block, DecisionItem, DescriptionItem, Item } from '../data';
 import { ImgDuo, ItemFigure, Zoomable, zoomOf } from './Images';
 import { Label, Text } from './PortfolioUI';
+import { BgFigureView } from './ProjectScreens';
 import { CODE_FONT, dash, HL, ui, ul } from './tokens';
 import styles from './PortfolioUI.module.css';
 
@@ -37,7 +38,14 @@ export const itemText = (it: Item) => (typeof it === 'string' ? it : it.t);
 export const itemSubs = (it: Item) => (typeof it === 'string' ? [] : it.sub || []);
 
 /** 제목을 먼저 훑고 상세 설명을 읽을 수 있는 목록. 기존 텍스트 규격을 조합한다. */
-export function DescriptionList({ items }: { items: DescriptionItem[] }) {
+export function DescriptionList({ items, numbered = false }: { items: DescriptionItem[]; numbered?: boolean }) {
+  if (numbered) return <ol className={styles.descriptionNumbered}>
+    {items.map((item, i) => <li key={item.title} className={styles.descriptionNumberedRow}>
+      <span className={styles.descriptionNumber} aria-hidden="true"><Label variant="small">{String(i + 1).padStart(2, '0')}</Label></span>
+      <Text variant="summary">{item.title}</Text>
+      <div className={styles.descriptionNumberedBody}><Text secondary><Rich text={item.body} emphasis="bold" /></Text></div>
+    </li>)}
+  </ol>;
   return (
     <dl className={styles.descriptionList}>
       {items.map((item) => (
@@ -48,6 +56,25 @@ export function DescriptionList({ items }: { items: DescriptionItem[] }) {
       ))}
     </dl>
   );
+}
+
+/** 사례 안의 판단 카드: 한 문장 제목 아래 문단(body) 또는 상황·판단·근거 라벨 행을 읽는다. */
+export function DecisionList({ items }: { items: DecisionItem[] }) {
+  return <ol className={styles.decisions}>
+    {items.map((item) => <li key={item.title} className={styles.decision}>
+      <Text variant="summary">{item.title}</Text>
+      {'body' in item
+        ? item.body.map((paragraph) => <Text key={paragraph}><Rich text={paragraph} emphasis="bold" /></Text>)
+        : <dl className={styles.decisionParts}>
+          {([['상황', item.situation], ['판단', item.decision], ['근거', item.reason]] as const).map(([label, text]) => (
+            <div key={label} className={styles.decisionPart}>
+              <dt><Label variant="block">{label}</Label></dt>
+              <dd><Text><Rich text={text} emphasis="bold" /></Text></dd>
+            </div>
+          ))}
+        </dl>}
+    </li>)}
+  </ol>;
 }
 
 // 기존 목록의 용도별 규격. 화면에서 크기나 색상을 따로 지정하지 않는다.
@@ -91,17 +118,19 @@ export function CaseBlock({ b }: { b: Block }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {b.label && <Label variant="block">{b.label}</Label>}
       {b.p && <Text><Rich text={b.p} emphasis="highlight" /></Text>}
+      {b.decisions && <DecisionList items={b.decisions} />}
       {b.items && b.items.length > 0 && <Dashes items={b.items} variant="content" />}
       {b.imgs && b.imgs.length === 2 && (
         <ImgDuo wide={b.imgs[0]} tall={b.imgs[1]} />
       )}
+      {b.lifecycle && <BgFigureView fig={b.lifecycle} variant="lifecycle" />}
       {b.imgs && b.imgs.length > 0 && b.imgs.length !== 2 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-start' }}>
           {b.imgs.map((img) => (
             <figure key={img.src} style={{ margin: 0, flex: img.h > img.w ? '0 0 200px' : '1 1 360px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
               <Zoomable z={zoomOf(img)}>
-                <div style={{ border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: '#1D1D1F' }}>
-                  <Image src={img.src} alt={img.alt} width={img.w} height={img.h} sizes={img.h > img.w ? '200px' : '(max-width: 640px) 100vw, 480px'} style={{ width: '100%', height: 'auto', display: 'block' }} />
+                <div style={{ border: '1px solid #D2D2D7', borderRadius: 18, overflow: 'hidden', background: img.kind === 'diagram' ? '#FFFFFF' : '#1D1D1F' }}>
+                  <Image src={img.src} alt={img.alt} width={img.w} height={img.h} unoptimized={img.kind === 'diagram'} sizes={img.h > img.w ? '200px' : '(max-width: 640px) 100vw, 480px'} style={{ width: '100%', height: 'auto', display: 'block' }} />
                 </div>
               </Zoomable>
               {img.caption && <figcaption style={{ fontSize: 13, lineHeight: 1.6, color: '#6E6E73', textWrap: 'pretty' }}>{img.caption}</figcaption>}
@@ -111,7 +140,8 @@ export function CaseBlock({ b }: { b: Block }) {
       )}
       {b.table && (
         <div style={{ overflowX: 'auto', borderTop: '1px solid #1D1D1F' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14, lineHeight: 1.6 }}>
+          {/* 모바일 상세의 overflow-wrap:anywhere가 칸을 좁혀 단어 중간에서 끊지 않게, 표 안은 단어 단위로 줄바꿈하고 넘치면 표만 가로 스크롤한다. */}
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14, lineHeight: 1.6, overflowWrap: 'normal' }}>
             <thead>
               <tr>{b.table[0].map((h) => <th key={h} style={{ ...ui, textAlign: 'left', padding: '10px 16px 10px 0', fontSize: 12, fontWeight: 500, letterSpacing: '0.04em', color: '#6E6E73', borderBottom: '1px solid #D2D2D7', whiteSpace: 'nowrap' }}>{h}</th>)}</tr>
             </thead>
